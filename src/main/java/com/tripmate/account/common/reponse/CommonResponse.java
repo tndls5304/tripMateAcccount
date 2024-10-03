@@ -1,14 +1,15 @@
 package com.tripmate.account.common.reponse;
 
-import com.tripmate.account.common.errorCode.CommonErrorCode;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.tripmate.account.common.errorcode.CommonErrorCode;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 
-
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CommonResponse<T> {
 
-    private int code;        // 응답 상태 코드 (예: 0000)
+    private String code;        // 응답 상태 코드 (예: 0000)
     private String message;  // 응답 메시지 (예: "성공")
     private T data;          // 응답에 포함된 데이터, 제네릭 타입 (T)
 
@@ -24,7 +25,7 @@ public class CommonResponse<T> {
         this.message = commonErrorCode.getMessage();
     }
 
-    public int getCode(){
+    public String getCode(){
         return code;
     }
 

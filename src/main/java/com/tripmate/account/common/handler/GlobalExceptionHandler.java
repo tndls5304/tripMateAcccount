@@ -1,6 +1,8 @@
 package com.tripmate.account.common.handler;
 
-import com.tripmate.account.common.errorCode.CommonErrorCode;
+import com.tripmate.account.common.exception.InvalidErrorException;
+import com.tripmate.account.common.errorcode.CommonErrorCode;
+import com.tripmate.account.common.reponse.CommonResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -8,47 +10,69 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import java.util.HashMap;
+
 import java.util.List;
-import java.util.Map;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
-       //빈값 확인
-        Map<String, String> errors = new HashMap<>();
-        BindingResult bindingResult  =ex.getBindingResult();
+    public ResponseEntity<CommonResponse<Void>> handleValidationExceptions(MethodArgumentNotValidException ex) {
 
-        List<FieldError>fieldErrorList=   bindingResult.getFieldErrors();
+        BindingResult bindingResult = ex.getBindingResult();
 
-        for (FieldError error : ex.getBindingResult().getFieldErrors()) {
-            // error.getDefaultMessage()는 DTO에서 설정한 message 값 (에러 코드)
-            String errorCode =error.getDefaultMessage();
-            CommonErrorCode commonErrorCode = CommonErrorCode.fromCode(errorCode);
-            int resultCd=commonErrorCode.getCode();
-            String resultMsg=commonErrorCode.getMessage();
-            errors.put("resultCd",String.valueOf(resultCd));
-            errors.put("resultMsg",resultMsg);
-            return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+        List<FieldError> fieldErrorList = bindingResult.getFieldErrors();
+        FieldError firstError = fieldErrorList.get(0);
+
+        String errorCode = firstError.getDefaultMessage();
+        CommonErrorCode commonErrorCode = CommonErrorCode.fromCode(errorCode);
+
+        CommonResponse<Void> response = new CommonResponse<>(commonErrorCode);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(InvalidErrorException.class)
+    public ResponseEntity<CommonResponse<Void>> handleInvalidErrorException(InvalidErrorException ex) {
+        CommonErrorCode commonErrorCode = ex.getCommonErrorCode();//NO_MATCHING_ERROR_CODE
+        // CommonResponse 객체 생성
+        CommonResponse<Void> response = new CommonResponse<>(commonErrorCode);
+        // BAD_REQUEST(400) 응답 반환
+        return ResponseEntity.badRequest().body(response);
+    }
+
 }
 
 
-        /*ex는 MethodArgumentNotValidException 클래스의 인스턴스입니다. 이 예외는 유효성 검사가 실패했을 때 발생합니다.
-        BindingResult는 검증된 객체의 결과를 포함하고 있으며, 유효성 검사에서 발생한 에러 정보와 관련된 다양한 메서드를 제공
-        getFieldErrors() 메서드는 BindingResult에서 유효성 검사가 실패한 모든 필드의 에러를 포함하는 List<FieldError>를 반환
-        FieldError 클래스는 특정 필드에 대한 유효성 검사 오류를 나타내는 객체라서
-            필드 이름: 유효성 검사가 실패한 필드의 이름.
-            에러 코드: 어떤 이유로 유효성 검사가 실패했는지를 나타내는 코드.
-            메시지: 해당 필드의 오류에 대한 설명.
+/*  원래는 map으로 응답했었음
+        for (FieldError error : fieldErrorList) {
+            // error.getDefaultMessage()는 DTO에서 설정한 message 값 (에러 코드)
+            String errorCode = error.getDefaultMessage();
+            CommonErrorCode commonErrorCode = CommonErrorCode.fromCode(errorCode);
+            int resultCd = commonErrorCode.getCode();
+            String resultMsg = commonErrorCode.getMessage();
+            errors.put("resultCd", String.valueOf(resultCd));
+            errors.put("resultMsg", resultMsg);
+            return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
 
-        for (FieldError error : ex.getBindingResult().getFieldErrors()):
-          이 부분은 FieldError 객체들을 반복(iterate)하면서 각 필드에 대한 오류를 처리하는 루프입니다.
-          error 변수는 현재 반복에서 처리하고 있는 FieldError 객체를 나타냅니다.
-     */
+ */
+
+
+/*
+ ResponseEntity<Map<String, String>>를 사용해도 @ControllerAdvice라서
+ Spring이 자동으로 Map 객체를 JSON 형식으로 변환하여 클라이언트에게 응답을 보낸다
+
+
+
+BindingResult는 검증된 객체의 결과를 포함하고 있으며, 유효성 검사에서 발생한 에러 정보와 관련된 다양한 메서드를 제공
+getFieldErrors() 메서드는 BindingResult에서 유효성 검사가 실패한 모든 필드의 에러를 포함하는 List<FieldError>를 반환
+FieldError 클래스는 특정 필드에 대한 유효성 검사 오류를 나타내는 객체라서
+        필드 이름: 유효성 검사가 실패한 필드의 이름.
+        에러 코드: 어떤 이유로 유효성 검사가 실패했는지를 나타내는 코드.
+        메시지: 해당 필드의 오류에 대한 설명.
+
+
+*/
 
 
 
