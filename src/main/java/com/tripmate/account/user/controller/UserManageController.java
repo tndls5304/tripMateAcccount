@@ -1,17 +1,13 @@
 package com.tripmate.account.user.controller;
 
-import com.tripmate.account.common.errorCode.CommonErrorCode;
+import com.tripmate.account.common.errorcode.CommonErrorCode;
 import com.tripmate.account.common.reponse.CommonResponse;
 import com.tripmate.account.user.dto.UserJoinDto;
-import com.tripmate.account.common.entity.UserEntity;
 import com.tripmate.account.user.service.UserManageService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,17 +15,20 @@ public class UserManageController {
     private final UserManageService service;
 
     @PostMapping("api/user/join")
-    public ResponseEntity<CommonResponse<Object>> userJoin(@Valid @RequestBody UserJoinDto userJoinDto){
+    public ResponseEntity<CommonResponse<Void>> userJoin(@Valid @RequestBody UserJoinDto userJoinDto) {
+        service.userJoin(userJoinDto);
+        return ResponseEntity.ok(new CommonResponse<>(CommonErrorCode.SUCCESS));
+    }
 
-        UserEntity savedEntity = service.uerJoin(userJoinDto);
-        if (savedEntity == null) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new CommonResponse<>(CommonErrorCode.INTERNER_SERVER_ERROR));
-        } else {
-            return ResponseEntity.ok(new CommonResponse<>(CommonErrorCode.SUCCESS));
-        }
+    @GetMapping("api/user/join/duplicateTest")
+    public ResponseEntity<CommonResponse<Void>> userDuplicateTest(@Valid @RequestParam String userId) {
+        service.userDuplicateTest(userId);
+        //중복안되면 성공메세지
+        return ResponseEntity.ok(new CommonResponse<>(CommonErrorCode.SUCCESS));
     }
 }
+
+
 
 /*
 CommonErrorCode.SUCCESS는 어떻게 동작?
