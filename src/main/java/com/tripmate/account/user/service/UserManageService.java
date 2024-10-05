@@ -25,8 +25,8 @@ public class UserManageService {
                 .emailId(userJoinDto.getEmailId())
                 .emailDomain(userJoinDto.getEmailDomain())
                 .regUser(userJoinDto.getUserId())
-                .regDtm(LocalDateTime.now())
-                .pwdUpdDt(LocalDate.now())
+              //  .regDtm(LocalDateTime.now())
+               // .pwdUpdDt(LocalDate.now())
                 .build();
         UserEntity savedEntity = dao.save(userJoinEntity);
 
