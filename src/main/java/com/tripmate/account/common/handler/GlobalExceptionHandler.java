@@ -1,5 +1,6 @@
 package com.tripmate.account.common.handler;
 
+import com.tripmate.account.common.exception.InvalidRequestException;
 import com.tripmate.account.common.exception.ServerErrorException;
 import com.tripmate.account.common.errorcode.CommonErrorCode;
 import com.tripmate.account.common.reponse.CommonResponse;
@@ -10,10 +11,12 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+
 import java.util.List;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+    //Validation failure in DTO
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<CommonResponse<Void>> handleValidationExceptions(MethodArgumentNotValidException ex) {
 
@@ -27,17 +30,26 @@ public class GlobalExceptionHandler {
         CommonResponse<Void> response = new CommonResponse<>(commonErrorCode);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
-
-    @ExceptionHandler(ServerErrorException.class)
-    public ResponseEntity<CommonResponse<Void>> handleInvalidErrorException(ServerErrorException ex) {
+    //Incorrect request from user
+    @ExceptionHandler(InvalidRequestException.class)
+    public ResponseEntity<CommonResponse<Void>> handleInvalidRequestException(InvalidRequestException ex) {
         CommonErrorCode commonErrorCode = ex.getCommonErrorCode();
         CommonResponse<Void> response = new CommonResponse<>(commonErrorCode);
-        return new ResponseEntity<>(response,HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(ServerErrorException.class)
+    public ResponseEntity<CommonResponse<Void>> handleServerErrorException(ServerErrorException ex) {
+        CommonErrorCode commonErrorCode = ex.getCommonErrorCode();
+        CommonResponse<Void> response = new CommonResponse<>(commonErrorCode);
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+
 }
 
 
-/*  원래는 map으로 응답했었음
+/*  원래는 Handler에서 map으로 응답했었음
     근데 이렇게 하고 보니 클라이언트에 일관되게 응답해줘야 하지 않을까 생각해서 지워버렸다...
         for (FieldError error : fieldErrorList) {
             // error.getDefaultMessage()는 DTO에서 설정한 message 값 (에러 코드)

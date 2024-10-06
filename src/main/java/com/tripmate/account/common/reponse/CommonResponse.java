@@ -11,18 +11,21 @@ public class CommonResponse<T> {
 
     private String codeNo;        // 응답 상태 코드 (예: 0000)
     private String message;  // 응답 메시지 (예: "성공")
+    private String httpStatus;
     private T data;          // 응답에 포함된 데이터, 제네릭 타입 (T)
 
     //이건안씀 응답을 안내려주는경우는 없음 public CommonResponse(){}
-    public CommonResponse(CommonErrorCode commonErrorCode, T data) {
+    public CommonResponse(CommonErrorCode commonErrorCode,String httpStatus, T data) {
         this.codeNo = commonErrorCode.getCode();
         this.message = commonErrorCode.getMessage();
+        this.httpStatus=commonErrorCode.getHttpStatus();
         this.data = data;
     }
 
     public CommonResponse(CommonErrorCode commonErrorCode) {
         this.codeNo = commonErrorCode.getCode();
         this.message = commonErrorCode.getMessage();
+        this.httpStatus=commonErrorCode.getHttpStatus();
     }
 
     public String getCode(){
@@ -31,6 +34,10 @@ public class CommonResponse<T> {
 
     public String getMessage(){
         return message;
+    }
+
+    public String getHttpStatus(){
+        return httpStatus;
     }
 
     public T getData(){
