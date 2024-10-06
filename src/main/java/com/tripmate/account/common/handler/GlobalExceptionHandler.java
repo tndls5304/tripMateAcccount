@@ -1,6 +1,6 @@
 package com.tripmate.account.common.handler;
 
-import com.tripmate.account.common.exception.InvalidErrorException;
+import com.tripmate.account.common.exception.ServerErrorException;
 import com.tripmate.account.common.errorcode.CommonErrorCode;
 import com.tripmate.account.common.reponse.CommonResponse;
 import org.springframework.http.HttpStatus;
@@ -10,7 +10,6 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-
 import java.util.List;
 
 @ControllerAdvice
@@ -19,7 +18,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity<CommonResponse<Void>> handleValidationExceptions(MethodArgumentNotValidException ex) {
 
         BindingResult bindingResult = ex.getBindingResult();
-
         List<FieldError> fieldErrorList = bindingResult.getFieldErrors();
         FieldError firstError = fieldErrorList.get(0);
 
@@ -30,19 +28,17 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(InvalidErrorException.class)
-    public ResponseEntity<CommonResponse<Void>> handleInvalidErrorException(InvalidErrorException ex) {
-        CommonErrorCode commonErrorCode = ex.getCommonErrorCode();//NO_MATCHING_ERROR_CODE
-        // CommonResponse 객체 생성
+    @ExceptionHandler(ServerErrorException.class)
+    public ResponseEntity<CommonResponse<Void>> handleInvalidErrorException(ServerErrorException ex) {
+        CommonErrorCode commonErrorCode = ex.getCommonErrorCode();
         CommonResponse<Void> response = new CommonResponse<>(commonErrorCode);
-        // BAD_REQUEST(400) 응답 반환
-        return ResponseEntity.badRequest().body(response);
+        return new ResponseEntity<>(response,HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
 }
 
 
 /*  원래는 map으로 응답했었음
+    근데 이렇게 하고 보니 클라이언트에 일관되게 응답해줘야 하지 않을까 생각해서 지워버렸다...
         for (FieldError error : fieldErrorList) {
             // error.getDefaultMessage()는 DTO에서 설정한 message 값 (에러 코드)
             String errorCode = error.getDefaultMessage();
@@ -58,46 +54,10 @@ public class GlobalExceptionHandler {
  */
 
 
-/*
- ResponseEntity<Map<String, String>>를 사용해도 @ControllerAdvice라서
- Spring이 자동으로 Map 객체를 JSON 형식으로 변환하여 클라이언트에게 응답을 보낸다
-
-
-
-BindingResult는 검증된 객체의 결과를 포함하고 있으며, 유효성 검사에서 발생한 에러 정보와 관련된 다양한 메서드를 제공
-getFieldErrors() 메서드는 BindingResult에서 유효성 검사가 실패한 모든 필드의 에러를 포함하는 List<FieldError>를 반환
-FieldError 클래스는 특정 필드에 대한 유효성 검사 오류를 나타내는 객체라서
-        필드 이름: 유효성 검사가 실패한 필드의 이름.
-        에러 코드: 어떤 이유로 유효성 검사가 실패했는지를 나타내는 코드.
-        메시지: 해당 필드의 오류에 대한 설명.
-
-
-*/
-
 
 
 /*
-1. BindingResult:검증 과정에서 발생한 오류 정보를 담고 있음
-BindingResult는 스프링 MVC에서 사용되는 인터페이스로, 주로 데이터 바인딩과 유효성 검사 결과를 포함합니다.
-이는 컨트롤러 메서드에서 폼 데이터를 처리할 때 사용되며, 다음과 같은 정보들을 담고 있습니다:
-
-바인딩 오류: 클라이언트에서 전달된 데이터와 DTO 객체 간의 불일치로 인해 발생한 오류
-유효성 검사 결과: @Valid 또는 @Validated 어노테이션에 의해 발생한 유효성 검사 오류
-
-2. getBindingResult()
-getBindingResult() 메서드는 MethodArgumentNotValidException 객체의 메서드로,
-예외가 발생한 후 해당 요청의 바인딩 결과를 반환합니다.
-즉, 이 메서드는 유효성 검사 과정에서 발생한 모든 오류 정보를 포함하는 BindingResult 객체를 제공합니다.
-
-3. getFieldErrors()
-getFieldErrors()는 BindingResult 인터페이스의 메서드입니다.
-이 메서드는 바인딩 과정에서 발생한 필드 수준의 오류 리스트를 반환합니다.
-각 필드 오류는 FieldError 객체로 표현되며, 일반적으로 다음과 같은 정보를 포함합니다:
-bindingResult.getFieldErrors();: 오류가 발생한 필드들의 목록을 가져옵니다. 이 목록에는 어떤 필드에서 오류가 발생했는지에 대한 정보가 담겨 있음
-필드 이름: 오류가 발생한 DTO의 필드 이름
-오류 코드: 오류를 구분하기 위한 코드
-기본 메시지: DTO에서 설정한 메시지 값
-
+------------MethodArgumentNotValidException 과정 공부
 
 1. 사용자가 잘못된 데이터로 가입 요청:
     예시로
@@ -116,46 +76,42 @@ bindingResult.getFieldErrors();: 오류가 발생한 필드들의 목록을 가�
                                              Default Message: "1007"
 
 2.유효성 검사 실패하면 MethodArgumentNotValidException 발생:
-    이 경우 스프링 MVC는 유효성 검사 실패로 인해
-    MethodArgumentNotValidException을 발생시킵니다.
-3.검증에 실패한 필드에 대해 각각 FieldError객체가 생성되고
-  오류 목록은 BindingResult 객체 내에 FieldErrors 라는 리스트 변수가 있고
-   이 리스트 변수는 이런식으로 데이터가 저장이 됩니다:
+스프링 MVC는 유효성 검사가 실패하면 MethodArgumentNotValidException을 발생시킨다.
+
+3.유효성 검사가 실패하면, 각 필드에 대해 FieldError 객체가 생성된다.
+FieldError error = new FieldError("user", "userId", "1001");
+  이 FieldError 객체들은 BindingResult 클래스의 FieldErrors 리스트에 저장된다.
 
 [
     FieldError(field="userId", defaultMessage="1001"),
     FieldError(field="userPwd", defaultMessage="1005"),
     FieldError(field="nickname", defaultMessage="1007")
 ]
-    위 데이터를 리스트처럼 생긴 객체다. 배
+
+FieldError 객체는 오류 정보를 담고 있으며, 여러 개의 FieldError는 BindingResult에 담겨져 있다.
     BindingResult.add(new FieldError("userId", "1001"));
     BindingResult.add(new FieldError("userPwd", "1005"));
     BindingResult.add(new FieldError("nickname", "1007"));
 
+ List<FieldError> fieldErrors = bindingResult.getFieldErrors(); // 오류 리스트 가져오기
+     for (FieldError fieldError : fieldErrors) {
+        String field = fieldError.getField(); // 필드 이름 가져오기
+        String errorCode = fieldError.getDefaultMessage(); // 오류 메시지 코드 가져오기
+      }
+
 4.그러면 에러가 발생했으니 @ControllerAdvice가 에러를 잡아채서 가져옴
-5. @ControllerAdvice에서 ex.getBindingResult() 호출하면
+
+5.BindingResult 접근:
+    @ControllerAdvice에서 ex.getBindingResult() 호출하면
     BindingResult 객체가 반환되며,
-    이 객체는 내부적으로 다음과 같은 FieldError 객체들을 포함합니다
+    이 객체는 내부적으로 다음과 같은 FieldError 객체들을 포함한다.
 [
     FieldError(field="userId", defaultMessage="1001"),
     FieldError(field="userPwd", defaultMessage="1005"),
     FieldError(field="nickname", defaultMessage="1007")
 ]
 
-6.        for (FieldError error : ex.getBindingResult().getFieldErrors()) {}~
-    FieldError(field="userId", defaultMessage="1001") 이 데이터 각각 FieldError 를  error 변수에 담음
 
-
-
-
-
-    class BindingResult {
-    List<FieldError> fieldErrors = new ArrayList<>();
-
-    public void add(FieldError error) {
-        fieldErrors.add(error);
-    }
-}
  */
 
 

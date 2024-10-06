@@ -6,8 +6,10 @@ import com.tripmate.account.user.dto.UserJoinDto;
 import com.tripmate.account.user.service.UserManageService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,9 +22,11 @@ public class UserManageController {
         return ResponseEntity.ok(new CommonResponse<>(CommonErrorCode.SUCCESS));
     }
 
-    @GetMapping("api/user/join/duplicateTest")
+    @GetMapping("api/user/join/duplicate")
     public ResponseEntity<CommonResponse<Void>> userDuplicateTest(@Valid @RequestParam String userId) {
-        service.userDuplicateTest(userId);
+       if(service.userDuplicateTest(userId)){
+           return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CommonResponse<>(CommonErrorCode.NO_MATCHING_ERROR_CODE));
+       }
         //중복안되면 성공메세지
         return ResponseEntity.ok(new CommonResponse<>(CommonErrorCode.SUCCESS));
     }
