@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -30,6 +30,11 @@ public class UserManageController {
         //중복안되면 성공메세지
         return ResponseEntity.ok(new CommonResponse<>(CommonErrorCode.SUCCESS));
     }
+
+//    @PostMapping("api/user/join/agree")
+//    public ResponseEntity<CommonResponse<Void>> registerAgree(){
+//      return   service.registerAgree();
+//    }
 }
 
 
