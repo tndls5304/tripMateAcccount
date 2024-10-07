@@ -2,14 +2,14 @@ package com.tripmate.account.user.controller;
 
 import com.tripmate.account.common.errorcode.CommonErrorCode;
 import com.tripmate.account.common.reponse.CommonResponse;
-import com.tripmate.account.swagger.ApiErrorCodeExample;
+import com.tripmate.account.swagger.SwaggerApiNotFoundError;
+import com.tripmate.account.swagger.SwaggerApiSuccess;
 import com.tripmate.account.user.dto.UserJoinRequestDto;
 import com.tripmate.account.user.service.UserManageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,15 +20,16 @@ public class UserManageController {
     private final UserManageService service;
 
     @GetMapping("api/user/join/duplicate")
-    @ApiErrorCodeExample(CommonErrorCode.class)// CommonErrorCode를 사용하여 애너테이션 적용
-    @Operation(summary = "투숙객 id 중복 검사", description = "userId를 이용해 투숙객의 id 중복 검사")
+   @SwaggerApiSuccess(summary = "New1투숙객 id 중복 검사")// CommonErrorCode를 사용하여 애너테이션 적용
+  //  @Operation(summary = "투숙객 id 중복 검사", description = "userId를 이용해 투숙객의 id 중복 검사")
     public ResponseEntity<CommonResponse<Void>> checkUserIdDuplicate(@Valid @RequestParam String userId) {
         return service.checkUserIdDuplicate(userId);
     }
 
     @PostMapping("api/user/join")
-    @ApiErrorCodeExample(CommonErrorCode.class)
-    @Operation(summary = "투숙객 회원가입", description = "투숙객 회원가입 요청 API")
+    @SwaggerApiSuccess(summary = "New2투숙객 회원가입")
+    @SwaggerApiNotFoundError
+  //  @Operation(summary = "투숙객 회원가입", description = "투숙객 회원가입 요청 API")
 //    @ApiResponses(value = {
 //            @ApiResponse(responseCode = "200", description = "성공", content = @Content(mediaType = "application/json")),
 //            @ApiResponse(responseCode = "400", description = "잘못된 요청 : 유효성 검사 실패", content = @Content(mediaType = "application/json")),
