@@ -6,12 +6,8 @@ import com.tripmate.account.swagger.ApiErrorCodeExample;
 import com.tripmate.account.user.dto.UserJoinRequestDto;
 import com.tripmate.account.user.service.UserManageService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jdk.jfr.ContentType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,12 +22,8 @@ public class UserManageController {
     @GetMapping("api/user/join/duplicate")
     @ApiErrorCodeExample(CommonErrorCode.class)// CommonErrorCode를 사용하여 애너테이션 적용
     @Operation(summary = "투숙객 id 중복 검사", description = "userId를 이용해 투숙객의 id 중복 검사")
-    public ResponseEntity<CommonResponse<Void>> userDuplicateTest(@Valid @RequestParam String userId) {
-        if (service.userDuplicateTest(userId)) {
-            return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body(new CommonResponse<>(CommonErrorCode.USER_ALREADY_EXISTS));
-        }
-        return ResponseEntity.ok(new CommonResponse<>(CommonErrorCode.SUCCESS));
+    public ResponseEntity<CommonResponse<Void>> checkUserIdDuplicate(@Valid @RequestParam String userId) {
+        return service.checkUserIdDuplicate(userId);
     }
 
     @PostMapping("api/user/join")
