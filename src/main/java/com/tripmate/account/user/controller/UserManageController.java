@@ -2,34 +2,61 @@ package com.tripmate.account.user.controller;
 
 import com.tripmate.account.common.errorcode.CommonErrorCode;
 import com.tripmate.account.common.reponse.CommonResponse;
-import com.tripmate.account.user.dto.UserJoinDto;
+import com.tripmate.account.user.dto.UserJoinRequestDto;
 import com.tripmate.account.user.service.UserManageService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jdk.jfr.ContentType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "투숙객 계정 관련 ", description = "투숙객 계정관련 API")
 public class UserManageController {
     private final UserManageService service;
 
-    @PostMapping("api/user/join")
-    public ResponseEntity<CommonResponse<Void>> userJoin(@Valid @RequestBody UserJoinDto userJoinDto) {
-        service.userJoin(userJoinDto);
+    @GetMapping("api/user/join/duplicate")
+    @Operation(summary = "투숙객 id 중복 검사", description = "userId를 이용해 투숙객의 id 중복 검사")
+    public ResponseEntity<CommonResponse<Void>> userDuplicateTest(@Valid @RequestParam String userId) {
+        if (service.userDuplicateTest(userId)) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(new CommonResponse<>(CommonErrorCode.USER_ALREADY_EXISTS));
+        }
         return ResponseEntity.ok(new CommonResponse<>(CommonErrorCode.SUCCESS));
     }
 
-    @GetMapping("api/user/join/duplicate")
-    public ResponseEntity<CommonResponse<Void>> userDuplicateTest(@Valid @RequestParam String userId) {
-       if(service.userDuplicateTest(userId)){
-           return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CommonResponse<>(CommonErrorCode.NO_MATCHING_ERROR_CODE));
-       }
-        //중복안되면 성공메세지
+    @PostMapping("api/user/join")
+    @Operation(summary = "투숙객 회원가입", description = "투숙객 회원가입 요청 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "회원가입 성공", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청 : 유효성 검사 실패", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "409", description = "이미 존재하는 id로 id 중복검사 실패", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "500", description = "서버오류",content = @Content(mediaType = "application/json"))
+    })
+    public ResponseEntity<CommonResponse<Void>> userJoin(@Valid @RequestBody UserJoinRequestDto userJoinRequestDto) {
+        service.userJoin(userJoinRequestDto);
         return ResponseEntity.ok(new CommonResponse<>(CommonErrorCode.SUCCESS));
     }
+
+    /*
+    HttpStatus 공부
+        id 중복 테스트에서 이미 존재하는 id일때 HttpStatus.BAD_REQUEST 인줄 알았는데 아니다.
+        어떤 HttpStatus인지 찾아봤다. 답은 409 Conflick!
+        분명한 차이가 있다. 기억하기!
+
+            **HttpStatus.CONFLICT (409)
+            요청은 유효하고 잘 작성되었지만, 요청한 데이터가 서버의 리소스와 충돌하여 요청을 처리할 수 없는 상태
+            **HttpStatus.BAD_REQUEST (400)
+            요청의 데이터가 잘못되었기에 요청을 고쳐야 함. ex) 필수항목누락 혹은 잘못된 형식으로 입력
+
+     */
 
 //    @PostMapping("api/user/join/agree")
 //    public ResponseEntity<CommonResponse<Void>> registerAgree(){

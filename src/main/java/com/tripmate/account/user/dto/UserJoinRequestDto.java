@@ -1,21 +1,21 @@
 package com.tripmate.account.user.dto;
 
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDateTime;
-
+@Schema(description = "일반고객 회원가입 요청DTO")
 @ToString
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserJoinDto {
+public class UserJoinRequestDto {
 
     @NotBlank(message = "1001")
     @Pattern(regexp = "^[a-zA-Z0-9._%+-]+$", message = "1002")           // "영문자, 숫자, '.', '_', '%', '+', '-'만 허용
