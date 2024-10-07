@@ -33,7 +33,7 @@ public enum CommonErrorCode {
     EMAIL_DOMAIN_TOO_LONG("1014", "이메일 도메인은 최대 30자까지 가능합니다.",HttpStatus.BAD_REQUEST),
 
     //1100~1199:회원가입 관련 서비스단에서 문제
-    USER_ALREADY_EXISTS("1101", "이미 존재하는 아이디입니다.",HttpStatus.BAD_REQUEST),
+    USER_ALREADY_EXISTS("1101", "이미 존재하는 아이디입니다.다른 id로 재 요청해주세요",HttpStatus.BAD_REQUEST),
 
     //2000번대:db연결 문제
     DATABASE_CONNENCTION_ERROR("2000", "데이터베이스 연결 오류",HttpStatus.INTERNAL_SERVER_ERROR),
