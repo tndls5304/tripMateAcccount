@@ -40,6 +40,14 @@ public class SwaggerConfig {
         ApiResponse successResponse = new ApiResponse().description("성공");
         defaultResponses.put("200", successResponse);
 
+        // 400 응답 추가
+        ApiResponse badRequestResponse = new ApiResponse().description("잘못된 요청");
+        defaultResponses.put("400", badRequestResponse);
+
+        // 404 응답 추가
+        ApiResponse notFoundResponse = new ApiResponse().description("찾을 수 없음");
+        defaultResponses.put("404", notFoundResponse);
+
         // 500 응답 추가
         ApiResponse serverErrorResponse = new ApiResponse().description("서버 에러");
         defaultResponses.put("500", serverErrorResponse);
