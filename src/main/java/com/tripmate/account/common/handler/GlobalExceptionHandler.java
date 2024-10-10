@@ -19,7 +19,7 @@ public class GlobalExceptionHandler {
     //Validation failure in DTO
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<CommonResponse<Void>> handleValidationExceptions(MethodArgumentNotValidException ex) {
-
+    
         BindingResult bindingResult = ex.getBindingResult();
         List<FieldError> fieldErrorList = bindingResult.getFieldErrors();
         FieldError firstError = fieldErrorList.get(0);
