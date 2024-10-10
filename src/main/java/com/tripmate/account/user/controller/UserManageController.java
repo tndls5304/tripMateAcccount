@@ -1,18 +1,23 @@
 package com.tripmate.account.user.controller;
 
-import com.tripmate.account.common.errorcode.CommonErrorCode;
 import com.tripmate.account.common.reponse.CommonResponse;
 import com.tripmate.account.swagger.SwaggerApiNotFoundError;
 import com.tripmate.account.swagger.SwaggerApiSuccess;
 import com.tripmate.account.user.dto.UserJoinRequestDto;
 import com.tripmate.account.user.service.UserManageService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import static com.tripmate.account.common.errorcode.CommonErrorCode.SUCCESS;
+
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "투숙객 계정 관련 ", description = "투숙객 계정관련 API")
@@ -20,25 +25,26 @@ public class UserManageController {
     private final UserManageService service;
 
     @GetMapping("api/user/join/duplicate")
-   @SwaggerApiSuccess(summary = "New1투숙객 id 중복 검사")// CommonErrorCode를 사용하여 애너테이션 적용
-  //  @Operation(summary = "투숙객 id 중복 검사", description = "userId를 이용해 투숙객의 id 중복 검사")
-    public ResponseEntity<CommonResponse<Void>> checkUserIdDuplicate(@Valid @RequestParam String userId) {
+    @SwaggerApiSuccess(summary = "New1투숙객 id 중복 검사")// CommonErrorCode를 사용하여 애너테이션 적용
+    @Operation(summary = "투숙객 id 중복 검사", description = "userId를 이용해 투숙객의 id 중복 검사")
+    public CommonResponse<Void> checkUserIdDuplicate(@Valid @RequestParam String userId) {
+        log.info("");
         return service.checkUserIdDuplicate(userId);
     }
 
     @PostMapping("api/user/join")
     @SwaggerApiSuccess(summary = "New2투숙객 회원가입")
     @SwaggerApiNotFoundError
-  //  @Operation(summary = "투숙객 회원가입", description = "투숙객 회원가입 요청 API")
-//    @ApiResponses(value = {
-//            @ApiResponse(responseCode = "200", description = "성공", content = @Content(mediaType = "application/json")),
-//            @ApiResponse(responseCode = "400", description = "잘못된 요청 : 유효성 검사 실패", content = @Content(mediaType = "application/json")),
-//            @ApiResponse(responseCode = "409", description = "이미 존재하는 id로 id 중복검사 실패", content = @Content(mediaType = "application/json")),
-//            @ApiResponse(responseCode = "500", description = "서버오류",content = @Content(mediaType = "application/json"))
-//    })
-    public ResponseEntity<CommonResponse<Void>> userJoin(@Valid @RequestBody UserJoinRequestDto userJoinRequestDto) {
+    @Operation(summary = "투숙객 회원가입", description = "투숙객 회원가입 요청 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "성공", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청 : 유효성 검사 실패", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "409", description = "이미 존재하는 id로 id 중복검사 실패", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "500", description = "서버오류", content = @Content(mediaType = "application/json"))
+    })
+    public CommonResponse<Void> userJoin(@Valid @RequestBody UserJoinRequestDto userJoinRequestDto) {
         service.userJoin(userJoinRequestDto);
-        return ResponseEntity.ok(new CommonResponse<>(CommonErrorCode.SUCCESS));
+        return new CommonResponse<Void>(SUCCESS);
     }
 
     /*

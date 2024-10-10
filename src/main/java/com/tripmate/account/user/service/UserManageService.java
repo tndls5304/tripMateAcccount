@@ -12,16 +12,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import static com.tripmate.account.common.errorcode.CommonErrorCode.SUCCESS;
+import static com.tripmate.account.common.errorcode.CommonErrorCode.USER_ALREADY_EXISTS;
+
 @Service
 @RequiredArgsConstructor
 public class UserManageService {
     private final UserManageRepository repository;
 
-    public ResponseEntity<CommonResponse<Void>> checkUserIdDuplicate(String userId) {
+    public CommonResponse<Void> checkUserIdDuplicate(String userId) {
         if (repository.existsById(userId)) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(new CommonResponse<>(CommonErrorCode.USER_ALREADY_EXISTS));
+            return new CommonResponse<Void>(USER_ALREADY_EXISTS);
         }
-         return ResponseEntity.ok(new CommonResponse<>(CommonErrorCode.SUCCESS));
+        return new CommonResponse<Void>(SUCCESS);
     }
 
     public void userJoin(UserJoinRequestDto userJoinRequestDto) {
@@ -31,7 +34,7 @@ public class UserManageService {
         save()가 호출되기 전에, 입력된 ID가 이미 존재하는지 확인해야 함
          */
         if (repository.existsById(userJoinRequestDto.getUserId())) {
-            throw new InvalidRequestException(CommonErrorCode.USER_ALREADY_EXISTS);
+            throw new InvalidRequestException(USER_ALREADY_EXISTS);
         }
 
         UserEntity userJoinEntity = UserEntity.builder()
