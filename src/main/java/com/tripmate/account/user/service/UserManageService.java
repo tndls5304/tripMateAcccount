@@ -8,10 +8,7 @@ import com.tripmate.account.user.repository.UserManageRepository;
 import com.tripmate.account.user.dto.UserJoinRequestDto;
 import com.tripmate.account.common.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 import static com.tripmate.account.common.errorcode.CommonErrorCode.SUCCESS;
 import static com.tripmate.account.common.errorcode.CommonErrorCode.USER_ALREADY_EXISTS;
 

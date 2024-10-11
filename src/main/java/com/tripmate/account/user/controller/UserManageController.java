@@ -1,8 +1,6 @@
 package com.tripmate.account.user.controller;
 
 import com.tripmate.account.common.reponse.CommonResponse;
-import com.tripmate.account.swagger.SwaggerApiNotFoundError;
-import com.tripmate.account.swagger.SwaggerApiSuccess;
 import com.tripmate.account.user.dto.UserJoinRequestDto;
 import com.tripmate.account.user.service.UserManageService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,7 +23,7 @@ public class UserManageController {
     private final UserManageService service;
 
     @GetMapping("api/user/join/duplicate")
-    @SwaggerApiSuccess(summary = "New1투숙객 id 중복 검사")// CommonErrorCode를 사용하여 애너테이션 적용
+    // CommonErrorCode를 사용하여 애너테이션 적용
     @Operation(summary = "투숙객 id 중복 검사", description = "userId를 이용해 투숙객의 id 중복 검사")
     public CommonResponse<Void> checkUserIdDuplicate(@Valid @RequestParam String userId) {
         log.info("");
@@ -33,8 +31,6 @@ public class UserManageController {
     }
 
     @PostMapping("api/user/join")
-    @SwaggerApiSuccess(summary = "New2투숙객 회원가입")
-    @SwaggerApiNotFoundError
     @Operation(summary = "투숙객 회원가입", description = "투숙객 회원가입 요청 API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공", content = @Content(mediaType = "application/json")),
