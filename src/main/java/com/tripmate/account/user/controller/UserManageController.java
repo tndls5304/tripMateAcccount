@@ -26,7 +26,7 @@ public class UserManageController {
     // CommonErrorCode를 사용하여 애너테이션 적용
     @Operation(summary = "투숙객 id 중복 검사", description = "userId를 이용해 투숙객의 id 중복 검사")
     public CommonResponse<Void> checkUserIdDuplicate(@Valid @RequestParam String userId) {
-        log.info("");
+
         return service.checkUserIdDuplicate(userId);
     }
 
@@ -40,6 +40,7 @@ public class UserManageController {
     })
     public CommonResponse<Void> userJoin(@Valid @RequestBody UserJoinRequestDto userJoinRequestDto) {
         service.userJoin(userJoinRequestDto);
+        log.info("회원가입얍");
         return new CommonResponse<Void>(SUCCESS);
     }
 
