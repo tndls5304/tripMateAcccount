@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @EntityListeners(AuditingEntityListener.class)  // JPA Auditing  기능 활성화
 public class UserEntity {
+    
     @Id
     @Column(name = "USER_ID", nullable = false, length = 50)
     String userId;
