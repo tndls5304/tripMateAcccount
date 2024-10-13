@@ -1,0 +1,28 @@
+[startup] [2024-10-12 18:18:19.746] [background-preinit] [INFO] [o.h.v.i.u.Version] - HV000001: Hibernate Validator 8.0.1.Final 
+[startup] [2024-10-12 18:18:19.807] [main] [INFO] [c.t.a.AccountApplication] - Starting AccountApplication using Java 17 with PID 27236 (D:\dev\tripApp\tripMateAcccount\build\classes\java\main started by leesuin in D:\dev\tripApp\tripMateAcccount) 
+[startup] [2024-10-12 18:18:19.809] [main] [INFO] [c.t.a.AccountApplication] - No active profile set, falling back to 1 default profile: "default" 
+[startup] [2024-10-12 18:18:20.642] [main] [INFO] [o.s.d.r.c.RepositoryConfigurationDelegate] - Bootstrapping Spring Data JPA repositories in DEFAULT mode. 
+[startup] [2024-10-12 18:18:20.705] [main] [INFO] [o.s.d.r.c.RepositoryConfigurationDelegate] - Finished Spring Data repository scanning in 55 ms. Found 1 JPA repository interface. 
+[startup] [2024-10-12 18:18:21.408] [main] [INFO] [o.s.b.w.e.t.TomcatWebServer] - Tomcat initialized with port 8080 (http) 
+[startup] [2024-10-12 18:18:21.417] [main] [INFO] [o.a.c.h.Http11NioProtocol] - Initializing ProtocolHandler ["http-nio-8080"] 
+[startup] [2024-10-12 18:18:21.421] [main] [INFO] [o.a.c.c.StandardService] - Starting service [Tomcat] 
+[startup] [2024-10-12 18:18:21.422] [main] [INFO] [o.a.c.c.StandardEngine] - Starting Servlet engine: [Apache Tomcat/10.1.30] 
+[startup] [2024-10-12 18:18:21.528] [main] [INFO] [o.a.c.c.C.[.[.[/]] - Initializing Spring embedded WebApplicationContext 
+[startup] [2024-10-12 18:18:21.529] [main] [INFO] [o.s.b.w.s.c.ServletWebServerApplicationContext] - Root WebApplicationContext: initialization completed in 1672 ms 
+[startup] [2024-10-12 18:18:21.687] [main] [INFO] [o.h.j.i.u.LogHelper] - HHH000204: Processing PersistenceUnitInfo [name: default] 
+[startup] [2024-10-12 18:18:21.749] [main] [INFO] [o.h.Version] - HHH000412: Hibernate ORM core version 6.5.3.Final 
+[startup] [2024-10-12 18:18:21.783] [main] [INFO] [o.h.c.i.RegionFactoryInitiator] - HHH000026: Second-level cache disabled 
+[startup] [2024-10-12 18:18:22.076] [main] [INFO] [o.s.o.j.p.SpringPersistenceUnitInfo] - No LoadTimeWeaver setup: ignoring JPA class transformer 
+[startup] [2024-10-12 18:18:22.104] [main] [INFO] [c.z.h.HikariDataSource] - HikariPool-1 - Starting... 
+[startup] [2024-10-12 18:18:22.224] [main] [INFO] [c.z.h.p.HikariPool] - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@7ac685ef 
+[startup] [2024-10-12 18:18:22.225] [main] [INFO] [c.z.h.HikariDataSource] - HikariPool-1 - Start completed. 
+[startup] [2024-10-12 18:18:23.016] [main] [INFO] [o.h.e.t.j.p.i.JtaPlatformInitiator] - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration) 
+[startup] [2024-10-12 18:18:23.050] [main] [INFO] [o.s.o.j.LocalContainerEntityManagerFactoryBean] - Initialized JPA EntityManagerFactory for persistence unit 'default' 
+[startup] [2024-10-12 18:18:23.793] [main] [INFO] [o.a.c.h.Http11NioProtocol] - Starting ProtocolHandler ["http-nio-8080"] 
+[startup] [2024-10-12 18:18:23.813] [main] [INFO] [o.s.b.w.e.t.TomcatWebServer] - Tomcat started on port 8080 (http) with context path '/' 
+[startup] [2024-10-12 18:18:23.825] [main] [INFO] [c.t.a.AccountApplication] - Started AccountApplication in 4.485 seconds (process running for 4.868) 
+[startup] [2024-10-12 18:18:33.081] [http-nio-8080-exec-1] [INFO] [o.a.c.c.C.[.[.[/]] - Initializing Spring DispatcherServlet 'dispatcherServlet' 
+[startup] [2024-10-12 18:18:33.081] [http-nio-8080-exec-1] [INFO] [o.s.w.s.DispatcherServlet] - Initializing Servlet 'dispatcherServlet' 
+[startup] [2024-10-12 18:18:33.082] [http-nio-8080-exec-1] [INFO] [o.s.w.s.DispatcherServlet] - Completed initialization in 1 ms 
+[a6c90954-230b-4958-adf6-b31644dbb984] [2024-10-12 18:18:33.624] [http-nio-8080-exec-1] [INFO] [c.t.a.u.c.UserManageController] - È¸¿ø°¡ÀÔ¾å 
+[a6c90954-230b-4958-adf6-b31644dbb984] [2024-10-12 18:18:33.624] [http-nio-8080-exec-1] [INFO] [c.t.a.u.c.UserManageController] - È¸¿ø°¡ÀÔ¾å 
