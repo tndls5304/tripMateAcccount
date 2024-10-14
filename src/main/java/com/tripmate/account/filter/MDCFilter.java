@@ -1,23 +1,33 @@
 package com.tripmate.account.filter;
+import com.tripmate.account.common.errorcode.CommonErrorCode;
+import com.tripmate.account.common.exception.ServerErrorException;
 import jakarta.servlet.*;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import java.io.IOException;
 import java.util.UUID;
 
+@Slf4j
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
+//@WebFilter(urlPatterns = "/*")
 public class MDCFilter implements Filter {
-
     @Override
-    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws ServletException, IOException {
+    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain){
         final UUID uuid = UUID.randomUUID();
-        MDC.put("request_id", uuid.toString());
-        System.out.print("****************test~~~~~~~");
-        chain.doFilter(req, res);
-        MDC.clear();
+        MDC.put("request_id", uuid.toString()); // 각 요청마다 UUID 생성 후 MDC에 저장
+        try{
+            System.out.print("****************test~~~~~~~");
+            chain.doFilter(req, res);  // 다음 필터로 요청을 전달
+        }catch (Exception e){
+            log.error("An error occurred in filter processing", e);  // 오류 로그
+            throw new ServerErrorException(CommonErrorCode.INTERNAL_SERVER_ERROR);
+        }
+        finally {
+            MDC.clear();// 요청이 끝나면 MDC에서 정보 삭제
+        }
     }
 }
 
