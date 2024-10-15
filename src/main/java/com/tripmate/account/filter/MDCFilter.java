@@ -12,7 +12,6 @@ import java.util.UUID;
 @Slf4j
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
-//@WebFilter(urlPatterns = "/*")
 public class MDCFilter implements Filter {
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain){
