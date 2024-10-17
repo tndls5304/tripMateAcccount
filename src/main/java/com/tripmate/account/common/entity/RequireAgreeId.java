@@ -1,18 +1,22 @@
 package com.tripmate.account.common.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
 import java.util.Objects;
 
 @Embeddable
-public class TermsAgreeId {
+public class RequireAgreeId {
+    @Column(name ="USER_TYPE")
     private char userType;
+    @Column(name = "USER_ID",length = 30)
     private String userId;
+    @Column(name = "TEMPLATE_SQ")
     private int templateSq;
 
-    public TermsAgreeId(){
+    public RequireAgreeId(){
     }
-    public TermsAgreeId(char userType,String userId,int templateSq){
+    public RequireAgreeId(char userType, String userId, int templateSq){
         this.userType=userType;
         this.userId=userId;
         this.templateSq=templateSq;
@@ -31,7 +35,7 @@ public class TermsAgreeId {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        TermsAgreeId that = (TermsAgreeId) o;
+        RequireAgreeId that = (RequireAgreeId) o;
         return userType == that.userType &&
                 templateSq == that.templateSq &&
                 Objects.equals(userId, that.userId);

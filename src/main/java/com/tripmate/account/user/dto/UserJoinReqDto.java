@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import java.util.List;
 
 @Schema(description = "일반고객 회원가입 요청DTO")
 @ToString
@@ -15,15 +16,22 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserJoinRequestDto {
+public class UserJoinReqDto {
+    //필수 약관 동의
+    @NotBlank(message = "1015")
+    List<RequireAgreeReqDto> requireAgreeList;
 
+    //(선택)마케팅 약관동의
+    List<MarketingAgreeReqDto> marketingAgreeList;
+
+    //user테이블
     @NotBlank(message = "1001")
     @Pattern(regexp = "^[a-zA-Z0-9._%+-]+$", message = "1002")           // "영문자, 숫자, '.', '_', '%', '+', '-'만 허용
     @Size(max = 30, message = "1003")
     String userId;
 
     @NotBlank(message = "1004")
-    @Pattern(regexp = "^[a-zA-Z0-9]*$" ,message = "1005")                //  "영문자 혹은 숫자만 입력 가능"
+    @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "1005")                //  "영문자 혹은 숫자만 입력 가능"
     String userPwd;
 
     @NotBlank(message = "1006")
@@ -32,15 +40,15 @@ public class UserJoinRequestDto {
     String nickname;
 
     @NotBlank(message = "1009")
-    @Pattern(regexp = "^\\d{11}$" ,message = "1010")                     // "숫자로만 구성된 11자리"
+    @Pattern(regexp = "^\\d{11}$", message = "1010")                     // "숫자로만 구성된 11자리"
     String phoneNo;
 
     @NotBlank(message = "1011")
-    @Size(max = 30,message = "1012")
+    @Size(max = 30, message = "1012")
     String emailId;
 
     @NotBlank(message = "1013")
-    @Size(max = 30,message = "1014")
+    @Size(max = 30, message = "1014")
     String emailDomain;
 
 }
