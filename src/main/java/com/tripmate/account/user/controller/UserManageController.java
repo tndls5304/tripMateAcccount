@@ -1,7 +1,7 @@
 package com.tripmate.account.user.controller;
 
 import com.tripmate.account.common.reponse.CommonResponse;
-import com.tripmate.account.user.dto.UserJoinRequestDto;
+import com.tripmate.account.user.dto.UserJoinReqDto;
 import com.tripmate.account.user.service.UserManageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -15,6 +15,12 @@ import org.springframework.web.bind.annotation.*;
 
 import static com.tripmate.account.common.errorcode.CommonErrorCode.SUCCESS;
 
+/**
+ * user( 투숙객) 계정 관련 처리
+ * @since 2024.10.02
+ * @author 이수인
+ */
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -24,21 +30,23 @@ public class UserManageController {
 
     @GetMapping("api/user/join/duplicate")
     // CommonErrorCode를 사용하여 애너테이션 적용
-    @Operation(summary = "투숙객 id 중복 검사", description = "userId를 이용해 투숙객의 id 중복 검사")
+    @Operation(summary = "투숙객 회원가입시 id 중복 검사", description = "userId를 이용해 투숙객의 id 중복 검사")
     public CommonResponse<Void> checkUserIdDuplicate(@Valid @RequestParam String userId) {
 
         return service.checkUserIdDuplicate(userId);
     }
 
+
+
     @PostMapping("api/user/join")
-    @Operation(summary = "투숙객 회원가입", description = "투숙객 회원가입 요청 API")
+    @Operation(summary = "투숙객 회원가입 등록 ", description = "투숙객 회원가입 요청 API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "400", description = "잘못된 요청 : 유효성 검사 실패", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "409", description = "이미 존재하는 id로 id 중복검사 실패", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "서버오류", content = @Content(mediaType = "application/json"))
     })
-    public CommonResponse<Void> userJoin(@Valid @RequestBody UserJoinRequestDto userJoinRequestDto) {
+    public CommonResponse<Void> userJoin(@Valid @RequestBody UserJoinReqDto userJoinRequestDto) {
         service.userJoin(userJoinRequestDto);
         log.info("회원가입얍");
         return new CommonResponse<Void>(SUCCESS);

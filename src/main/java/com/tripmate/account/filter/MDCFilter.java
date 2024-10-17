@@ -9,6 +9,12 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import java.util.UUID;
 
+/**
+ *첫번쨰 필터 : 각 요청에 고유한 request_id를 부여하고 해당 요청에 대한 정보를 로깅하는 필터
+ * @since 2024.10.13
+ * @author 이수인
+ */
+
 @Slf4j
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)

@@ -14,14 +14,14 @@ import java.time.LocalDateTime;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BaseEntity {
 
-    @Column(name="REG_USER",nullable = false,updatable = false)
+    @Column(name="REG_USER",nullable = false,updatable = false,length = 30)
     String regUser;
 
     @CreatedDate
     @Column(name = "REG_DTM",nullable = false,updatable = false)
     LocalDateTime regDtm;
 
-    @Column(name = "UPDT_USER")
+    @Column(name = "UPDT_USER",length = 30)
     String updtUser;
 
     @LastModifiedDate

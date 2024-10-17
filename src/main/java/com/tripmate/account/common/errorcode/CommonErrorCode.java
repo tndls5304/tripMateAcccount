@@ -31,7 +31,7 @@ public enum CommonErrorCode {
     EMAIL_ID_TOO_LONG("1012", "이메일 아이디는 최대 30자까지 가능합니다.",HttpStatus.BAD_REQUEST),
     EMAIL_DOMAIN_BLANK("1013", "이메일 도메인은 빈 값이 될 수 없습니다.",HttpStatus.BAD_REQUEST),
     EMAIL_DOMAIN_TOO_LONG("1014", "이메일 도메인은 최대 30자까지 가능합니다.",HttpStatus.BAD_REQUEST),
-
+    REQUIRE_AGREE_BLANK("1015","필수 약관 동의를 기입해주세요",HttpStatus.BAD_REQUEST),
     //1100~1199:회원가입 관련 서비스단에서 문제
     USER_ALREADY_EXISTS("1101", "이미 존재하는 아이디입니다.다른 id로 재 요청해주세요",HttpStatus.CONFLICT),
 

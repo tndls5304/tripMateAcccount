@@ -9,12 +9,12 @@ import java.time.LocalDate;
 
 
 /**
- *숙박객, 호스트의 필수 기본 약관동의 엔티티
+ *필수 약관동의 엔티티
  * @author 이수인
  * @since 2024.10.13
  */
 @Entity
-@Table(name="TERMS_AGREE_TH")
+@Table(name="REQUIRED_AGREE_TH")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,13 +22,13 @@ import java.time.LocalDate;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @EntityListeners(AuditingEntityListener.class)
 
-public class TermsAgreeEntity extends BaseEntity {
+public class RequireAgreeEntity extends BaseEntity {
 
 //    char userType;
 //    String userId;
 //    int templateSq;
     @EmbeddedId
-    TermsAgreeId id;
+    RequireAgreeId id;
     @Column(name = "AGREE_FL",nullable = false,columnDefinition = "CHAR(1) DEFAULT 'Y'")
     char agreeFl;
     @CreatedDate

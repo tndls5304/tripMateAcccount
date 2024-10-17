@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 public class UserEntity {
     
     @Id
-    @Column(name = "USER_ID", nullable = false, length = 50)
+    @Column(name = "USER_ID", length = 50)
     String userId;
 
     @Column(name = "USER_PWD", nullable = false)
