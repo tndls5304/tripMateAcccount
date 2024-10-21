@@ -3,6 +3,7 @@ package com.tripmate.account.common.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDate;
@@ -13,17 +14,18 @@ import java.time.LocalDate;
  * @author 이수인
  * @since 2024.10.13
  */
+
 @Entity
 @Table(name="REQUIRED_AGREE_TH")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @EntityListeners(AuditingEntityListener.class)
 
 public class RequireAgreeEntity extends BaseEntity {
-
+//복합키
 //    char userType;
 //    String userId;
 //    int templateSq;

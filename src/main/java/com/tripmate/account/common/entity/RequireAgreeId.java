@@ -2,30 +2,32 @@ package com.tripmate.account.common.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import lombok.Builder;
 
 import java.util.Objects;
-
+@Builder
 @Embeddable
 public class RequireAgreeId {
-    @Column(name ="USER_TYPE")
-    private char userType;
-    @Column(name = "USER_ID",length = 30)
-    private String userId;
+
+    @Column(name ="ACCOUNT_TYPE")
+    private char accountType;
+    @Column(name = "ACCOUNT_ID",length = 30)
+    private String accountId;
     @Column(name = "TEMPLATE_SQ")
     private int templateSq;
 
     public RequireAgreeId(){
     }
     public RequireAgreeId(char userType, String userId, int templateSq){
-        this.userType=userType;
-        this.userId=userId;
+        this.accountType=userType;
+        this.accountId=userId;
         this.templateSq=templateSq;
     }
     public char getUserType(){
-        return userType;
+        return accountType;
     }
     public String getUserId(){
-        return userId;
+        return accountId;
     }
     public int getTemplateSq(){
         return templateSq;
@@ -36,15 +38,15 @@ public class RequireAgreeId {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         RequireAgreeId that = (RequireAgreeId) o;
-        return userType == that.userType &&
+        return accountType == that.accountType &&
                 templateSq == that.templateSq &&
-                Objects.equals(userId, that.userId);
+                Objects.equals(accountId, that.accountId);
     }
 
     // hashCode() 메서드 재정의
     @Override
     public int hashCode() {
-        return Objects.hash(userType, userId, templateSq);
+        return Objects.hash(accountType, accountId, templateSq);
     }
 }
 
