@@ -3,6 +3,7 @@ package com.tripmate.account.common.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 
@@ -11,7 +12,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @EntityListeners(AuditingEntityListener.class)
 public class TemplateEntity extends BaseEntity {
@@ -29,7 +30,7 @@ public class TemplateEntity extends BaseEntity {
     @Column(name = "CONTENT",nullable = false,length = 300)
     String content;
     @Column(name="USE_FL",nullable = false,columnDefinition="CHAR(1) DEFAULT 'Y'")//@PrePersist가 아닌 columnDefinition으로 쓴 이유: JPA뿐만 아니라 데이터베이스에서 직접 쿼리를 실행하여 삽입할 때도 기본값이 적용
-    char useFl='Y';
+    char useFl;
 //    @Column(name="REG_USER",nullable = false)
 //    String regUser;
 //    @CreatedDate
