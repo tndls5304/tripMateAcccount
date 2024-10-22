@@ -1,9 +1,9 @@
 package com.tripmate.account.user.repository;
 
-import com.tripmate.account.common.entity.UserEntity;
+import com.tripmate.account.common.entity.BasicAgreeEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-@Repository
-public interface UserManageRepository extends JpaRepository<UserEntity, String> {
+
+public interface UserBasicAgreeRepository  extends JpaRepository<BasicAgreeEntity, String> {
 }

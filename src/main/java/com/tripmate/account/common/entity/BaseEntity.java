@@ -27,7 +27,7 @@ public class BaseEntity {
     @Column(name = "UPDT_USER",length = 30)
     String updtUser;
 
-    @LastModifiedDate // @LastModifiedDate:엔티티가 마지막으로 수정된 날짜와 시간을 자동으로 기록( 엔티티가 업데이트될 때, 현재 날짜와 시간으로 자동으로 설정) ,LocalDateTime과 함께 사용하는 것이 좋다
+    @LastModifiedDate // @LastModifiedDate:엔티티가 마지s막으로 수정된 날짜와 시간을 자동으로 기록( 엔티티가 업데이트될 때, 현재 날짜와 시간으로 자동으로 설정) ,LocalDateTime과 함께 사용하는 것이 좋다
     @Column(name="UPDT_DTM")
     LocalDateTime updtDtm;
 }

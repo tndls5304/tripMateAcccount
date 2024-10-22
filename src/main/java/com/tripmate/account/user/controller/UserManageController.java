@@ -11,13 +11,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import static com.tripmate.account.common.errorcode.CommonErrorCode.SUCCESS;
 
 /**
- * user(숙발회원) 계정 관련 처리
+ * user(숙박회원) 계정 관련 처리
  *
  * @author 이수인
  * @since 2024.10.02
@@ -48,6 +49,7 @@ public class UserManageController {
      * @return 회원가입 성공시 성공 응답코드와 메세지 전달, 실패시 예외 발생--> 에러코드,메세지 전달
      */
     @PostMapping("/api/user/join")
+    /*
     @Operation(summary = "투숙객 회원가입 등록 ", description = "투숙객 회원가입 요청 API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공", content = @Content(mediaType = "application/json")),
@@ -55,6 +57,7 @@ public class UserManageController {
             @ApiResponse(responseCode = "409", description = "이미 존재하는 id로 id 중복검사 실패", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "서버오류", content = @Content(mediaType = "application/json"))
     })
+     */
     public ResponseEntity<CommonResponse<Void>> userJoin(@Valid @RequestBody UserJoinReqDto userJoinReqDto) {
         System.out.println("dto❣️❣️❣"+userJoinReqDto);
         service.userJoin(userJoinReqDto);

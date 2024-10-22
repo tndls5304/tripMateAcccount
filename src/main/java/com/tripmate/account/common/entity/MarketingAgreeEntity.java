@@ -36,9 +36,9 @@ public class MarketingAgreeEntity extends BaseEntity {
     char agreeFl;
     @CreatedDate
     @Column(name = "AGREE_DTM")
-    LocalDateTime agreeDt;
+    LocalDateTime agreeDtm;
     @Column(name = "D_AGREE_DTM")
-    LocalDateTime dAgreeDt;
+    LocalDateTime dAgreeDtm;
     @Column(name = "TEMPLATE_SQ", nullable = false)
     int templateSq;
 

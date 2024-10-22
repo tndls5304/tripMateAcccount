@@ -6,17 +6,19 @@ import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import java.time.LocalDate;
 
 
 /**
- *필수 약관동의 엔티티
+ * 필수 약관동의 엔티티
+ *
  * @author 이수인
  * @since 2024.10.13
  */
 
 @Entity
-@Table(name="REQUIRED_AGREE_TH")
+@Table(name = "BASIC_AGREE_TH")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,17 +26,17 @@ import java.time.LocalDate;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @EntityListeners(AuditingEntityListener.class)
 
-public class RequireAgreeEntity extends BaseEntity {
-//복합키
+public class BasicAgreeEntity extends BaseEntity {
+    //복합키
 //    char userType;
 //    String userId;
 //    int templateSq;
     @EmbeddedId
-    RequireAgreeId id;
-    @Column(name = "AGREE_FL",nullable = false,columnDefinition = "CHAR(1) DEFAULT 'Y'")
+    BasicAgreeId id;
+    @Column(name = "AGREE_FL", nullable = false, columnDefinition = "CHAR(1) DEFAULT 'Y'")
     char agreeFl;
     @CreatedDate
-    @Column(name ="AGREE_DT",nullable = false)
+    @Column(name = "AGREE_DT", nullable = false)
     LocalDate agreeDt;
     //-----------------수정에 관한것도 상속받는중인데 어떡하지---------
 //    @Column(name = "REG_USER",nullable = false)

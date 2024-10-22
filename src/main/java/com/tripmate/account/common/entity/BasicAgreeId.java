@@ -7,7 +7,7 @@ import lombok.Builder;
 import java.util.Objects;
 @Builder
 @Embeddable
-public class RequireAgreeId {
+public class BasicAgreeId {
 
     @Column(name ="ACCOUNT_TYPE")
     private char accountType;
@@ -16,9 +16,9 @@ public class RequireAgreeId {
     @Column(name = "TEMPLATE_SQ")
     private int templateSq;
 
-    public RequireAgreeId(){
+    public BasicAgreeId(){
     }
-    public RequireAgreeId(char userType, String userId, int templateSq){
+    public BasicAgreeId(char userType, String userId, int templateSq){
         this.accountType=userType;
         this.accountId=userId;
         this.templateSq=templateSq;
@@ -32,12 +32,13 @@ public class RequireAgreeId {
     public int getTemplateSq(){
         return templateSq;
     }
+
     // equals() 메서드 재정의-----------------
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        RequireAgreeId that = (RequireAgreeId) o;
+        BasicAgreeId that = (BasicAgreeId) o;
         return accountType == that.accountType &&
                 templateSq == that.templateSq &&
                 Objects.equals(accountId, that.accountId);
