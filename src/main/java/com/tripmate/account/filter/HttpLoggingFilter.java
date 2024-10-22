@@ -33,13 +33,8 @@ public class HttpLoggingFilter implements Filter {
         wrappedRequest가 생성됨.
          */
 
-        request.getInputStream().read();
-
         ContentCachingRequestWrapper wrappedRequest = new ContentCachingRequestWrapper((HttpServletRequest) request);
         ContentCachingResponseWrapper wrappedResponse = new ContentCachingResponseWrapper((HttpServletResponse) response);
-
-        //서블릿리퀘스트안의 스트림이
-        ServletInputStream servletInputStream=request.getInputStream();
 
         //헤더 정보는 스트림 없이 간편하게 볼 수 있다
         Enumeration<String> headerNames = ((HttpServletRequest) request).getHeaderNames();
