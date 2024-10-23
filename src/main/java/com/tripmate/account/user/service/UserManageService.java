@@ -6,18 +6,24 @@ import com.tripmate.account.common.exception.InvalidRequestException;
 import com.tripmate.account.common.reponse.CommonResponse;
 import com.tripmate.account.user.dto.UserMarketingAgreeDto;
 import com.tripmate.account.user.dto.UserBasicAgreeDto;
+import com.tripmate.account.user.dto.UserUpdatePwdReqDto;
 import com.tripmate.account.user.repository.UserAccountInfoRepository;
 import com.tripmate.account.user.dto.UserJoinReqDto;
 import com.tripmate.account.user.repository.UserBasicAgreeRepository;
 import com.tripmate.account.user.repository.UserMarketingAgreeRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 import static com.tripmate.account.common.errorcode.CommonErrorCode.*;
 import static java.lang.Integer.parseInt;
@@ -33,6 +39,8 @@ public class UserManageService {
     private final UserBasicAgreeRepository basicAgreeRepository;
     private final UserMarketingAgreeRepository marketingAgreeRepository;
 
+    private final PasswordEncoder passwordEncoder;
+
     /**
      * 숙박회원의 아이디 중복 검사
      *
@@ -41,7 +49,7 @@ public class UserManageService {
      */
     public ResponseEntity<CommonResponse<Void>> checkUserIdDuplicate(String userId) {
         if (accountInfoRepository.existsById(userId)) {
-            throw new DataConflictException(USER_ALREADY_EXISTS_CONFLICT);
+            throw new DataConflictException(CONFLICT_ACCOUNT_ALREADY_EXISTS);
         }
         return new CommonResponse<Void>().toRespNoDataEntity(SUCCESS);
     }
@@ -57,26 +65,27 @@ public class UserManageService {
 
         // JPA의 save() 는 entity의 ID가 존재할경우 기존 entity로 간주하고 update를 수행하는 특성이 있기떄문에 save()가 호출되기 전에, 입력된 ID가 이미 존재하는지 확인해야 함
         if (accountInfoRepository.existsById(reqUserId)) {
-            throw new DataConflictException(USER_ALREADY_EXISTS_CONFLICT);
+            throw new DataConflictException(CONFLICT_ACCOUNT_ALREADY_EXISTS);
         }
 
         //개인정보 저장
         UserEntity userJoinEntity = UserEntity.builder()
                 .userId(reqUserId)
-                .userPwd(reqUserJoin.getUserPwd())
+                .userPwd(
+                        BCrypt.hashpw(reqUserJoin.getUserPwd(), BCrypt.gensalt())
+                )//BCrypt.hashpw 메서드는 주어진 비밀번호를 BCrypt 해시로 변환하고, BCrypt.gensalt()는 랜덤 솔트 값을 생성하여 비밀번호에 추가
                 .nickname(reqUserJoin.getNickname())
                 .phoneNo(reqUserJoin.getPhoneNo())
                 .emailId(reqUserJoin.getEmailId())
                 .emailDomain(reqUserJoin.getEmailDomain())
                 .regUser(reqUserId)
                 .build();
-        System.out.println("안녕" + userJoinEntity);
         accountInfoRepository.save(userJoinEntity);
 
         // 필수 약관 동의 리스트 저장하기
         List<UserBasicAgreeDto> reqRequireAgreeList = reqUserJoin.getBasicAgreeDtoList();
         if (reqRequireAgreeList == null || reqRequireAgreeList.isEmpty()) {
-            throw new InvalidRequestException(INVALID_REQUIRE_AGREE_BLANK);
+            throw new InvalidRequestException(INVALID_BASIC_AGREE_BLANK);
         }
         for (UserBasicAgreeDto reqRequireAgree : reqRequireAgreeList) {
             BasicAgreeEntity requireAgreeEntity = BasicAgreeEntity.builder()
@@ -90,7 +99,6 @@ public class UserManageService {
                     .regUser(reqUserId)
                     .agreeFl(reqRequireAgree.getAgreeFl().charAt(0))
                     .build();
-            System.out.println("과연?" + requireAgreeEntity);
             basicAgreeRepository.save(requireAgreeEntity);
         }
 
@@ -111,7 +119,6 @@ public class UserManageService {
                     .templateSq(parseInt((reqMarketingAgree.getTemplateSq())))
                     .regUser(reqUserId)
                     .build();
-            System.out.println("마케팅!!!!" + marketingAgreeEntity);
             marketingAgreeRepository.save(marketingAgreeEntity);
         }
     }
@@ -147,4 +154,43 @@ public class UserManageService {
         return dateTime + 'U' + accountIdPadded + serverName + sqFormatted;
     }
 
+    public void updatePwd(UserUpdatePwdReqDto reqUserUpdate) {
+        //해당 아이디에 해당하는 비밀번호와 입력한 현재 비밀번호가 일치하는지 확인하기
+        /*findById 메서드는 Optional<UserEntity> 객체를 반환
+        해당 userId가 accountInfoRepository에 존재한다면, Optional 객체 안에 UserEntity가 담겨서 반환돼.
+         만약 해당 userId가 데이터베이스에 없다면, 빈 Optional 객체가 반환돼. 즉, Optional.empty()가 반환
+         */
+        Optional<UserEntity> userOptional = accountInfoRepository.findById(reqUserUpdate.getUserId());
+
+        // 접속 id에 해당하는 계정이 존재하는지 확인하기 TODO id는 세션이나 jwt에 들고오는걸로 바꾸기
+        if (userOptional.isEmpty()) {
+            throw new InvalidRequestException(INVALID_USER_ID_MISMATCH);
+        }
+
+        // 사용자 정보 가져오기
+        UserEntity existingUser = userOptional.get();
+
+        //접속된 계정의 비밀번호와 클라이언트가 입력한 자신의 현재 비밀번호 일치여부 체크
+        if (passwordEncoder.matches(reqUserUpdate.getCurrentPwd(), existingUser.getUserPwd())) {
+            //새 비밀번호로 update
+            UserEntity updateUserEntity = UserEntity.builder()
+                    .userId(existingUser.getUserId())
+                    //encode newPwd
+                    .userPwd(passwordEncoder.encode(reqUserUpdate.getNewPwd()))
+                    .nickname(existingUser.getNickname())
+                    .phoneNo(existingUser.getPhoneNo())
+                    .emailId(existingUser.getEmailId())
+                    .emailDomain(existingUser.getEmailDomain())
+                    .regUser(existingUser.getRegUser())
+                    .regDtm(existingUser.getRegDtm())
+                    .updtUser(existingUser.getUpdtUser())
+                    .updtDtm(LocalDateTime.now())
+                    .lastLoginDt(existingUser.getLastLoginDt())
+                    .build();
+            accountInfoRepository.save(updateUserEntity);
+        } else {
+            //클라이언트가 자신의 비밀번호를 잘못입력 했을경우
+            throw new InvalidRequestException(INVALID_USER_PWD_MISMATCH);
+        }
+    }
 }

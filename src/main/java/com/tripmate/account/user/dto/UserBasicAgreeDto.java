@@ -8,7 +8,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 
-@Schema(description = "선택/필수 약관 동의 DTO")
+@Schema(description = "선택/필수 약관 동의 기록 요청 DTO")
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserBasicAgreeDto {
