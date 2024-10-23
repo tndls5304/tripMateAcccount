@@ -17,11 +17,11 @@ public enum CommonErrorCode {
     //0000번 : 성공
     SUCCESS("0000", "성공",HttpStatus.OK),
     // 1000~1099: 클라이언트 유효성 검사 관련 에러 코드-DTO에서함
-    USER_ID_BLANK("1001", "아이디는 빈 값이 될 수 없습니다.",HttpStatus.BAD_REQUEST),
-    USER_ID_INVALID("1002", "아이디는 대,소문자의 알파벳과 숫자, 언더스코어(_)가 허용됩니다 단,하나 이상의 영문자를 기입하셔야 합니다",HttpStatus.BAD_REQUEST),
-    USER_ID_TOO_LONG("1003", "아이디는 1~20자까지 가능합니다.",HttpStatus.BAD_REQUEST),
-    USER_PWD_BLANK("1004", "비밀번호는 빈 값이 될 수 없습니다.",HttpStatus.BAD_REQUEST),
-    USER_PWD_INVALID("1005", "비밀번호는 영어 대소문자와 숫자로만 구성되어야 합니다.",HttpStatus.BAD_REQUEST),
+    ID_BLANK("1001", "아이디는 빈 값이 될 수 없습니다.",HttpStatus.BAD_REQUEST),
+    ID_INVALID("1002", "아이디는 대,소문자의 알파벳과 숫자, 언더스코어(_)가 허용됩니다 단,하나 이상의 영문자를 기입하셔야 합니다",HttpStatus.BAD_REQUEST),
+    ID_TOO_LONG("1003", "아이디는 1~20자까지 가능합니다.",HttpStatus.BAD_REQUEST),
+    PWD_BLANK("1004", "비밀번호는 빈 값이 될 수 없습니다.",HttpStatus.BAD_REQUEST),
+    PWD_INVALID("1005", "비밀번호는 영어 대소문자와 숫자로만 구성되어야 합니다.",HttpStatus.BAD_REQUEST),
     NICKNAME_BLANK("1006", "닉네임은 빈 값이 될 수 없습니다.",HttpStatus.BAD_REQUEST),
     NICKNAME_ONLY_KOREAN("1007", "닉네임은 한글로만 작성해야 합니다.",HttpStatus.BAD_REQUEST),
     NICKNAME_TOO_LONG("1008", "닉네임은 최대 10자 (30바이트)까지 가능합니다.",HttpStatus.BAD_REQUEST),
@@ -32,21 +32,23 @@ public enum CommonErrorCode {
     EMAIL_DOMAIN_BLANK("1013", "이메일 도메인은 빈 값이 될 수 없습니다.",HttpStatus.BAD_REQUEST),
     EMAIL_DOMAIN_TOO_LONG("1014", "이메일 도메인은 최대 30자까지 가능합니다.",HttpStatus.BAD_REQUEST),
 
-    REQUIRE_AGREE_BLANK("1015","필수 약관자체가!!! 누락되었습니다",HttpStatus.BAD_REQUEST),
-    REQUIRE_AGREE_TEMPLATE_BLANK("1016","필수 약관 동의서가 누락되었습니다",HttpStatus.BAD_REQUEST),
-    REQUIRE_AGREE_FL_BLANK("1017","필수약관의 동의 여부가 누락되었습니다",HttpStatus.BAD_REQUEST),
-    REQUIRE_AGREE_Y_BLANK("1018","필수약관에는 모두 동의하셔야 합니다",HttpStatus.BAD_REQUEST),
+    BASIC_AGREE_BLANK("1015","필수 약관자체가!!! 누락되었습니다",HttpStatus.BAD_REQUEST),
+    BASIC_AGREE_TEMPLATE_BLANK("1016","필수 약관 동의서가 누락되었습니다",HttpStatus.BAD_REQUEST),
+    BASIC_AGREE_FL_BLANK("1017","필수약관의 동의 여부가 누락되었습니다",HttpStatus.BAD_REQUEST),
+    BASIC_AGREE_Y_BLANK("1018","필수약관에는 모두 동의하셔야 합니다",HttpStatus.BAD_REQUEST),
 
     MARKETING_AGREE_BLANK("1019","마케팅 약관자체가!!! 누락되었습니다",HttpStatus.BAD_REQUEST),
     MARKETING_AGREE_TEMPLATE_BLANK("1010","마케팅 동의서가 누락되었습니다 ",HttpStatus.BAD_REQUEST),
     MARKETING_AGREE_FL_BLANK("1011","마케팅동의 여부가 누락되었습니다",HttpStatus.BAD_REQUEST),
 
     //1100~1199: 클라이언트측 요청,입력이 서버의 현재 상태 또는 비즈니스 규칙과 충돌하는 경우-서비스단에서함
-    USER_ALREADY_EXISTS_CONFLICT("1101", "이미 존재하는 아이디입니다.다른 id로 재 요청해주세요",HttpStatus.CONFLICT),
+    CONFLICT_ACCOUNT_ALREADY_EXISTS("1101", "이미 존재하는 아이디입니다.다른 id로 재 요청해주세요",HttpStatus.CONFLICT),
 
-    //1200~:(유효성 검사 제외 하고) 사용자 요청, 입력이 잘못된 경우-서비스단에서함
-    INVALID_REQUIRE_AGREE_BLANK("1200","필수 약관 동의를 기입해주세요",HttpStatus.BAD_REQUEST),
+    //1200~:(유효성 검사 제외 하고) 사용자 요청, 입력이 잘못된 경우-서비스단에서함 InvalidRequestException
+    INVALID_BASIC_AGREE_BLANK("1200","필수 약관 동의를 기입해주세요",HttpStatus.BAD_REQUEST),
     INVALID_MARKETING_AGREE_BLANK("1201","마케팅 약관 동의",HttpStatus.BAD_REQUEST),
+    INVALID_USER_ID_MISMATCH("1202","아이디에 해당하는 계정은 존재하지 않습니다",HttpStatus.BAD_REQUEST),
+    INVALID_USER_PWD_MISMATCH("1203","비밀번호가 틀렸습니다",HttpStatus.BAD_REQUEST),
 
     //2000번대:db연결 문제
     DATABASE_CONNENCTION_ERROR("2000", "데이터베이스 연결 오류",HttpStatus.INTERNAL_SERVER_ERROR),
