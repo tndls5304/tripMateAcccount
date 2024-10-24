@@ -27,10 +27,13 @@ public class GlobalExceptionHandler {
         String errorCode = firstError.getDefaultMessage();
         CommonErrorCode commonErrorCode = CommonErrorCode.fromCode(errorCode);
 
+        // CommonResponse 생성 후 ResponseEntity로 감쌈
         CommonResponse<Void> response = new CommonResponse<>(commonErrorCode);
 
-        return new ResponseEntity<>(response, commonErrorCode.getHttpStatus());
+        // ResponseEntity에서 HttpStatus를 직접 설정
+        return ResponseEntity.status(commonErrorCode.getHttpStatus()).body(response);
     }
+
 
     //Incorrect request from user(유효성검사 제외 나머지 사용자로 부터 입력이 잘못된거)
     @ExceptionHandler(InvalidRequestException.class)
@@ -38,7 +41,7 @@ public class GlobalExceptionHandler {
         CommonErrorCode commonErrorCode = ex.getCommonErrorCode();
         CommonResponse<Void> response = new CommonResponse<>(commonErrorCode);
         //return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(response, commonErrorCode.getHttpStatus());
+        return ResponseEntity.status(commonErrorCode.getHttpStatus()).body(response);
     }
 
     /**
@@ -61,7 +64,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<CommonResponse<Void>> handleDataConflictException(DataConflictException ex) {
         CommonErrorCode commonErrorCode = ex.getCommonErrorCode();
         CommonResponse<Void> response = new CommonResponse<>(commonErrorCode);
-        return new ResponseEntity<>(response, commonErrorCode.getHttpStatus());
+        return ResponseEntity.status(commonErrorCode.getHttpStatus()).body(response);
     }
 
     //
@@ -70,7 +73,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<CommonResponse<Void>> handleServerErrorException(ServerErrorException ex) {
         CommonErrorCode commonErrorCode = ex.getCommonErrorCode();
         CommonResponse<Void> response = new CommonResponse<>(commonErrorCode);
-        return new ResponseEntity<>(response, commonErrorCode.getHttpStatus());
+        return ResponseEntity.status(commonErrorCode.getHttpStatus()).body(response);
     }
 }
 

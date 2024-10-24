@@ -46,9 +46,9 @@ public class UserJoinReqDto {
 
     //필수 약관 동의
     @NotEmpty(message = "1015")
-    List<UserBasicAgreeDto> basicAgreeDtoList;
+    List<UserBasicAgreeReqDto> basicAgreeDtoList;
 
     //(선택)마케팅 약관동의
     @NotEmpty(message = "1019")
-    List<UserMarketingAgreeDto> marketingAgreeDtoList;
+    List<UserCreateMarketingAgreeDto> marketingAgreeDtoList;
 }

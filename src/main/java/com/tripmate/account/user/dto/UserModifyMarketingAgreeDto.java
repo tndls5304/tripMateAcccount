@@ -1,23 +1,20 @@
 package com.tripmate.account.user.dto;
 
+import com.tripmate.account.common.entity.chose.AgreeFl;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 
-
-@Schema(description = "선택/필수 약관 동의 기록 요청 DTO")
+@Schema(description = "마케팅 동의서 수정 요청 DTO")
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserBasicAgreeDto {
+public class UserModifyMarketingAgreeDto {
 
-    @NotNull(message = "1016")
+    @NotNull(message = "1020")
     String templateSq;
-
-    @NotBlank(message = "1017")
-    @Pattern(regexp = "Y", message = "1018")
-    String agreeFl;
-
+    @NotNull(message = "1021")
+    AgreeFl agreeFl;
 }
