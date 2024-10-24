@@ -1,4 +1,4 @@
-package com.tripmate.account.common.entity;
+package com.tripmate.account.common.entity.Compositekey;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;

@@ -4,6 +4,7 @@ import com.tripmate.account.common.exception.ServerErrorException;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,13 +34,14 @@ public enum CommonErrorCode {
     EMAIL_DOMAIN_TOO_LONG("1014", "이메일 도메인은 최대 30자까지 가능합니다.",HttpStatus.BAD_REQUEST),
 
     BASIC_AGREE_BLANK("1015","필수 약관자체가!!! 누락되었습니다",HttpStatus.BAD_REQUEST),
-    BASIC_AGREE_TEMPLATE_BLANK("1016","필수 약관 동의서가 누락되었습니다",HttpStatus.BAD_REQUEST),
+    BASIC_AGREE_TEMPLATE_BLANK("1016","필수 약관 동의서 템플릿이 선택되지 않았습니다. 다시 시도해주세요",HttpStatus.BAD_REQUEST),
     BASIC_AGREE_FL_BLANK("1017","필수약관의 동의 여부가 누락되었습니다",HttpStatus.BAD_REQUEST),
     BASIC_AGREE_Y_BLANK("1018","필수약관에는 모두 동의하셔야 합니다",HttpStatus.BAD_REQUEST),
 
     MARKETING_AGREE_BLANK("1019","마케팅 약관자체가!!! 누락되었습니다",HttpStatus.BAD_REQUEST),
-    MARKETING_AGREE_TEMPLATE_BLANK("1010","마케팅 동의서가 누락되었습니다 ",HttpStatus.BAD_REQUEST),
-    MARKETING_AGREE_FL_BLANK("1011","마케팅동의 여부가 누락되었습니다",HttpStatus.BAD_REQUEST),
+    MARKETING_AGREE_TEMPLATE_BLANK("1020","마케팅 동의서 템플릿이 선택되지 않았습니다. 다시 시도해주세요",HttpStatus.BAD_REQUEST),
+    MARKETING_AGREE_FL_BLANK("1021","마케팅동의 여부가 누락되었습니다",HttpStatus.BAD_REQUEST),
+
 
     //1100~1199: 클라이언트측 요청,입력이 서버의 현재 상태 또는 비즈니스 규칙과 충돌하는 경우-서비스단에서함
     CONFLICT_ACCOUNT_ALREADY_EXISTS("1101", "이미 존재하는 아이디입니다.다른 id로 재 요청해주세요",HttpStatus.CONFLICT),
@@ -72,7 +74,7 @@ public enum CommonErrorCode {
         return message;
     }
 
-    public HttpStatus getHttpStatus(){
+    public HttpStatusCode getHttpStatus(){
         return httpStatus;
     }
 

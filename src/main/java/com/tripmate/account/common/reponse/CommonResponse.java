@@ -14,16 +14,19 @@ public class CommonResponse<T> {
     private String message;  // 응답 메시지 (예: "성공")
     private T data;          // 응답에 포함된 데이터, 제네릭 타입 (T)
 
-    //기본 생성자가 필요하겠지..? 필요하나? 모르겠다 ㅠㅠ
+
     public CommonResponse() {
     }
 
     // 데이터가 없는 경우에 대한 ResponseEntity 반환
-    public ResponseEntity<CommonResponse<Void>> toRespNoDataEntity(CommonErrorCode commonErrorCode) {
+    public ResponseEntity<CommonResponse<Void>> toRespEntity(CommonErrorCode commonErrorCode) {
         this.codeNo = commonErrorCode.getCode();
         this.message = commonErrorCode.getMessage();
-        // 데이터가 없으므로 CommonResponse<Void>로 설정
-        return new ResponseEntity<>(new CommonResponse<Void>(commonErrorCode), commonErrorCode.getHttpStatus());
+        CommonResponse<Void> response = new CommonResponse<>(commonErrorCode);
+        return ResponseEntity
+                .status(commonErrorCode.getHttpStatus())
+                .body(response);
+        //  return new ResponseEntity<>(new CommonResponse<Void>(commonErrorCode), commonErrorCode.getHttpStatus());
     }
 
     //데이터가 없는 경우 생성자
@@ -33,12 +36,15 @@ public class CommonResponse<T> {
     }
 
     // 데이터가 있는 경우에 대한 ResponseEntity 반환
-    public ResponseEntity<CommonResponse<T>> toRespWithDataEntity(T data, CommonErrorCode commonErrorCode) {
+    public ResponseEntity<CommonResponse<T>> toRespEntity(T data, CommonErrorCode commonErrorCode) {
         this.codeNo = commonErrorCode.getCode();
         this.message = commonErrorCode.getMessage();
         this.data = data;
         // ResponseEntity로 반환
-        return new ResponseEntity<>(this, commonErrorCode.getHttpStatus());
+        return ResponseEntity
+                .status(commonErrorCode.getHttpStatus())
+                .body(this);
+        //return new ResponseEntity<>(this, commonErrorCode.getHttpStatus());
     }
 
     //데이터가 있는 경우 생성자
@@ -47,15 +53,6 @@ public class CommonResponse<T> {
         this.message = commonErrorCode.getMessage();
         this.data = data;
     }
-
-
-    //컨트롤러에서 내려줄 데이터가 없을때
-//    public ResponseEntity<CommonResponse<Void>> getNoDataResp(HttpStatus httpStatus){
-//     CommonResponse<Void>=new CommonResponse<>(new CommonErrorCode(httpStatus status));
-//        return ResponseEntity.status(httpStatus).build();
-//    }
-    //컽르롤러에서 내려줄 데이터가 있을때
-
 
     public String getCode() {
         return codeNo;
@@ -68,8 +65,5 @@ public class CommonResponse<T> {
     public T getData() {
         return data;
     }
-//    public void setCode(int code){
-//        this.code=code;
-//    }
 
 }
