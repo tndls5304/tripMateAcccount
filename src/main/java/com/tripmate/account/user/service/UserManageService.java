@@ -188,10 +188,11 @@ public class UserManageService {
      * ✔️"동의"한 데이터가 없을때는 ? 이력 테이블을 새로 만들고 상태값을 동의로 설정합니다.
      * ✔️"동의"한 데이터가 한개일때 ? 이미 동의를 했다고 알려줍니다 (마케팅 동의를 하면 혜택을 주는 경우가 많기 때문에)
      * ✔️"동의"한 데이터가 여러개면 ? 서버 오류를 발생시킵니다.
+     *
      * 2.사용자가 마케팅동의 거절을 한경우:
-     * 우선 기존 마케팅약관이력 table 에 "동의" 한 데이터 조회하기
+     * 우선 기존 마케팅약관이력 table 에 "동의" 한 데이터 조회합니다.
      * "동의"한 데이터는 한 개 또는 없어야 합니다.
-     * ✔️"동의"한 데이터가 없을때는 ? 이미 마케팅동의 거절한 상태입니다 알려줍니다
+     * ✔️"동의"한 데이터가 없을때는 ? 과거에 마케팅동의를 거절한 상태에서 또 거절하는것. 사용자에게 굳이 알릴 필요가 없어서 continue
      * ✔️"동의"한 데이터가 한개일때 ? 비동의 AgreeFl=N 상태로 바꿔주고 철회시간 등록하기
      * ✔️"동의"한 데이터가 여러개면 ? 서버 오류를 발생시킵니다.
      *
@@ -199,7 +200,7 @@ public class UserManageService {
      * @throws InvalidRequestException 마케팅 동의 요청 목록이 비어있거나 null인 경우, 유효하지 않은 요청으로 간주됩니다.
      * @throws DataConflictException   동의 또는 비동의 처리 중 다음과 같은 충돌이 발생한 경우:
      *                                 - 사용자가 이미 동의한 상태에서 다시 동의 요청을 하는 경우.
-     *                                 - 사용자가 비동의를 요청했으나 이전에 동의한 이력이 없는 경우.
+     *
      * @throws ServerErrorException    데이터베이스에서 여러 개의 동의 상태가 발견되었을 때 발생합니다. 서버 오류가 발생한 경우다.
      */
     public void modifyMarketingAgree(List<UserModifyMarketingAgreeDto> ModifyMarketingAgreeList) {
@@ -241,7 +242,7 @@ public class UserManageService {
                 //⭐마케팅동의 거절을 한경우
                 switch (agreeEntityList.size()) {
                     case 0:
-                        throw new DataConflictException(CONFLICT_MARKETING_AGREE_FL_N_DUPLICATE);
+                       continue;
                     case 1:
                         MarketingAgreeEntity existingEntity = agreeEntityList.get(0);
                         MarketingAgreeEntity updatedEntity = MarketingAgreeEntity.builder()
@@ -265,42 +266,54 @@ public class UserManageService {
         }
     }
 
-
     /**
-     * 마케팅 동의 테이블 PK를 만드는 메서드다.
-     * 마케팅동의는 조회를 많이 할것이다 그래서 의미 없는 시퀀스를 pk로 잡는것보다
-     * 가공해서 쓰는게 효율적일것이다.
-     * 계정정보를 넣으면 조회 조건에 맞는 인덱스 활용이 가능해져, 빠른 검색이 가능할거라 생각했고 날짜는 다중 클릭으로 충돌을 피하기 위해서다
-     *
-     * @param userId : 계정 id
+     * 마케팅 약관에 동의하는 테이블의  PK를 만드는 메서드다.
+     * 마케팅동의는 조회를 많이 할것이다 그래서 의미 없는 시퀀스를 pk로 잡는것보다 가공해서 쓰는게 효율적일것이라고 생각했다.
+     * PK를 만드는 방법은 = 계정 타입 + 계정 id + pkSq(충돌피하기위함) + 년월일시 날짜 ( 충돌피하기위함)
+     * 계정정보를 넣으면 조회 조건에 맞는 인덱스 활용이 가능해져, 빠른 검색이 가능할거라 생각했다.
+     * PK를 유일하게 만들기 위해 날짜도 저장했는데 리스트를 받아서 저장해보니 충돌이 생겨서 같은 값으로 취급해버렸다
+     * 그래서 PK를 구분하는 시퀀스를 만들었다.
+     * 같은 날짜에 여러번 마케팅 동의를 하더라도 충돌을 피하고 각 기 다른 PK를 생성할 수 있기 떄문이다.
+     * @param userId: 숙박회원 id
+     *  @param pkSq : 한 서버에 여러 마케팅이력이 저장될때 pkSq가 없으니까 같은 pk로 취급되길래 구분하기 위해서
      * @return 마케팅동의 pk       :(동의 날짜 +계정타입 + id + 서버이름 +마케팅리스트 순번)
      */
     public String getMarketingPk(String userId,int pkSq) {
-        //14자리 현재 시간 (yyyyMMddHHmmss)
-        String dateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+        char userType = 'U';//TODO 바꾸기
 
         //사용자 id 최대 길이는 20자. 20자 미만일때는 '*'로 대체하기
         StringBuilder accountIdBuilder = new StringBuilder(userId);
         while (accountIdBuilder.length() < 20) {
-            accountIdBuilder.append('*');
+            accountIdBuilder.append('0');
         }
         // 최종적으로 accountIdBuilder를 String으로 변환
         String userIdIdPadded = accountIdBuilder.toString();
 
-        char userType = 'U';//TODO 바꾸기
+        // pkSq 값을 두 자리로 표현하기
+        String pkSqFormatted = String.format("%02d", pkSq);
+        //14자리 현재 시간 (yyyyMMddHHmmss)
+        String dateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
 
         // AgreeSq 조합: account_type(1글자)  accountIdPadded(20자) +날짜 시간(14자리)
-        return userType + userIdIdPadded +pkSq+ dateTime;
+        return userType + userIdIdPadded +pkSqFormatted+ dateTime;
         // 키 생성 수정함 ️ 타입+ id+날짜시간분초까지
     }
 
+    /**
+     * 마케팅 동의 이력 데이터는 조회 및 수정이 빈번히 이루어지는 데이터입니다.
+     * 따라서 빠른 조회 성능을 위해 PK의 일부를 특정 형식으로 구성하여 인덱싱을 최적화하고자 했습니다.
+     * 이 마케팅 동의 PK는 '계정 타입 + 계정 ID + pkSq(중복 방지용 값) + 년월일시(중복 방지용 값)' 형식으로 구성됩니다.
+     *  PK의 일부를 LIKE 조건으로 검색해 해당 계정의 마케팅 동의 이력을 빠르게 찾는 방식입니다.
+     * @param userId 숙박회원 id
+     * @return 마케팅 동의 이력을 조회하기 위한 '계정 타입 + 계정 ID' 문자열
+     */
     public String getPartOfMarketingPk(String userId) {
         char userType = 'U';//TODO  추후에 세션에서받기
         userId = "1test";// TODO  추후에 세션에서받기
-        //사용자 id 최대 길이는 20자. 20자 미만일때는 '*'로 대체하기
+        //사용자 id 최대 길이는 20자. 20자 미만일때는 '0'로 대체하기
         StringBuilder accountIdBuilder = new StringBuilder(userId);
         while (accountIdBuilder.length() < 20) {
-            accountIdBuilder.append('*');
+            accountIdBuilder.append('0');
         }
         // 최종적으로 accountIdBuilder를 String으로 변환
         String userIdPadded = accountIdBuilder.toString();

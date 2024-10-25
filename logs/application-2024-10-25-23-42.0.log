@@ -1,5 +1,0 @@
-[42acdbfe-f8a5-4b61-a489-8052e045af22] [2024-10-25 23:42:05.955] [http-nio-8080-exec-5] [INFO] [c.t.a.f.HttpLoggingFilter] - URI: /api/account/user/marketing, Request: [{
-    "templateSq":"1",
-    "agreeFl":"N"
-}] 
-[42acdbfe-f8a5-4b61-a489-8052e045af22] [2024-10-25 23:42:05.957] [http-nio-8080-exec-5] [INFO] [c.t.a.f.HttpLoggingFilter] - Status: 200, Response: {"message":"성공","code":"0000"} 
