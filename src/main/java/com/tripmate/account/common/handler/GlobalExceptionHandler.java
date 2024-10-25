@@ -41,7 +41,7 @@ public class GlobalExceptionHandler {
         CommonErrorCode commonErrorCode = ex.getCommonErrorCode();
         CommonResponse<Void> response = new CommonResponse<>(commonErrorCode);
         //return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        return ResponseEntity.status(commonErrorCode.getHttpStatus()).body(response);
+        return new ResponseEntity<>(response, commonErrorCode.getHttpStatus());
     }
 
     /**
@@ -64,7 +64,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<CommonResponse<Void>> handleDataConflictException(DataConflictException ex) {
         CommonErrorCode commonErrorCode = ex.getCommonErrorCode();
         CommonResponse<Void> response = new CommonResponse<>(commonErrorCode);
-        return ResponseEntity.status(commonErrorCode.getHttpStatus()).body(response);
+        return new ResponseEntity<>(response, commonErrorCode.getHttpStatus());
     }
 
     //
@@ -73,7 +73,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<CommonResponse<Void>> handleServerErrorException(ServerErrorException ex) {
         CommonErrorCode commonErrorCode = ex.getCommonErrorCode();
         CommonResponse<Void> response = new CommonResponse<>(commonErrorCode);
-        return ResponseEntity.status(commonErrorCode.getHttpStatus()).body(response);
+        return new ResponseEntity<>(response, commonErrorCode.getHttpStatus());
     }
 }
 

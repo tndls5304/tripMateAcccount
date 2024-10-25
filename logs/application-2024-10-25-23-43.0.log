@@ -1,0 +1,17 @@
+[fe681b04-ebc6-492f-845d-45275b41b2ff] [2024-10-25 23:43:02.358] [http-nio-8080-exec-6] [INFO] [c.t.a.f.HttpLoggingFilter] - URI: /api/account/user/marketing, Request: [{
+    "templateSq":"1",
+    "agreeFl":"Y"
+}] 
+[fe681b04-ebc6-492f-845d-45275b41b2ff] [2024-10-25 23:43:02.359] [http-nio-8080-exec-6] [INFO] [c.t.a.f.HttpLoggingFilter] - Status: 200, Response: {"message":"성공","code":"0000"} 
+[eef7b0d7-05cb-4d12-ba7c-bcdab68c4a30] [2024-10-25 23:43:53.773] [http-nio-8080-exec-7] [INFO] [c.t.a.f.HttpLoggingFilter] - URI: /api/account/user/marketing, Request: [{
+    "templateSq":"1",
+    "agreeFl":"Y"
+}
+,
+{
+    "templateSq":"2",
+    "agreeFl":"Y"
+}
+
+] 
+[eef7b0d7-05cb-4d12-ba7c-bcdab68c4a30] [2024-10-25 23:43:53.773] [http-nio-8080-exec-7] [INFO] [c.t.a.f.HttpLoggingFilter] - Status: 409, Response: {"message":"이미 동의된 상태입니다","code":"1102"} 

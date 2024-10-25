@@ -1,15 +1,13 @@
 package com.tripmate.account.common.entity;
 
-import com.tripmate.account.common.entity.chose.AgreeFl;
+import com.tripmate.account.common.custom.validation.AgreeFl;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 /**
  * 마케팅(선택) 약관동의 엔티티
@@ -17,6 +15,7 @@ import java.time.format.DateTimeFormatter;
  * @author 이수인
  * @since 2024.10.17
  */
+@ToString
 @Entity
 @Table(name = "MARKETING_AGREE_TH")
 @Getter
@@ -33,8 +32,11 @@ public class MarketingAgreeEntity extends BaseEntity {
     char accountType;
     @Column(name = "ACCOUNT_ID", length = 30, nullable = false)
     String accountId;
+
+    @Enumerated(EnumType.STRING)
     @Column(name = "AGREE_FL", nullable = false)
     AgreeFl agreeFl;
+
     @Column(name = "AGREE_DTM")
     LocalDateTime agreeDtm;
     @Column(name = "D_AGREE_DTM")

@@ -2,7 +2,7 @@
     <!-- property 태그를 사용해 로그 출력 형식을 정의하고 있습니다.
     이 형식은 변수를 선언하여 재사용 가능하게 만드는 방식 -->
     <property name="CONSOLE_PATTERN"
-              value="[%X{request_id:-startup}] [%d{yyyy-MM-dd HH:mm:ss.SSS}] %magenta([%thread]) %highlight([%-3level]) [%logger{5}] - %msg %n"/>
+              value="[%X{request_id:-startup}] [%d{yyyy-MM-dd HH:mm:ss.SSS}] %magenta([%thread]) %highlight([%-3level]) [%logger{5}:%L] - %msg %n"/>
 
     <property name="ROLLING_PATTERN"
               value="[%X{request_id:-startup}] [%d{yyyy-MM-dd HH:mm:ss.SSS}] [%thread] [%-3level] [%logger{5}] - %msg %n" />

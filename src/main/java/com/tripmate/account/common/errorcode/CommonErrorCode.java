@@ -3,6 +3,7 @@ package com.tripmate.account.common.errorcode;
 import com.tripmate.account.common.exception.ServerErrorException;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 
@@ -10,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 //@Getter
+@Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public enum CommonErrorCode {
     /*이늄의 각 상수는 이늄클래스가 구현한 인스턴스다.
@@ -34,32 +36,36 @@ public enum CommonErrorCode {
     EMAIL_DOMAIN_TOO_LONG("1014", "이메일 도메인은 최대 30자까지 가능합니다.",HttpStatus.BAD_REQUEST),
 
     BASIC_AGREE_BLANK("1015","필수 약관자체가!!! 누락되었습니다",HttpStatus.BAD_REQUEST),
-    BASIC_AGREE_TEMPLATE_BLANK("1016","필수 약관 동의서 템플릿이 선택되지 않았습니다. 다시 시도해주세요",HttpStatus.BAD_REQUEST),
+    BASIC_AGREE_TEMPLATE_BLANK("1016","필수 약관 템플릿이 전달되지 않았거나 약관 템플릿 번호가 비어 있습니다.",HttpStatus.BAD_REQUEST),
     BASIC_AGREE_FL_BLANK("1017","필수약관의 동의 여부가 누락되었습니다",HttpStatus.BAD_REQUEST),
-    BASIC_AGREE_Y_BLANK("1018","필수약관에는 모두 동의하셔야 합니다",HttpStatus.BAD_REQUEST),
+    BASIC_AGREE_FL_Y_BLANK("1018","필수약관은 꼭 동의하셔야 합니다",HttpStatus.BAD_REQUEST),
 
     MARKETING_AGREE_BLANK("1019","마케팅 약관자체가!!! 누락되었습니다",HttpStatus.BAD_REQUEST),
     MARKETING_AGREE_TEMPLATE_BLANK("1020","마케팅 동의서 템플릿이 선택되지 않았습니다. 다시 시도해주세요",HttpStatus.BAD_REQUEST),
     MARKETING_AGREE_FL_BLANK("1021","마케팅동의 여부가 누락되었습니다",HttpStatus.BAD_REQUEST),
-
+    MARKETING_AGREE_FL_YN_BLANK("1022","마케팅약관에 동의, 비동의를 했는지 확인해주세요",HttpStatus.BAD_REQUEST),
 
     //1100~1199: 클라이언트측 요청,입력이 서버의 현재 상태 또는 비즈니스 규칙과 충돌하는 경우-서비스단에서함
     CONFLICT_ACCOUNT_ALREADY_EXISTS("1101", "이미 존재하는 아이디입니다.다른 id로 재 요청해주세요",HttpStatus.CONFLICT),
+    CONFLICT_MARKETING_AGREE_FL_Y_DUPLICATE("1102","이미 동의된 상태입니다",HttpStatus.CONFLICT),
+    CONFLICT_MARKETING_AGREE_FL_N_DUPLICATE("1103","이미 비동의된 상태입니다",HttpStatus.CONFLICT),
 
     //1200~:(유효성 검사 제외 하고) 사용자 요청, 입력이 잘못된 경우-서비스단에서함 InvalidRequestException
     INVALID_BASIC_AGREE_BLANK("1200","필수 약관 동의를 기입해주세요",HttpStatus.BAD_REQUEST),
-    INVALID_MARKETING_AGREE_BLANK("1201","마케팅 약관 동의",HttpStatus.BAD_REQUEST),
+    INVALID_MARKETING_AGREE_BLANK("1201","마케팅 동의 요청 항목이 비어 있습니다. 적어도 하나의 동의 항목을 선택해서 요청해주세요",HttpStatus.BAD_REQUEST),
     INVALID_USER_ID_MISMATCH("1202","아이디에 해당하는 계정은 존재하지 않습니다",HttpStatus.BAD_REQUEST),
     INVALID_USER_PWD_MISMATCH("1203","비밀번호가 틀렸습니다",HttpStatus.BAD_REQUEST),
 
     //2000번대:db연결 문제
     DATABASE_CONNENCTION_ERROR("2000", "데이터베이스 연결 오류",HttpStatus.INTERNAL_SERVER_ERROR),
+
     //3000번대:일반고객 상대
 
     // 5000번대: 일반 서버 오류
     INTERNAL_SERVER_ERROR("5000", "서버오류",HttpStatus.INTERNAL_SERVER_ERROR),
+    SERVER_ERROR_AGREE_FL_MANY_ERROR("5001","같은 마케팅약관에 동의데이터가 여러번 저장되어 처리할 수 없습니다",HttpStatus.INTERNAL_SERVER_ERROR),
 
-    //매칭되는 에러가 없을때
+    //9999: 예게치 못한 서버 오류 매칭되는 에러가 없을때
     NO_MATCHING_ERROR_CODE("9999", "매칭되는 에러코드가 없습니다.",HttpStatus.INTERNAL_SERVER_ERROR);
 
     final String code;
@@ -103,7 +109,9 @@ public enum CommonErrorCode {
 
         if (errorCode == null) {
             //TODO 예외이름이 적절하지 못해서 바꿔야 함. 혹시 이렇게 예기치못한 에러가 있으면 새로운 예외를 만들자.
-            throw new ServerErrorException(NO_MATCHING_ERROR_CODE);
+            // throw new ServerErrorException(NO_MATCHING_ERROR_CODE);
+            log.error("NO_MATCHING_ERROR_CODE : {}", code);
+            return NO_MATCHING_ERROR_CODE;
         }
         return errorCode;
     }
