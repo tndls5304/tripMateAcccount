@@ -3,7 +3,7 @@ package com.tripmate.account.user.controller;
 import com.tripmate.account.common.reponse.CommonResponse;
 import com.tripmate.account.user.dto.UserModifyMarketingAgreeDto;
 import com.tripmate.account.user.dto.UserJoinReqDto;
-import com.tripmate.account.user.dto.ModifyUserPwdDto;
+import com.tripmate.account.user.dto.UserModifyPwdReqDto;
 import com.tripmate.account.user.service.UserManageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -15,9 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-
 import static com.tripmate.account.common.errorcode.CommonErrorCode.SUCCESS;
 
 /**
@@ -62,7 +60,9 @@ public class UserManageController {
             @ApiResponse(responseCode = "409", description = "이미 존재하는 id로 id 중복검사 실패", content = @Content(mediaType = "application/json"))
     })
 
-    public ResponseEntity<CommonResponse<Void>> userJoin(@Valid @RequestBody UserJoinReqDto userJoinReqDto) {
+    public ResponseEntity<CommonResponse<Void>> userJoin( @Valid @RequestBody UserJoinReqDto userJoinReqDto) {
+        System.out.println("🔶🔶AgreeFl value: " + userJoinReqDto.getBasicAgreeDtoList());
+        System.out.println("userJoinReqDto🔶"+userJoinReqDto);
         service.userJoin(userJoinReqDto);
         return new CommonResponse<>().toRespEntity(SUCCESS);
     }
@@ -82,19 +82,19 @@ public class UserManageController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청 : 마케팅 약관이 없음", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "409", description = "이미 존재하는 id로 id 중복검사 실패", content = @Content(mediaType = "application/json"))
     })
-    public ResponseEntity<CommonResponse<Void>> updatePwd(@RequestBody ModifyUserPwdDto modifyUserPwdDto) {
+    public ResponseEntity<CommonResponse<Void>> updatePwd(@Valid @RequestBody UserModifyPwdReqDto modifyUserPwdDto) {
         service.modifyPwd(modifyUserPwdDto);
         return new CommonResponse<>().toRespEntity(SUCCESS);
     }
 
 
     /**
-     * 마케팅동의 등록 요청
+     * 이전 마케팅약관에 동의를 한적 있다면 동의이력을 수정하거나 동의한적 없으면 동의이력 생성
      * @param ModifyMarketingAgreeDtoList
      * @return
      */
     @PostMapping("api/account/user/marketing")
-    public ResponseEntity<CommonResponse<Void>> modifyMarketingAgree(@RequestBody List<UserModifyMarketingAgreeDto> ModifyMarketingAgreeDtoList){
+    public ResponseEntity<CommonResponse<Void>> modifyMarketingAgree(@Valid @RequestBody List< UserModifyMarketingAgreeDto> ModifyMarketingAgreeDtoList){
         service.modifyMarketingAgree(ModifyMarketingAgreeDtoList);
         return new CommonResponse<>().toRespEntity(SUCCESS);
     }

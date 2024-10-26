@@ -2,10 +2,8 @@ package com.tripmate.account.user.dto;
 
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import java.util.List;
@@ -46,9 +44,9 @@ public class UserJoinReqDto {
 
     //필수 약관 동의
     @NotEmpty(message = "1015")
-    List<UserBasicAgreeReqDto> basicAgreeDtoList;
+    List<@Valid UserBasicAgreeReqDto> basicAgreeDtoList;
 
     //(선택)마케팅 약관동의
     @NotEmpty(message = "1019")
-    List<UserCreateMarketingAgreeDto> marketingAgreeDtoList;
+    List<@Valid UserCreateMarketingAgreeDto> marketingAgreeDtoList;
 }

@@ -1,6 +1,7 @@
 package com.tripmate.account.common.entity;
 
 import com.tripmate.account.common.entity.Compositekey.BasicAgreeId;
+import com.tripmate.account.common.custom.validation.AgreeFl;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -34,8 +35,9 @@ public class BasicAgreeEntity extends BaseEntity {
 //    int templateSq;
     @EmbeddedId
     BasicAgreeId id;
-    @Column(name = "AGREE_FL", nullable = false, columnDefinition = "CHAR(1) DEFAULT 'Y'")
-    char agreeFl;
+    @Enumerated(EnumType.STRING)//0과 1로 저장되길래
+    @Column(name = "AGREE_FL", nullable = false, columnDefinition = "ENUM('Y', 'N') DEFAULT 'Y'") // ENUM 타입으로 정의
+    AgreeFl agreeFl;
     @CreatedDate
     @Column(name = "AGREE_DT", nullable = false)
     LocalDate agreeDt;
