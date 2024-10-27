@@ -1,7 +1,7 @@
 package com.tripmate.account.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.tripmate.account.common.custom.validation.AgreeFl;
+import com.tripmate.account.common.enums.AgreeFl;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 import lombok.*;

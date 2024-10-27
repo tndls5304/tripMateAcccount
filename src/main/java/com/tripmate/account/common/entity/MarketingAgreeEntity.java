@@ -1,6 +1,8 @@
 package com.tripmate.account.common.entity;
 
-import com.tripmate.account.common.custom.validation.AgreeFl;
+import com.tripmate.account.common.entity.base.BaseEntity;
+import com.tripmate.account.common.enums.AccountType;
+import com.tripmate.account.common.enums.AgreeFl;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -19,6 +21,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "MARKETING_AGREE_TH")
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
@@ -29,7 +32,7 @@ public class MarketingAgreeEntity extends BaseEntity {
     @Column(name = "AGREE_SQ", length = 39, nullable = false)//날짜시간(14자)+계정타입+ID(20자)+SQ(4자리)
     String agreeSq;
     @Column(name = "ACCOUNT_TYPE", nullable = false)
-    char accountType;
+    AccountType accountType;
     @Column(name = "ACCOUNT_ID", length = 30, nullable = false)
     String accountId;
 

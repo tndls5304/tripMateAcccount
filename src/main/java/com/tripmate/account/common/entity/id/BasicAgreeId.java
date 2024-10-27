@@ -1,5 +1,6 @@
-package com.tripmate.account.common.entity.Compositekey;
+package com.tripmate.account.common.entity.id;
 
+import com.tripmate.account.common.enums.AccountType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.Builder;
@@ -10,7 +11,7 @@ import java.util.Objects;
 public class BasicAgreeId {
 
     @Column(name ="ACCOUNT_TYPE")
-    private char accountType;
+    private AccountType accountType;
     @Column(name = "ACCOUNT_ID",length = 30)
     private String accountId;
     @Column(name = "TEMPLATE_SQ")
@@ -18,12 +19,12 @@ public class BasicAgreeId {
 
     public BasicAgreeId(){
     }
-    public BasicAgreeId(char userType, String userId, int templateSq){
+    public BasicAgreeId(AccountType userType, String userId, int templateSq){
         this.accountType=userType;
         this.accountId=userId;
         this.templateSq=templateSq;
     }
-    public char getUserType(){
+    public AccountType getUserType(){
         return accountType;
     }
     public String getUserId(){

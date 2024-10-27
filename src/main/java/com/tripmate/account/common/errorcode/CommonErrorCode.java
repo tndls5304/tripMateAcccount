@@ -47,7 +47,6 @@ public enum CommonErrorCode {
 
     //1100~1199: 클라이언트측 요청,입력이 서버의 현재 상태 또는 비즈니스 규칙과 충돌하는 경우-서비스단에서함
     CONFLICT_ACCOUNT_ALREADY_EXISTS("1101", "이미 존재하는 아이디입니다.다른 id로 재 요청해주세요",HttpStatus.CONFLICT),
-    CONFLICT_MARKETING_AGREE_FL_Y_DUPLICATE("1102","이미 동의된 상태입니다",HttpStatus.CONFLICT),
     CONFLICT_MARKETING_AGREE_FL_N_DUPLICATE("1103","이미 비동의된 상태입니다",HttpStatus.CONFLICT),
 
     //1200~:(유효성 검사 제외 하고) 사용자 요청, 입력이 잘못된 경우-서비스단에서함 InvalidRequestException
@@ -63,7 +62,6 @@ public enum CommonErrorCode {
 
     // 5000번대: 일반 서버 오류
     INTERNAL_SERVER_ERROR("5000", "서버오류",HttpStatus.INTERNAL_SERVER_ERROR),
-    SERVER_ERROR_AGREE_FL_MANY_ERROR("5001","같은 마케팅약관에 동의데이터가 여러번 저장되어 처리할 수 없습니다",HttpStatus.INTERNAL_SERVER_ERROR),
 
     //9999: 예게치 못한 서버 오류 매칭되는 에러가 없을때
     NO_MATCHING_ERROR_CODE("9999", "매칭되는 에러코드가 없습니다.",HttpStatus.INTERNAL_SERVER_ERROR);

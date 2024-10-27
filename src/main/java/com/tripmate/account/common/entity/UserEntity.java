@@ -1,24 +1,24 @@
 package com.tripmate.account.common.entity;
 
+import com.tripmate.account.common.entity.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "USER_TB")
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @EntityListeners(AuditingEntityListener.class)  // JPA Auditing  기능 활성화
-public class UserEntity extends BaseEntity{
+public class UserEntity extends BaseEntity {
     
     @Id
     @Column(name = "USER_ID", length = 20)

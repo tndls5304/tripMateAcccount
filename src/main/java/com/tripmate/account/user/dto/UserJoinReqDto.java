@@ -9,7 +9,7 @@ import lombok.experimental.FieldDefaults;
 import java.util.List;
 
 
-@Schema(description = "일반고객 회원가입 요청DTO")
+@Schema(description = "숙박회원 가입 요청DTO")
 @ToString
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE)
