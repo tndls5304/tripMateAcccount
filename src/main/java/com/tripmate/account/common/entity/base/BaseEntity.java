@@ -1,4 +1,4 @@
-package com.tripmate.account.common.entity;
+package com.tripmate.account.common.entity.base;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
@@ -6,11 +6,12 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
+
 import java.time.LocalDateTime;
 
 @SuperBuilder
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @MappedSuperclass

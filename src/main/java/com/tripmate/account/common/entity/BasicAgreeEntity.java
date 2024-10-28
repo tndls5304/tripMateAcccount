@@ -1,7 +1,8 @@
 package com.tripmate.account.common.entity;
 
-import com.tripmate.account.common.entity.Compositekey.BasicAgreeId;
-import com.tripmate.account.common.custom.validation.AgreeFl;
+import com.tripmate.account.common.entity.id.BasicAgreeId;
+import com.tripmate.account.common.entity.base.BaseEntity;
+import com.tripmate.account.common.enums.AgreeFl;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;

@@ -1,4 +1,4 @@
-package com.tripmate.account.encoder;
+package com.tripmate.account.config.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,9 +1,7 @@
 package com.tripmate.account.user.controller;
 
 import com.tripmate.account.common.reponse.CommonResponse;
-import com.tripmate.account.user.dto.UserModifyMarketingAgreeDto;
-import com.tripmate.account.user.dto.UserJoinReqDto;
-import com.tripmate.account.user.dto.UserModifyPwdReqDto;
+import com.tripmate.account.user.dto.*;
 import com.tripmate.account.user.service.UserManageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -33,10 +31,10 @@ public class UserManageController {
     private final UserManageService service;
 
     /**
-     * 숙박회원의 아이디 중복 검사
+     * (숙박회원) 아이디 중복 검사
      *
-     * @param userId 입력한 아이디
-     * @return 중복된 아이디가 존재시 에러 코드와 메시지를 포함한 ResponseEntity를 반환,중복되지 않을 경우 성공 응답을 반환
+     * @param userId 중복 검사 요청 id
+     * @return 중복된 아이디가 존재시 에러 코드와 메시지를 포함한 ResponseEntity 를 반환,중복되지 않을 경우 성공 응답을 반환
      */
     @GetMapping("api/account/user/join/duplicate")
     @Operation(summary = "투숙객 회원가입시 id 중복 검사", description = "userId를 이용해 투숙객의 id 중복 검사")
@@ -59,13 +57,24 @@ public class UserManageController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청 : 마케팅 약관이 없음", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "409", description = "이미 존재하는 id로 id 중복검사 실패", content = @Content(mediaType = "application/json"))
     })
-
     public ResponseEntity<CommonResponse<Void>> userJoin( @Valid @RequestBody UserJoinReqDto userJoinReqDto) {
-        System.out.println("🔶🔶AgreeFl value: " + userJoinReqDto.getBasicAgreeDtoList());
-        System.out.println("userJoinReqDto🔶"+userJoinReqDto);
         service.userJoin(userJoinReqDto);
         return new CommonResponse<>().toRespEntity(SUCCESS);
     }
+
+/*
+    //로그인
+    public ResponseEntity<CommonResponse<UserLoginRespDto>> login(@Valid @RequestBody UserLoginReqDto userLoginReqDto){
+        UserLoginRespDto userLoginRespDto=service.login(userLoginReqDto);
+        return new CommonResponse<UserLoginRespDto>().toRespEntity(userLoginRespDto,SUCCESS);
+     /* 원래 이렇게 썻는데,, 통일성있게 바꿈
+     CommonResponse<UserLoginRespDto> response=new CommonResponse<>(SUCCESS,userLoginRespDto);
+     return ResponseEntity.ok(response);
+*/
+
+
+
+
 
     /**
      * (숙박회원)비밀번호 변경 요청
@@ -90,11 +99,11 @@ public class UserManageController {
 
     /**
      * 이전 마케팅약관에 동의를 한적 있다면 동의이력을 수정하거나 동의한적 없으면 동의이력 생성
-     * @param ModifyMarketingAgreeDtoList
+     * @param ModifyMarketingAgreeDtoList 마케팅 동의 리스트
      * @return
      */
     @PostMapping("api/account/user/marketing")
-    public ResponseEntity<CommonResponse<Void>> modifyMarketingAgree(@Valid @RequestBody List< UserModifyMarketingAgreeDto> ModifyMarketingAgreeDtoList){
+    public ResponseEntity<CommonResponse<Void>> modifyMarketingAgree(@Valid @RequestBody List<UserModifyMarketingAgreeReqDto> ModifyMarketingAgreeDtoList){
         service.modifyMarketingAgree(ModifyMarketingAgreeDtoList);
         return new CommonResponse<>().toRespEntity(SUCCESS);
     }

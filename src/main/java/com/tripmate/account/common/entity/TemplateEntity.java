@@ -1,5 +1,6 @@
 package com.tripmate.account.common.entity;
 
+import com.tripmate.account.common.entity.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
