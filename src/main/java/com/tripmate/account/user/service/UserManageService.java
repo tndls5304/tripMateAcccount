@@ -54,88 +54,22 @@ public class UserManageService {
     /**
      * (숙박회원) 가입 요청 처리 메서드
      * 가입 절차:
-     * 1) ID 중복 검사: JPA의 특성상 가입 전 중복 여부를 검사
-     * 2) 필수 약관 동의 여부 확인: 클라이언트가 보낸 필수 약관 동의 목록을 확인하여 모두 동의했는지 체크
-     * 3) 마케팅 약관 동의 처리: 클라이언트가 보낸 마케팅 약관 동의 목록을 받아, 동의 시에만 저장
+     * 1) ID 중복 검사: JPA의 특성상 가입 전 중복 여부를 검사 ( JPA는 entity의 ID가 존재할경우 기존 entity로 간주하고 update를 수행하는 특성이 있기떄문)
+     * 2) 필수약관 동의서(basicAgree)저장 :필수약관에 모두 동의한것만 이력에 저장
+     * 3) 마케팅 약관 동의 처리: 마케팅약관에 대한 동의는 동의,비동의 상태값을 가지나 동의한 데이터만 이력에 저장
+     *                        (추후에 클라이언트가 마케팅약관을 철회할때는 상태값을 비동의로 바꿀 예정)
      * 위 세 단계가 모두 통과되면 @Transactional을 통해 가입 완료
      *
      * @param reqUserJoin 개인정보, 필수 약관 동의 리스트, 마케팅 약관 동의 리스트를 포함한 가입 요청 정보
      */
     @Transactional
     public void userJoin(UserJoinReqDto reqUserJoin) {
-
-        String reqUserId = reqUserJoin.getUserId();
-
-        // JPA의 save() 는 entity의 ID가 존재할경우 기존 entity로 간주하고 update를 수행하는 특성이 있기떄문에 save()가 호출되기 전에, 입력된 ID가 이미 존재하는지 확인해야 함
-        if (userTbRepository.existsById(reqUserId)) {
+        if (userTbRepository.existsById(reqUserJoin.getUserId())) {
             throw new DataConflictException(CONFLICT_ACCOUNT_ALREADY_EXISTS);
         }
-
-        //개인정보 저장
-        UserEntity userJoinEntity = UserEntity.builder()
-                .userId(reqUserId)
-                .userPwd(
-                        passwordEncoder.encode(reqUserJoin.getUserPwd()) //수동생성방법:BCrypt.hashpw(reqUserJoin.getUserPwd(), BCrypt.gensalt())   :BCrypt.hashpw 메서드는 주어진 비밀번호를 BCrypt 해시로 변환하고, BCrypt.gensalt()는 랜덤 솔트 값을 생성하여 비밀번호에 추가
-                )
-                .nickname(reqUserJoin.getNickname())
-                .phoneNo(reqUserJoin.getPhoneNo())
-                .emailId(reqUserJoin.getEmailId())
-                .emailDomain(reqUserJoin.getEmailDomain())
-                .regUser(reqUserId)
-                .build();
-        userTbRepository.save(userJoinEntity);//먼저 조회를 하고 조회한 결과를 엔티티에 담는다 그리고 여기userJoinEntity이거랑 비교한다. 바뀐게 있으면 save를 한다.
-
-        // 필수 약관 동의 리스트 저장하기
-        List<UserBasicAgreeReqDto> reqBasicAgreeList = reqUserJoin.getBasicAgreeDtoList();
-        if (reqBasicAgreeList == null || reqBasicAgreeList.isEmpty()) {
-            throw new InvalidRequestException(INVALID_BASIC_AGREE_BLANK);
-        }
-        for (UserBasicAgreeReqDto reqBasicAgree : reqBasicAgreeList) {
-            BasicAgreeEntity requireAgreeEntity = BasicAgreeEntity.builder()
-                    .id(
-                            BasicAgreeId.builder()
-                                    .accountType(AccountType.U)//TODO 'U'는 JWT에서 가져올 예정
-                                    .accountId(reqUserId)
-                                    .templateSq(parseInt(reqBasicAgree.getTemplateSq()))
-                                    .build()
-                    )
-                    .regUser(reqUserId)
-                    .agreeFl((reqBasicAgree.getAgreeFlEnum()))
-                    .build();
-            basicAgreeThRepository.save(requireAgreeEntity);
-        }
-
-        // 마케팅 약관 동의 리스트 저장하기
-        List<UserCreateMarketingAgreeDto> reqMarketingAgreeList = reqUserJoin.getMarketingAgreeDtoList();
-        if (reqMarketingAgreeList == null || reqMarketingAgreeList.isEmpty()) {
-            throw new InvalidRequestException(INVALID_MARKETING_AGREE_BLANK);
-        }
-
-        List<MarketingAgreeEntity> marketingOkEntityList = new ArrayList<>();
-
-        int marketingmarketingPkSq = 1;
-
-        for (UserCreateMarketingAgreeDto reqMarketingAgree : reqMarketingAgreeList) {
-            //마케팅 약관에 거절한 데이터는 저장 안함.
-            if (reqMarketingAgree.getAgreeFlEnum() == AgreeFl.N) {
-                continue;
-            }
-            //마케팅 약관에 동의를 해야지만 마케팅동의 이력테이블에 저장됨.추후에 비동의로 수정할 경우 철회시간을 기록하기.
-            MarketingAgreeEntity marketingAgreeEntity = MarketingAgreeEntity.builder()
-                    .agreeSq(
-                            getMarketingPk(reqUserId, marketingmarketingPkSq)
-                    )
-                    .accountType(AccountType.U)         //TODO 'U'는 JWT에서 가져올 예정
-                    .accountId(reqUserId)
-                    .agreeFl(reqMarketingAgree.getAgreeFlEnum())
-                    .templateSq(parseInt((reqMarketingAgree.getTemplateSq())))
-                    .regUser(reqUserId)
-                    .agreeDtm(LocalDateTime.now())
-                    .build();
-            marketingOkEntityList.add(marketingAgreeEntity);
-            marketingmarketingPkSq++;
-        }
-        marketingAgreeThRepository.saveAll(marketingOkEntityList);
+        insertAccountInfo(reqUserJoin);
+        insertBasicAgree(reqUserJoin);
+        insertMarketingAgree(reqUserJoin);
     }
 
     /**
@@ -154,7 +88,6 @@ public class UserManageService {
         }
 
         UserEntity existingUserEntity = userOptional.get();
-
 
         if (passwordEncoder.matches(modifyPwdDto.getOldPwd(), existingUserEntity.getUserPwd())) {
             existingUserEntity.setUserPwd(passwordEncoder.encode(modifyPwdDto.getNewPwd()));
@@ -204,6 +137,7 @@ public class UserManageService {
             throw new InvalidRequestException(INVALID_MARKETING_AGREE_BLANK);
         }
         int marketingPkSq = 1;
+
         for (UserModifyMarketingAgreeReqDto reqModifyOneMarketing : reqModifyMarketingList) {
             String userId = "1test";//TODO
 
@@ -325,6 +259,85 @@ public class UserManageService {
         String userIdPadded = StringUtils.rightPad(userId, 20, '0');
         return userType + userIdPadded;
     }
+
+    //회원가입할때 계정정보 저장하기
+    public void insertAccountInfo(UserJoinReqDto reqUserJoin){
+        UserEntity userJoinEntity = UserEntity.builder()
+                .userId(reqUserJoin.getUserId())
+                .userPwd(
+                        passwordEncoder.encode(reqUserJoin.getUserPwd()) //수동생성방법:BCrypt.hashpw(reqUserJoin.getUserPwd(), BCrypt.gensalt())   :BCrypt.hashpw 메서드는 주어진 비밀번호를 BCrypt 해시로 변환하고, BCrypt.gensalt()는 랜덤 솔트 값을 생성하여 비밀번호에 추가
+                )
+                .nickname(reqUserJoin.getNickname())
+                .phoneNo(reqUserJoin.getPhoneNo())
+                .emailId(reqUserJoin.getEmailId())
+                .emailDomain(reqUserJoin.getEmailDomain())
+                .regUser(reqUserJoin.getUserId())
+                .build();
+        userTbRepository.save(userJoinEntity);
+    }
+
+
+    //회원가입할때  필수 약관 동의 리스트 저장하기
+    public void insertBasicAgree(UserJoinReqDto reqUserJoin){
+        List<UserBasicAgreeReqDto> reqBasicAgreeList = reqUserJoin.getBasicAgreeDtoList();
+        if (reqBasicAgreeList == null || reqBasicAgreeList.isEmpty()) {
+            throw new InvalidRequestException(INVALID_BASIC_AGREE_BLANK);
+        }
+        for (UserBasicAgreeReqDto reqBasicAgree : reqBasicAgreeList) {
+            BasicAgreeEntity requireAgreeEntity = BasicAgreeEntity.builder()
+                    .id(
+                            BasicAgreeId.builder()
+                                    .accountType(AccountType.U)//TODO 'U'는 JWT에서 가져올 예정
+                                    .accountId(reqUserJoin.getUserId())
+                                    .templateSq(parseInt(reqBasicAgree.getTemplateSq()))
+                                    .build()
+                    )
+                    .regUser(reqUserJoin.getUserId())
+                    .agreeFl((reqBasicAgree.getAgreeFlEnum()))
+                    .build();
+            basicAgreeThRepository.save(requireAgreeEntity);
+        }
+    }
+
+    // 마케팅 약관 동의 리스트 저장하기
+    public void insertMarketingAgree(UserJoinReqDto reqUserJoin){
+
+        List<UserCreateMarketingAgreeDto> reqMarketingAgreeList = reqUserJoin.getMarketingAgreeDtoList();
+        if (reqMarketingAgreeList == null || reqMarketingAgreeList.isEmpty()) {
+            throw new InvalidRequestException(INVALID_MARKETING_AGREE_BLANK);
+        }
+
+        List<MarketingAgreeEntity> marketingOkEntityList = new ArrayList<>();
+
+        int marketingmarketingPkSq = 1;
+
+        for (UserCreateMarketingAgreeDto reqMarketingAgree : reqMarketingAgreeList) {
+            //마케팅 약관에 거절한 데이터는 저장 안함.
+            if (reqMarketingAgree.getAgreeFlEnum() == AgreeFl.N) {
+                continue;//⭐
+            }
+            //마케팅 약관에 동의를 해야지만 마케팅동의 이력테이블에 저장됨.추후에 비동의로 수정할 경우 철회시간을 기록하기.
+            MarketingAgreeEntity marketingAgreeEntity = MarketingAgreeEntity.builder()
+                    .agreeSq(
+                            getMarketingPk( reqUserJoin.getUserId(), marketingmarketingPkSq)
+                    )
+                    .accountType(AccountType.U)         //TODO 'U'는 JWT에서 가져올 예정
+                    .accountId( reqUserJoin.getUserId())
+                    .agreeFl(reqMarketingAgree.getAgreeFlEnum())
+                    .templateSq(parseInt((reqMarketingAgree.getTemplateSq())))
+                    .regUser( reqUserJoin.getUserId())
+                    .agreeDtm(LocalDateTime.now())
+                    .build();
+            marketingOkEntityList.add(marketingAgreeEntity);
+            marketingmarketingPkSq++;
+        }
+        marketingAgreeThRepository.saveAll(marketingOkEntityList);
+    }
+
+
+
+
+
 
 /*
 

@@ -19,7 +19,7 @@ public class UserBasicAgreeReqDto {
 
     @NotBlank(message = "1017")
     @JsonProperty("agreeFl")
-    @Pattern(regexp = "^[Yy]$", message = "1018")
+    @Pattern(regexp = "^[YyNn]$", message = "1018")
     String originAgreeFl;
 
     // 일단 agreeFl을 String으로 받아서 유효성 검사를 통과한다면? AgreeFl enum으로 변환하게 함.
