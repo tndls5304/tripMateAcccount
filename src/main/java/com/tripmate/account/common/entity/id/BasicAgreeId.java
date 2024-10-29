@@ -3,13 +3,15 @@ package com.tripmate.account.common.entity.id;
 import com.tripmate.account.common.enums.AccountType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.Builder;
 
 import java.util.Objects;
 @Builder
 @Embeddable
 public class BasicAgreeId {
-
+    @Enumerated(EnumType.STRING)
     @Column(name ="ACCOUNT_TYPE")
     private AccountType accountType;
     @Column(name = "ACCOUNT_ID",length = 30)

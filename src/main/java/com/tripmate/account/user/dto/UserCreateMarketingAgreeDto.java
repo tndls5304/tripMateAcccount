@@ -18,7 +18,7 @@ public class UserCreateMarketingAgreeDto {
 
     @JsonProperty("agreeFl")
     @NotBlank(message = "1021")
-    @Pattern(regexp = "^[YyNn]$", message = "1022") //대소문YN을제외하고 오류뱉어야는데 안먹힘
+    @Pattern(regexp = "^[YyNn]$", message = "1022") //대소문YN만 허용
     String originAgreeFl;
 
     public AgreeFl getAgreeFlEnum() {

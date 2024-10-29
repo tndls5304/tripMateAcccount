@@ -44,6 +44,7 @@ public enum CommonErrorCode {
     MARKETING_AGREE_TEMPLATE_BLANK("1020","마케팅 동의서 템플릿이 선택되지 않았습니다. 다시 시도해주세요",HttpStatus.BAD_REQUEST),
     MARKETING_AGREE_FL_BLANK("1021","마케팅동의 여부가 누락되었습니다",HttpStatus.BAD_REQUEST),
     MARKETING_AGREE_FL_YN_BLANK("1022","마케팅약관에 동의, 비동의를 했는지 확인해주세요",HttpStatus.BAD_REQUEST),
+    PASSWORD_DUPLICATION_ERROR("1023","현재 비밀번호,새 비밀번호 입력값이 같습니다 다르게 입력해주세요",HttpStatus.BAD_REQUEST),
 
     //1100~1199: 클라이언트측 요청,입력이 서버의 현재 상태 또는 비즈니스 규칙과 충돌하는 경우-서비스단에서함
     CONFLICT_ACCOUNT_ALREADY_EXISTS("1101", "이미 존재하는 아이디입니다.다른 id로 재 요청해주세요",HttpStatus.CONFLICT),

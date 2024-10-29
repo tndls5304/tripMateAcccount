@@ -19,12 +19,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 import static com.tripmate.account.common.errorcode.CommonErrorCode.*;
 import static java.lang.Integer.parseInt;
 
@@ -56,8 +58,8 @@ public class UserManageService {
      * 가입 절차:
      * 1) ID 중복 검사: JPA의 특성상 가입 전 중복 여부를 검사 ( JPA는 entity의 ID가 존재할경우 기존 entity로 간주하고 update를 수행하는 특성이 있기떄문)
      * 2) 필수약관 동의서(basicAgree)저장 :필수약관에 모두 동의한것만 이력에 저장
-     * 3) 마케팅 약관 동의 처리: 마케팅약관에 대한 동의는 동의,비동의 상태값을 가지나 동의한 데이터만 이력에 저장
-     *                        (추후에 클라이언트가 마케팅약관을 철회할때는 상태값을 비동의로 바꿀 예정)
+     * 3) 마케팅 약관 동의 처리: 마케팅약관에 대한 동의는 동의,비동의 상태값을 가지나 동의한 데이터만 이력에 저장 (추후에 클라이언트가 마케팅약관을 철회할때는 상태값을 비동의로 바꿀 예정)
+     * <p>
      * 위 세 단계가 모두 통과되면 @Transactional을 통해 가입 완료
      *
      * @param reqUserJoin 개인정보, 필수 약관 동의 리스트, 마케팅 약관 동의 리스트를 포함한 가입 요청 정보
@@ -79,8 +81,9 @@ public class UserManageService {
      *
      * @param modifyPwdDto 클라이언트의 현재 비밀번호(oldPwd)와 바꾸고 싶은 새 비밀번호(newPwd)
      */
+    @Transactional//더티체킹: 엔티티가 영속성 컨텍스트에 속한 상태가 되고 트랜잭션이 끝나는 시점에 변경된 엔티티가 자동으로 감지되어 UPDATE 쿼리가 실행
     public void modifyPwd(UserModifyPwdReqDto modifyPwdDto) {
-        Optional<UserEntity> userOptional = userTbRepository.findById(modifyPwdDto.getUserId());
+        Optional<UserEntity> userOptional = userTbRepository.findById(modifyPwdDto.getUserId());//이부분 세션할때 바꾸기
 
         // 접속 id에 해당하는 계정이 존재하는지 확인하기 TODO id는 세션이나 jwt에 들고오는걸로 바꾸기
         if (userOptional.isEmpty()) {
@@ -94,6 +97,7 @@ public class UserManageService {
             existingUserEntity.setPwdUpdDt(LocalDate.now());
             existingUserEntity.setUpdtDtm(LocalDateTime.now());
             // existingUserEntity.setUpdtUser(); TODO 서버이름 넣기
+            return;
         }
         throw new InvalidRequestException(INVALID_USER_PWD_MISMATCH);
     }
@@ -143,35 +147,30 @@ public class UserManageService {
 
             String partPkOfMarketing = getPartPkOfMarketing(userId);
             String reqTemplateSq = reqModifyOneMarketing.getTemplateSq();
-            AgreeFl reqAgreeFlForOneMarketing = reqModifyOneMarketing.getAgreeFl();
+            AgreeFl reqAgreeFlForOneMarketing = reqModifyOneMarketing.getAgreeFlEnum();
             List<MarketingAgreeEntity> agreedHistoryListForOneMarketing = marketingAgreeThRepository.findByAccountInfo(partPkOfMarketing, reqTemplateSq, AgreeFl.Y);
             //동의를 한경우
-            if (reqAgreeFlForOneMarketing == AgreeFl.Y) {
-                switch (agreedHistoryListForOneMarketing.size()) {
-                    case 0:
-                        saveNewMarketingAgree(userId, marketingPkSq, reqAgreeFlForOneMarketing, reqTemplateSq);                     //동의한적 없으니 새로운 동의테이블 만들어주기
-                        marketingPkSq++;
-                        break;
-                    case 1:
-                        break;
-                    default:
-                        ModifyErrorMarketingHistory(agreedHistoryListForOneMarketing);
+            if (AgreeFl.Y.equals(reqAgreeFlForOneMarketing)) {
+                if (agreedHistoryListForOneMarketing.isEmpty()) {
+                    insertNewMarketingAgree(userId, marketingPkSq, reqAgreeFlForOneMarketing, reqTemplateSq);                     //동의한적 없으니 새로운 동의테이블 만들어주기
+                    marketingPkSq++;
                 }
-            } else if (reqAgreeFlForOneMarketing == AgreeFl.N) {                                            //마케팅동의 거절을 한경우
-                switch (agreedHistoryListForOneMarketing.size()) {
-                    case 0:
-                        break;                    //continue;
-                    case 1:
-                        UpdateDisAgreeForMarketing(userId, agreedHistoryListForOneMarketing);
-                        break;
-                    default:
-                        ModifyErrorMarketingHistory(agreedHistoryListForOneMarketing);
+                if (agreedHistoryListForOneMarketing.size() > 1) {
+                    ModifyErrorMarketingHistory(agreedHistoryListForOneMarketing, reqModifyOneMarketing);
+                }
+            } else if (AgreeFl.N.equals(reqAgreeFlForOneMarketing)) {                                            //마케팅동의 거절을 한경우
+                if (agreedHistoryListForOneMarketing.size() == 1) {
+                    UpdateDisAgreeForMarketing(userId, agreedHistoryListForOneMarketing);
+                }
+                if (agreedHistoryListForOneMarketing.size() > 1) {
+                    ModifyErrorMarketingHistory(agreedHistoryListForOneMarketing, reqModifyOneMarketing);
                 }
             }
         }
     }
 
-    public void saveNewMarketingAgree(String userId, int marketingPkSq, AgreeFl reqAgreeFlForOneMarketing, String reqTemplateSq) {
+    //새 마케팅 동의 이력 저장하기
+    public void insertNewMarketingAgree(String userId, int marketingPkSq, AgreeFl reqAgreeFlForOneMarketing, String reqTemplateSq) {
         MarketingAgreeEntity marketingAgreeEntity = MarketingAgreeEntity.builder()
                 .agreeSq(getMarketingPk(userId, marketingPkSq))
                 .accountType(AccountType.U)
@@ -185,17 +184,53 @@ public class UserManageService {
         marketingAgreeThRepository.save(marketingAgreeEntity);//이전에 동의한적 없으면 동의이력테이블에 데이터 저장
     }
 
-    public void ModifyErrorMarketingHistory(List<MarketingAgreeEntity> agreedHistoryListForOneMarketing) {
-        //이력 리스트에서 하나씩 빼서 그것의 동의 여부를 비동의로 하고 철회시간 수정자 수정시간 바꿔주기 로그찍기
+    /*하나의 마케팅동의 이력테이블을 조회 했을때 '동의'한 이력은 딱 한번이어야 하는데 여러개일떄 오류다.
+     */
+
+    /**
+     * 하나의 마케팅동의 이력을 조회했을때 '동의'한 이력은 딱 한번이어야 한다.
+     * '동의'한 데이터가 여러개일떄 중복으로 저장되고 있었던거라 이때까지 마케팅 이력테이블이 잘못 관리되고있었던거니 오류가 발생한것이다.
+     * 그떄 이메서드가 호출된다.
+     * 단순히 오류를 던지면 이걸로 모든 서비스가 멈추면 안될것이다.
+     * 돈과 관련되거나 누가 피해보는 서비스가 아니므로 정상으로 돌려놓고 오류를 남기는것이 좋다고 생각했다
+     * 현재 클라이언트가 바꾸고 싶어하는 동의 상태값은 저장해두고 이전 기록들은 정상으로 돌려놔야 한다.
+     * 1.현재 클라이언트가 바꾸고 싶어하는 동의 상태값이 '동의'라면     (AgreeFl='Y')
+     * 이전 이력에 중복으로 저장되었던 '동의'데이터를 (AgreeFl=Y이였던 것들) 모두 '비동의'인 ('N')으로 돌려놓는다. 다 비동의로 돌려놓으면 안되니까 하나만  AgreeFl=Y 동의로 남겨둔다.
+     * 2.현재 클라이언트가 바꾸고 싶어하는 동의 상태값이 '비동의'라면   (AgreeFl='N')
+     * 이전 이력에 중복으로 저장되었던 '동의'데이터를 (AgreeFl=Y이였던 것들) 모두 '비동의'인 ('N')으로 돌려놓는다. 다 비동의로 돌려놓으면 된다.
+     *
+     * @param agreedHistoryListForOneMarketing
+     */
+    //이력에 있던 것들은 모두 '비동의'상태로 바꿔주고 수정자는 '서버이름'을 쓰고 에러는 어떤에러인지 로그로 알려주기.
+    public void ModifyErrorMarketingHistory(List<MarketingAgreeEntity> agreedHistoryListForOneMarketing, UserModifyMarketingAgreeReqDto reqModifyOneMarketing) {
+        if (agreedHistoryListForOneMarketing.isEmpty()) {
+            //예외뱉기 TODO 어떤에러지???????????리스트마다 이 짓을 해야하나
+        }
+        //현재 클라이언트 요청이 '동의'라면 이력에서 '동의'인 값들 중 하나는(firstErrorEntity) 상태값을 바꾸지 않고 그대로 두기 위함
+        MarketingAgreeEntity firstErrorEntity = agreedHistoryListForOneMarketing.get(0);
+
+        //현재 클라이언트 요청이'비동의'라면 이력에서 '동의'인 값들 중 하나는 '비동의'로 바꿔줌
+        if (reqModifyOneMarketing.getAgreeFlEnum() == AgreeFl.N) {
+            firstErrorEntity.setAgreeFl(AgreeFl.N);
+            firstErrorEntity.setDAgreeDtm(LocalDateTime.now());
+            firstErrorEntity.setUpdtDtm(LocalDateTime.now());
+            firstErrorEntity.setUpdtUser("serverName");//        TODO 서버이름을 바꾸기
+        }
+
+        //나머지 이력에서 '동의'인 값들을 모두 '비동의'로 저장함
         for (MarketingAgreeEntity errorMarketingEntity : agreedHistoryListForOneMarketing) {
-            errorMarketingEntity.setAgreeFl(AgreeFl.N);
-            errorMarketingEntity.setDAgreeDtm(LocalDateTime.now());
-            errorMarketingEntity.setUpdtDtm(LocalDateTime.now());
-            errorMarketingEntity.setUpdtUser("serverName");
-            log.error("");
+            if (errorMarketingEntity != firstErrorEntity) {
+                errorMarketingEntity.setAgreeFl(AgreeFl.N);
+                errorMarketingEntity.setDAgreeDtm(LocalDateTime.now());
+                errorMarketingEntity.setUpdtDtm(LocalDateTime.now());
+                errorMarketingEntity.setUpdtUser("serverName");//        TODO 서버이름을 바꾸기
+                // 로그 기록: 어떤 동의 이력을 비동의로 변경했는지에 대한 정보 추가
+                log.error("Changed marketing agreement status from 'Y' to 'N' for user: {} due to multiple agreements.", errorMarketingEntity.getUpdtUser());
+            }
+
         }
     }
-
+    //마케팅 동의여부에 '동의'였던 데이터를 '비동의'로 바꿈
     public void UpdateDisAgreeForMarketing(String userId, List<MarketingAgreeEntity> agreedHistoryListForOneMarketing) {
         MarketingAgreeEntity existingEntity = agreedHistoryListForOneMarketing.get(0);
         MarketingAgreeEntity updatedEntity = MarketingAgreeEntity.builder()
@@ -261,7 +296,7 @@ public class UserManageService {
     }
 
     //회원가입할때 계정정보 저장하기
-    public void insertAccountInfo(UserJoinReqDto reqUserJoin){
+    public void insertAccountInfo(UserJoinReqDto reqUserJoin) {
         UserEntity userJoinEntity = UserEntity.builder()
                 .userId(reqUserJoin.getUserId())
                 .userPwd(
@@ -271,14 +306,15 @@ public class UserManageService {
                 .phoneNo(reqUserJoin.getPhoneNo())
                 .emailId(reqUserJoin.getEmailId())
                 .emailDomain(reqUserJoin.getEmailDomain())
-                .regUser(reqUserJoin.getUserId())
+                .regUser(reqUserJoin.getUserId())//서버이름으로 바꾸기⭐
+                .pwdUpdDt(LocalDate.now())//가입하면 비번업데이트 날짜도 기록함
                 .build();
         userTbRepository.save(userJoinEntity);
     }
 
 
     //회원가입할때  필수 약관 동의 리스트 저장하기
-    public void insertBasicAgree(UserJoinReqDto reqUserJoin){
+    public void insertBasicAgree(UserJoinReqDto reqUserJoin) {
         List<UserBasicAgreeReqDto> reqBasicAgreeList = reqUserJoin.getBasicAgreeDtoList();
         if (reqBasicAgreeList == null || reqBasicAgreeList.isEmpty()) {
             throw new InvalidRequestException(INVALID_BASIC_AGREE_BLANK);
@@ -292,16 +328,16 @@ public class UserManageService {
                                     .templateSq(parseInt(reqBasicAgree.getTemplateSq()))
                                     .build()
                     )
-                    .regUser(reqUserJoin.getUserId())
                     .agreeFl((reqBasicAgree.getAgreeFlEnum()))
+                    .agreeDt(LocalDate.now())
+                    .regUser(reqUserJoin.getUserId())//TODO 서버이름 넣기
                     .build();
             basicAgreeThRepository.save(requireAgreeEntity);
         }
     }
 
     // 마케팅 약관 동의 리스트 저장하기
-    public void insertMarketingAgree(UserJoinReqDto reqUserJoin){
-
+    public void insertMarketingAgree(UserJoinReqDto reqUserJoin) {
         List<UserCreateMarketingAgreeDto> reqMarketingAgreeList = reqUserJoin.getMarketingAgreeDtoList();
         if (reqMarketingAgreeList == null || reqMarketingAgreeList.isEmpty()) {
             throw new InvalidRequestException(INVALID_MARKETING_AGREE_BLANK);
@@ -319,14 +355,14 @@ public class UserManageService {
             //마케팅 약관에 동의를 해야지만 마케팅동의 이력테이블에 저장됨.추후에 비동의로 수정할 경우 철회시간을 기록하기.
             MarketingAgreeEntity marketingAgreeEntity = MarketingAgreeEntity.builder()
                     .agreeSq(
-                            getMarketingPk( reqUserJoin.getUserId(), marketingmarketingPkSq)
+                            getMarketingPk(reqUserJoin.getUserId(), marketingmarketingPkSq)
                     )
                     .accountType(AccountType.U)         //TODO 'U'는 JWT에서 가져올 예정
-                    .accountId( reqUserJoin.getUserId())
+                    .accountId(reqUserJoin.getUserId())
                     .agreeFl(reqMarketingAgree.getAgreeFlEnum())
-                    .templateSq(parseInt((reqMarketingAgree.getTemplateSq())))
-                    .regUser( reqUserJoin.getUserId())
                     .agreeDtm(LocalDateTime.now())
+                    .regUser(reqUserJoin.getUserId())//TODO 서버이름넣기
+                    .templateSq(parseInt((reqMarketingAgree.getTemplateSq())))
                     .build();
             marketingOkEntityList.add(marketingAgreeEntity);
             marketingmarketingPkSq++;
@@ -335,21 +371,14 @@ public class UserManageService {
     }
 
 
-
-
-
-
-/*
-
-
     public UserLoginRespDto login(UserLoginReqDto reqLoginDto) {
         //아이디로 일단 조회하고 계정이 없으면 예외던지기
-        String reqUserId=reqLoginDto.getUserId();
-        UserEntity userEntity =userTbRepository.findById(reqUserId).orElseThrow(()
+        String reqUserId = reqLoginDto.getUserId();
+        UserEntity userEntity = userTbRepository.findById(reqUserId).orElseThrow(()
                 -> new InvalidRequestException(INVALID_USER_ID_MISMATCH));
 
         //아이디가 일치하니까 ,비번을 비교
-        if(!passwordEncoder.matches(reqLoginDto.getUserPwd(), userEntity.getUserPwd())){
+        if (!passwordEncoder.matches(reqLoginDto.getUserPwd(), userEntity.getUserPwd())) {
             throw new InvalidRequestException(INVALID_USER_PWD_MISMATCH);
         }
 
@@ -368,7 +397,7 @@ public class UserManageService {
                 .build();
     }
 
-   */
+
 }
 
 

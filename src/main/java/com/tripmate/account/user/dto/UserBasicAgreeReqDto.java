@@ -14,12 +14,12 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserBasicAgreeReqDto {
 
-    @NotBlank(message = "1016")     //"templateSq": "" 빈문자열일때  ["templateSq": ""]자체가 없을때도 유효성검사에 걸림 @NotNull은 ["templateSq": ""]자체가 없을때만 유효성검사에서 걸림
+    @NotBlank(message = "1016")     //@NotNull은 ["templateSq": ""]자체가 없을때만 유효성검사에서 걸림
     String templateSq;
 
     @NotBlank(message = "1017")
     @JsonProperty("agreeFl")
-    @Pattern(regexp = "^[YyNn]$", message = "1018")
+    @Pattern(regexp = "^[Yy]$", message = "1018")// "Y" 또는 "y"만 유효하게 처리
     String originAgreeFl;
 
     // 일단 agreeFl을 String으로 받아서 유효성 검사를 통과한다면? AgreeFl enum으로 변환하게 함.

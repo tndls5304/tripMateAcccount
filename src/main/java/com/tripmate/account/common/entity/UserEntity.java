@@ -39,7 +39,6 @@ public class UserEntity extends BaseEntity {
     @Column(name = "EMAIL_DOMAIN", nullable = false, length = 30)
     String emailDomain;
 
-    @CreatedDate    // LocalDate +@CreatedDate =>  DB에서 DATE 타입으로 가입하는 '날짜'만 저장되도록 자동으로 처리됨
     @Column(name = "PWD_UPD_DT")
     LocalDate pwdUpdDt;
 
