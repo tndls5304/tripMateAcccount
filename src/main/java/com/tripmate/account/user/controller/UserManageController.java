@@ -62,18 +62,12 @@ public class UserManageController {
         return new CommonResponse<>().toRespEntity(SUCCESS);
     }
 
-/*
+
     //로그인
-    public ResponseEntity<CommonResponse<UserLoginRespDto>> login(@Valid @RequestBody UserLoginReqDto userLoginReqDto){
-        UserLoginRespDto userLoginRespDto=service.login(userLoginReqDto);
-        return new CommonResponse<UserLoginRespDto>().toRespEntity(userLoginRespDto,SUCCESS);
-     /* 원래 이렇게 썻는데,, 통일성있게 바꿈
-     CommonResponse<UserLoginRespDto> response=new CommonResponse<>(SUCCESS,userLoginRespDto);
-     return ResponseEntity.ok(response);
-*/
-
-
-
+    public ResponseEntity<CommonResponse<UserLoginRespDto>> login(@Valid @RequestBody UserLoginReqDto userLoginReqDto) {
+        UserLoginRespDto userLoginRespDto = service.login(userLoginReqDto);
+        return new CommonResponse<UserLoginRespDto>().toRespEntity(userLoginRespDto, SUCCESS);
+    }
 
 
     /**
@@ -98,6 +92,7 @@ public class UserManageController {
 
 
     /**
+     * 마케팅 동의 수정 요청
      * 이전 마케팅약관에 동의를 한적 있다면 동의이력을 수정하거나 동의한적 없으면 동의이력 생성
      * @param ModifyMarketingAgreeDtoList 마케팅 동의 리스트
      * @return

@@ -29,10 +29,13 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 public class MarketingAgreeEntity extends BaseEntity {
     @Id
-    @Column(name = "AGREE_SQ", length = 39, nullable = false)//날짜시간(14자)+계정타입+ID(20자)+SQ(4자리)
+    @Column(name = "AGREE_SQ", nullable = false)//길이 정해지면 넣기 ⭐⭐
     String agreeSq;
+
+    @Enumerated(EnumType.STRING)
     @Column(name = "ACCOUNT_TYPE", nullable = false)
     AccountType accountType;
+
     @Column(name = "ACCOUNT_ID", length = 30, nullable = false)
     String accountId;
 
@@ -42,8 +45,10 @@ public class MarketingAgreeEntity extends BaseEntity {
 
     @Column(name = "AGREE_DTM")
     LocalDateTime agreeDtm;
+
     @Column(name = "D_AGREE_DTM")
     LocalDateTime dAgreeDtm;
+
     @Column(name = "TEMPLATE_SQ", nullable = false)
     int templateSq;
 }

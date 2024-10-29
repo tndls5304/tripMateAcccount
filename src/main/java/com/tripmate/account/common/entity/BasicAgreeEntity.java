@@ -36,10 +36,12 @@ public class BasicAgreeEntity extends BaseEntity {
 //    int templateSq;
     @EmbeddedId
     BasicAgreeId id;
-    @Enumerated(EnumType.STRING)//0과 1로 저장되길래
+
+    @Enumerated(EnumType.STRING)
     @Column(name = "AGREE_FL", nullable = false, columnDefinition = "ENUM('Y', 'N') DEFAULT 'Y'") // ENUM 타입으로 정의
     AgreeFl agreeFl;
-    @CreatedDate
+
+
     @Column(name = "AGREE_DT", nullable = false)
     LocalDate agreeDt;
     //-----------------수정에 관한것도 상속받는중인데 어떡하지---------
