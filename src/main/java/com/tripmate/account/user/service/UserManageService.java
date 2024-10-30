@@ -184,8 +184,6 @@ public class UserManageService {
         marketingAgreeThRepository.save(marketingAgreeEntity);//이전에 동의한적 없으면 동의이력테이블에 데이터 저장
     }
 
-    /*하나의 마케팅동의 이력테이블을 조회 했을때 '동의'한 이력은 딱 한번이어야 하는데 여러개일떄 오류다.
-     */
 
     /**
      * 하나의 마케팅동의 이력을 조회했을때 '동의'한 이력은 딱 한번이어야 한다.
@@ -370,7 +368,7 @@ public class UserManageService {
         marketingAgreeThRepository.saveAll(marketingOkEntityList);
     }
 
-
+/*
     public UserLoginRespDto login(UserLoginReqDto reqLoginDto) {
         //아이디로 일단 조회하고 계정이 없으면 예외던지기
         String reqUserId = reqLoginDto.getUserId();
@@ -396,7 +394,7 @@ public class UserManageService {
                 .lastLoginDt(user.getLastLoginDt()) // 로그인 시간
                 .build();
     }
-
+*/
 
 }
 

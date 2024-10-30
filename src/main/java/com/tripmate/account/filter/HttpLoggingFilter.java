@@ -76,7 +76,6 @@ public class HttpLoggingFilter implements Filter {
         // 응답 복사해서 클라이언트로 보냄
         wrappedResponse.copyBodyToResponse();
         }
-
     }
 
 

@@ -1,6 +1,7 @@
 package com.tripmate.account.common.entity;
 
 import com.tripmate.account.common.entity.base.BaseEntity;
+import com.tripmate.account.config.security.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -8,6 +9,8 @@ import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDate;
+import java.util.Collection;
+import java.util.Set;
 
 @Entity
 @Table(name = "USER_TB")
@@ -44,4 +47,11 @@ public class UserEntity extends BaseEntity {
 
     @Column(name = "LAST_LOGIN_DT")
     LocalDate lastLoginDt;
+
+    //권한가져오기-------------------------------------------------------
+    private Set<Role> roles; // 중복된 권한을 허용하지 않기 때문에, 같은 권한이 여러 번 추가되는 상황을 방지할 수 있습니다.
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
 }
