@@ -1,15 +1,13 @@
 package com.tripmate.account.common.entity;
 
 import com.tripmate.account.common.entity.base.BaseEntity;
-import com.tripmate.account.config.security.Role;
+import com.tripmate.account.security.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDate;
-import java.util.Collection;
 import java.util.Set;
 
 @Entity

@@ -1,0 +1,44 @@
+[startup] [2024-11-01 16:53:38.384] [background-preinit] [INFO] [o.h.v.i.u.Version] - HV000001: Hibernate Validator 8.0.1.Final 
+[startup] [2024-11-01 16:53:38.449] [main] [INFO] [c.t.a.AccountApplication] - Starting AccountApplication using Java 17 with PID 13936 (D:\dev\tripApp\tripMateAcccount\build\classes\java\main started by leesuin in D:\dev\tripApp\tripMateAcccount) 
+[startup] [2024-11-01 16:53:38.450] [main] [INFO] [c.t.a.AccountApplication] - No active profile set, falling back to 1 default profile: "default" 
+[startup] [2024-11-01 16:53:39.487] [main] [INFO] [o.s.d.r.c.RepositoryConfigurationDelegate] - Bootstrapping Spring Data JPA repositories in DEFAULT mode. 
+[startup] [2024-11-01 16:53:39.583] [main] [INFO] [o.s.d.r.c.RepositoryConfigurationDelegate] - Finished Spring Data repository scanning in 83 ms. Found 3 JPA repository interfaces. 
+[startup] [2024-11-01 16:53:40.583] [main] [INFO] [o.s.b.w.e.t.TomcatWebServer] - Tomcat initialized with port 8080 (http) 
+[startup] [2024-11-01 16:53:40.600] [main] [INFO] [o.a.c.h.Http11NioProtocol] - Initializing ProtocolHandler ["http-nio-8080"] 
+[startup] [2024-11-01 16:53:40.607] [main] [INFO] [o.a.c.c.StandardService] - Starting service [Tomcat] 
+[startup] [2024-11-01 16:53:40.608] [main] [INFO] [o.a.c.c.StandardEngine] - Starting Servlet engine: [Apache Tomcat/10.1.30] 
+[startup] [2024-11-01 16:53:40.768] [main] [INFO] [o.a.c.c.C.[.[.[/]] - Initializing Spring embedded WebApplicationContext 
+[startup] [2024-11-01 16:53:40.769] [main] [INFO] [o.s.b.w.s.c.ServletWebServerApplicationContext] - Root WebApplicationContext: initialization completed in 2269 ms 
+[startup] [2024-11-01 16:53:41.081] [main] [INFO] [o.h.j.i.u.LogHelper] - HHH000204: Processing PersistenceUnitInfo [name: default] 
+[startup] [2024-11-01 16:53:41.158] [main] [INFO] [o.h.Version] - HHH000412: Hibernate ORM core version 6.5.3.Final 
+[startup] [2024-11-01 16:53:41.207] [main] [INFO] [o.h.c.i.RegionFactoryInitiator] - HHH000026: Second-level cache disabled 
+[startup] [2024-11-01 16:53:41.795] [main] [INFO] [o.s.o.j.p.SpringPersistenceUnitInfo] - No LoadTimeWeaver setup: ignoring JPA class transformer 
+[startup] [2024-11-01 16:53:41.846] [main] [INFO] [c.z.h.HikariDataSource] - HikariPool-1 - Starting... 
+[startup] [2024-11-01 16:53:42.090] [main] [INFO] [c.z.h.p.HikariPool] - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@48ee3c2d 
+[startup] [2024-11-01 16:53:42.094] [main] [INFO] [c.z.h.HikariDataSource] - HikariPool-1 - Start completed. 
+[startup] [2024-11-01 16:53:43.594] [main] [INFO] [o.h.e.t.j.p.i.JtaPlatformInitiator] - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration) 
+[startup] [2024-11-01 16:53:43.834] [main] [INFO] [o.s.o.j.LocalContainerEntityManagerFactoryBean] - Initialized JPA EntityManagerFactory for persistence unit 'default' 
+[startup] [2024-11-01 16:53:44.201] [main] [INFO] [o.s.d.j.r.q.QueryEnhancerFactory] - Hibernate is in classpath; If applicable, HQL parser will be used. 
+[startup] [2024-11-01 16:53:45.071] [main] [WARN] [o.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext] - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'userManageController' defined in file [D:\dev\tripApp\tripMateAcccount\build\classes\java\main\com\tripmate\account\user\controller\UserManageController.class]: Unsatisfied dependency expressed through constructor parameter 1: No qualifying bean of type 'org.springframework.security.authentication.AuthenticationManager' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {} 
+[startup] [2024-11-01 16:53:45.073] [main] [INFO] [o.s.o.j.LocalContainerEntityManagerFactoryBean] - Closing JPA EntityManagerFactory for persistence unit 'default' 
+[startup] [2024-11-01 16:53:45.076] [main] [INFO] [c.z.h.HikariDataSource] - HikariPool-1 - Shutdown initiated... 
+[startup] [2024-11-01 16:53:45.088] [main] [INFO] [c.z.h.HikariDataSource] - HikariPool-1 - Shutdown completed. 
+[startup] [2024-11-01 16:53:45.092] [main] [INFO] [o.a.c.c.StandardService] - Stopping service [Tomcat] 
+[startup] [2024-11-01 16:53:45.116] [main] [INFO] [o.s.b.a.l.ConditionEvaluationReportLogger] - 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled. 
+[startup] [2024-11-01 16:53:45.144] [main] [ERROR] [o.s.b.d.LoggingFailureAnalysisReporter] - 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Parameter 1 of constructor in com.tripmate.account.user.controller.UserManageController required a bean of type 'org.springframework.security.authentication.AuthenticationManager' that could not be found.
+
+
+Action:
+
+Consider defining a bean of type 'org.springframework.security.authentication.AuthenticationManager' in your configuration.
+ 

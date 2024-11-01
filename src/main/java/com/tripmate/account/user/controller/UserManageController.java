@@ -1,6 +1,7 @@
 package com.tripmate.account.user.controller;
 
 import com.tripmate.account.common.reponse.CommonResponse;
+import com.tripmate.account.security.GeneralUserDetailsService;
 import com.tripmate.account.user.dto.*;
 import com.tripmate.account.user.service.UserManageService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,6 +13,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import static com.tripmate.account.common.errorcode.CommonErrorCode.SUCCESS;
@@ -28,7 +32,11 @@ import static com.tripmate.account.common.errorcode.CommonErrorCode.SUCCESS;
 @RequiredArgsConstructor
 @Tag(name = "투숙객 계정 관련 ", description = "투숙객 계정관련 API")
 public class UserManageController {
+
     private final UserManageService service;
+
+    private final AuthenticationManager authenticationManager;
+    private final GeneralUserDetailsService generalUserDetailsService;
 
     /**
      * (숙박회원) 아이디 중복 검사
@@ -64,11 +72,21 @@ public class UserManageController {
 
 
     //로그인
-    public ResponseEntity<CommonResponse<UserLoginRespDto>> login(@Valid @RequestBody UserLoginReqDto userLoginReqDto) {
-        UserLoginRespDto userLoginRespDto = service.login(userLoginReqDto);
-        return new CommonResponse<UserLoginRespDto>().toRespEntity(userLoginRespDto, SUCCESS);
+    @PostMapping("api/account/user/login")
+    public ResponseEntity<CommonResponse<Void>> login(@RequestBody UserLoginReqDto userLoginReqDto) {
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userLoginReqDto.getUserId(), userLoginReqDto.getUserPwd()));
+        generalUserDetailsService.loadUserByUsername(userLoginReqDto.getUserId());
+        return new CommonResponse<>().toRespEntity( SUCCESS);
     }
+/*
+인증 과정:
 
+authenticationManager.authenticate(...) 메서드가 호출되면, Spring Security는 다음과 같은 과정을 수행합니다:
+주어진 사용자 ID를 기반으로 사용자를 찾습니다.
+데이터베이스에서 해당 사용자의 정보를 가져오고, 제공된 비밀번호와 비교하여 유효성을 검증합니다.
+비밀번호가 일치하면 인증이 성공하고, 해당 사용자에 대한 Authentication 객체가 반환됩니다.
+비밀번호가 일치하지 않거나 사용자가 존재하지 않으면 AuthenticationException이 발생하여 예외 처리를 수행합니다.
+ */
 
     /**
      * (숙박회원)비밀번호 변경 요청

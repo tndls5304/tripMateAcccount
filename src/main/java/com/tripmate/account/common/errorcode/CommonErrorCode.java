@@ -61,6 +61,12 @@ public enum CommonErrorCode {
 
     //3000번대:일반고객 상대
 
+    //4000번대 :시큐리티
+    UNAUTHORIZED_ACCESS("4000", "인증이 필요합니다.", HttpStatus.UNAUTHORIZED), //HttpStatus 401
+    FORBIDDEN_ACCESS("4001", "접근 권한이 없습니다.", HttpStatus.FORBIDDEN),//403 Forbidden
+//    INVALID_TOKEN("4002", "유효하지 않은 토큰입니다.", HttpStatus.UNAUTHORIZED),
+//    EXPIRED_TOKEN("4003", "토큰이 만료되었습니다.", HttpStatus.UNAUTHORIZED),
+
     // 5000번대: 일반 서버 오류
     INTERNAL_SERVER_ERROR("5000", "서버오류",HttpStatus.INTERNAL_SERVER_ERROR),
 

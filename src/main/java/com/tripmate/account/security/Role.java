@@ -1,7 +1,10 @@
-package com.tripmate.account.config.security;
+package com.tripmate.account.security;
 
 import org.springframework.security.core.GrantedAuthority;
 
+/**
+ * GrantedAuthority 인터페이스를 구현하며, 사용자 권한(Authority)을 제공
+ */
 public class Role  implements GrantedAuthority {
     private String code; // 예: RU00, RP00, RA00 등
     private String description; // 예: 일반 회원, 일반 비즈니스 회원 등
