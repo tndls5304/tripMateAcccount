@@ -73,7 +73,7 @@ public class HttpLoggingFilter implements Filter {
         String resContent = new String(wrappedResponse.getContentAsByteArray(), StandardCharsets.UTF_8);
         log.info("Status: {}, Response: {}", httpStatus, resContent);
 
-        // 응답 복사해서 클라이언트로 보냄
+        // 응답 복사해서 클라이언트로 보냄. 클라가 응답본문 받지 못하니 빠트리지말자
         wrappedResponse.copyBodyToResponse();
         }
     }
