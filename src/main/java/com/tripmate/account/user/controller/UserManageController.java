@@ -74,7 +74,8 @@ public class UserManageController {
     //로그인
     @PostMapping("api/account/user/login")
     public ResponseEntity<CommonResponse<Void>> login(@RequestBody UserLoginReqDto userLoginReqDto) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userLoginReqDto.getUserId(), userLoginReqDto.getUserPwd()));
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(userLoginReqDto.getUserId(), userLoginReqDto.getUserPwd()));
         generalUserDetailsService.loadUserByUsername(userLoginReqDto.getUserId());
         return new CommonResponse<>().toRespEntity( SUCCESS);
     }
