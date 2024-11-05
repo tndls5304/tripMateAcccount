@@ -37,10 +37,8 @@ public class GeneralUserDetailsService implements UserDetailsService {
         UserEntity idPassUserEntity = userEntityOptional.get();
 
         // UserDetails 객체로 변환하여 반환
-        return new org.springframework.security.core.userdetails.User(
-                idPassUserEntity.getUserId(),       // 사용자 아이디
-                idPassUserEntity.getUserPwd(),     // 사용자 비밀번호
-                idPassUserEntity.getRoles()    // 사용자 권한 리스트
+        return new UserLoginEntity(
+                idPassUserEntity
         );
     }
 

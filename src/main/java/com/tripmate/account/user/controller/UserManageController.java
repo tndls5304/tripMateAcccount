@@ -34,7 +34,6 @@ import static com.tripmate.account.common.errorcode.CommonErrorCode.SUCCESS;
 public class UserManageController {
 
     private final UserManageService service;
-
     private final AuthenticationManager authenticationManager;
     private final GeneralUserDetailsService generalUserDetailsService;
 
