@@ -34,7 +34,7 @@ import static com.tripmate.account.common.errorcode.CommonErrorCode.SUCCESS;
 public class UserManageController {
 
     private final UserManageService service;
-    private final AuthenticationManager authenticationManager;
+//    private final AuthenticationManager authenticationManager;
     private final GeneralUserDetailsService generalUserDetailsService;
 
     /**
@@ -71,13 +71,13 @@ public class UserManageController {
 
 
     //로그인
-    @PostMapping("api/account/user/login")
-    public ResponseEntity<CommonResponse<Void>> login(@RequestBody UserLoginReqDto userLoginReqDto) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(userLoginReqDto.getUserId(), userLoginReqDto.getUserPwd()));
-        generalUserDetailsService.loadUserByUsername(userLoginReqDto.getUserId());
-        return new CommonResponse<>().toRespEntity( SUCCESS);
-    }
+//    @PostMapping("api/account/user/login")
+//    public ResponseEntity<CommonResponse<Void>> login(@RequestBody UserLoginReqDto userLoginReqDto) {
+//        Authentication authentication = authenticationManager.authenticate(
+//                new UsernamePasswordAuthenticationToken(userLoginReqDto.getUserId(), userLoginReqDto.getUserPwd()));
+//        generalUserDetailsService.loadUserByUsername(userLoginReqDto.getUserId());
+//        return new CommonResponse<>().toRespEntity( SUCCESS);
+//    }
 /*
 인증 과정:
 

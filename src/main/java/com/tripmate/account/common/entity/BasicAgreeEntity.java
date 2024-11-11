@@ -41,7 +41,6 @@ public class BasicAgreeEntity extends BaseEntity {
     @Column(name = "AGREE_FL", nullable = false, columnDefinition = "ENUM('Y', 'N') DEFAULT 'Y'") // ENUM 타입으로 정의
     AgreeFl agreeFl;
 
-
     @Column(name = "AGREE_DT", nullable = false)
     LocalDate agreeDt;
     //-----------------수정에 관한것도 상속받는중인데 어떡하지---------
