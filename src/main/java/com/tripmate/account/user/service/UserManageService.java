@@ -70,6 +70,10 @@ public class UserManageService {
             throw new DataConflictException(CONFLICT_ACCOUNT_ALREADY_EXISTS);
         }
         insertAccountInfo(reqUserJoin);
+        userTbRepository.flush(); //⭐서버가 이 3가지 작업을 할동안 이계정의 또 다른서버를 띄우고 동시에 요청이 갈 수 있다
+        // 중복으로 저장하려고 할떄 이 서버에서 계정정보를 저장하고 필수, 마케팅약관 까지 다등록할때까지 다른서버에서 쓰레드가 계속 기다릴것이다
+        //근데 그런 기다리는시간을 줄이기 위해서 먼저 계정정보를 저장했네? 그럼 다른서버에서도 계정을 등록하기전에 이걸보고 굳이 오래 기다리지 않는다
+        //
         insertBasicAgree(reqUserJoin);
         insertMarketingAgree(reqUserJoin);
     }
@@ -271,7 +275,7 @@ public class UserManageService {
         //14자리 현재 시간 (yyyyMMddHHmmss)
         String dateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
 
-        // AgreeSq 조합: account_type(1글자)  accountIdPadded(20자) +날짜 시간(14자리)+ 시퀀스
+        // AgreeSq 조합: userType(1글자)  userIdPadded(20자) +날짜 시간(14자리)+ 시퀀스
         return userType + userIdPadded + marketingPkSqFormatted + dateTime;
         // 키 생성 수정함 ️ 타입+ id+날짜시간분초까지
     }

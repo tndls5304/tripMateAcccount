@@ -1,0 +1,20 @@
+[startup] [2024-11-08 13:24:50.811] [background-preinit] [INFO] [o.h.v.i.u.Version] - HV000001: Hibernate Validator 8.0.1.Final 
+[startup] [2024-11-08 13:24:50.917] [main] [INFO] [c.t.a.AccountApplication] - Starting AccountApplication using Java 17 with PID 24460 (D:\dev\tripApp\tripMateAcccount\build\classes\java\main started by leesuin in D:\dev\tripApp\tripMateAcccount) 
+[startup] [2024-11-08 13:24:50.921] [main] [INFO] [c.t.a.AccountApplication] - No active profile set, falling back to 1 default profile: "default" 
+[startup] [2024-11-08 13:24:52.938] [main] [INFO] [o.s.d.r.c.RepositoryConfigurationDelegate] - Bootstrapping Spring Data JPA repositories in DEFAULT mode. 
+[startup] [2024-11-08 13:24:53.147] [main] [INFO] [o.s.d.r.c.RepositoryConfigurationDelegate] - Finished Spring Data repository scanning in 181 ms. Found 3 JPA repository interfaces. 
+[startup] [2024-11-08 13:24:55.051] [main] [INFO] [o.s.b.w.e.t.TomcatWebServer] - Tomcat initialized with port 8080 (http) 
+[startup] [2024-11-08 13:24:55.070] [main] [INFO] [o.a.c.h.Http11NioProtocol] - Initializing ProtocolHandler ["http-nio-8080"] 
+[startup] [2024-11-08 13:24:55.078] [main] [INFO] [o.a.c.c.StandardService] - Starting service [Tomcat] 
+[startup] [2024-11-08 13:24:55.079] [main] [INFO] [o.a.c.c.StandardEngine] - Starting Servlet engine: [Apache Tomcat/10.1.30] 
+[startup] [2024-11-08 13:24:55.255] [main] [INFO] [o.a.c.c.C.[.[.[/]] - Initializing Spring embedded WebApplicationContext 
+[startup] [2024-11-08 13:24:55.257] [main] [INFO] [o.s.b.w.s.c.ServletWebServerApplicationContext] - Root WebApplicationContext: initialization completed in 4247 ms 
+[startup] [2024-11-08 13:24:55.586] [main] [INFO] [o.h.j.i.u.LogHelper] - HHH000204: Processing PersistenceUnitInfo [name: default] 
+[startup] [2024-11-08 13:24:55.691] [main] [INFO] [o.h.Version] - HHH000412: Hibernate ORM core version 6.5.3.Final 
+[startup] [2024-11-08 13:24:55.759] [main] [INFO] [o.h.c.i.RegionFactoryInitiator] - HHH000026: Second-level cache disabled 
+[startup] [2024-11-08 13:24:56.359] [main] [INFO] [o.s.o.j.p.SpringPersistenceUnitInfo] - No LoadTimeWeaver setup: ignoring JPA class transformer 
+[startup] [2024-11-08 13:24:56.418] [main] [INFO] [c.z.h.HikariDataSource] - HikariPool-1 - Starting... 
+[startup] [2024-11-08 13:24:56.699] [main] [INFO] [c.z.h.p.HikariPool] - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@72a33316 
+[startup] [2024-11-08 13:24:56.704] [main] [INFO] [c.z.h.HikariDataSource] - HikariPool-1 - Start completed. 
+[startup] [2024-11-08 13:24:59.076] [main] [INFO] [o.h.e.t.j.p.i.JtaPlatformInitiator] - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration) 
+[startup] [2024-11-08 13:24:59.504] [main] [INFO] [o.s.o.j.LocalContainerEntityManagerFactoryBean] - Initialized JPA EntityManagerFactory for persistence unit 'default' 

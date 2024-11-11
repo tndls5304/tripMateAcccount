@@ -1,0 +1,69 @@
+[startup] [2024-11-10 19:22:22.280] [background-preinit] [INFO] [o.h.v.i.u.Version] - HV000001: Hibernate Validator 8.0.1.Final 
+[startup] [2024-11-10 19:22:22.441] [main] [INFO] [c.t.a.AccountApplication] - Starting AccountApplication using Java 17 with PID 42424 (D:\dev\tripApp\tripMateAcccount\build\classes\java\main started by leesuin in D:\dev\tripApp\tripMateAcccount) 
+[startup] [2024-11-10 19:22:22.443] [main] [INFO] [c.t.a.AccountApplication] - No active profile set, falling back to 1 default profile: "default" 
+[startup] [2024-11-10 19:22:24.402] [main] [INFO] [o.s.d.r.c.RepositoryConfigurationDelegate] - Bootstrapping Spring Data JPA repositories in DEFAULT mode. 
+[startup] [2024-11-10 19:22:24.546] [main] [INFO] [o.s.d.r.c.RepositoryConfigurationDelegate] - Finished Spring Data repository scanning in 128 ms. Found 3 JPA repository interfaces. 
+[startup] [2024-11-10 19:22:25.953] [main] [INFO] [o.s.b.w.e.t.TomcatWebServer] - Tomcat initialized with port 8080 (http) 
+[startup] [2024-11-10 19:22:25.969] [main] [INFO] [o.a.c.h.Http11NioProtocol] - Initializing ProtocolHandler ["http-nio-8080"] 
+[startup] [2024-11-10 19:22:25.974] [main] [INFO] [o.a.c.c.StandardService] - Starting service [Tomcat] 
+[startup] [2024-11-10 19:22:25.975] [main] [INFO] [o.a.c.c.StandardEngine] - Starting Servlet engine: [Apache Tomcat/10.1.30] 
+[startup] [2024-11-10 19:22:26.132] [main] [INFO] [o.a.c.c.C.[.[.[/]] - Initializing Spring embedded WebApplicationContext 
+[startup] [2024-11-10 19:22:26.133] [main] [INFO] [o.s.b.w.s.c.ServletWebServerApplicationContext] - Root WebApplicationContext: initialization completed in 3576 ms 
+[startup] [2024-11-10 19:22:26.441] [main] [INFO] [o.h.j.i.u.LogHelper] - HHH000204: Processing PersistenceUnitInfo [name: default] 
+[startup] [2024-11-10 19:22:26.522] [main] [INFO] [o.h.Version] - HHH000412: Hibernate ORM core version 6.5.3.Final 
+[startup] [2024-11-10 19:22:26.572] [main] [INFO] [o.h.c.i.RegionFactoryInitiator] - HHH000026: Second-level cache disabled 
+[startup] [2024-11-10 19:22:27.086] [main] [INFO] [o.s.o.j.p.SpringPersistenceUnitInfo] - No LoadTimeWeaver setup: ignoring JPA class transformer 
+[startup] [2024-11-10 19:22:27.143] [main] [INFO] [c.z.h.HikariDataSource] - HikariPool-1 - Starting... 
+[startup] [2024-11-10 19:22:27.357] [main] [INFO] [c.z.h.p.HikariPool] - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@1dd44289 
+[startup] [2024-11-10 19:22:27.360] [main] [INFO] [c.z.h.HikariDataSource] - HikariPool-1 - Start completed. 
+[startup] [2024-11-10 19:22:29.017] [main] [INFO] [o.h.e.t.j.p.i.JtaPlatformInitiator] - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration) 
+[startup] [2024-11-10 19:22:29.319] [main] [INFO] [o.s.o.j.LocalContainerEntityManagerFactoryBean] - Initialized JPA EntityManagerFactory for persistence unit 'default' 
+[startup] [2024-11-10 19:22:29.682] [main] [ERROR] [o.s.b.w.e.t.TomcatStarter] - Error starting Tomcat context. Exception: org.springframework.beans.factory.UnsatisfiedDependencyException. Message: Error creating bean with name 'securityConfig': Unsatisfied dependency expressed through field 'customDaoAuthenticationProvider': Error creating bean with name 'customDaoAuthenticationProvider' defined in file [D:\dev\tripApp\tripMateAcccount\build\classes\java\main\com\tripmate\account\security\CustomDaoAuthenticationProvider.class]: Unsatisfied dependency expressed through constructor parameter 1: Error creating bean with name 'securityConfig': Requested bean is currently in creation: Is there an unresolvable circular reference? 
+[startup] [2024-11-10 19:22:29.744] [main] [INFO] [o.a.c.c.StandardService] - Stopping service [Tomcat] 
+[startup] [2024-11-10 19:22:29.748] [main] [WARN] [o.a.c.l.WebappClassLoaderBase] - The web application [ROOT] appears to have started a thread named [HikariPool-1 housekeeper] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
+ java.base@17/jdk.internal.misc.Unsafe.park(Native Method)
+ java.base@17/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:252)
+ java.base@17/java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(AbstractQueuedSynchronizer.java:1672)
+ java.base@17/java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1182)
+ java.base@17/java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:899)
+ java.base@17/java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1062)
+ java.base@17/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1122)
+ java.base@17/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+ java.base@17/java.lang.Thread.run(Thread.java:833) 
+[startup] [2024-11-10 19:22:29.749] [main] [WARN] [o.a.c.l.WebappClassLoaderBase] - The web application [ROOT] appears to have started a thread named [HikariPool-1 connection adder] but has failed to stop it. This is very likely to create a memory leak. Stack trace of thread:
+ java.base@17/jdk.internal.misc.Unsafe.park(Native Method)
+ java.base@17/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:252)
+ java.base@17/java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(AbstractQueuedSynchronizer.java:1672)
+ java.base@17/java.util.concurrent.LinkedBlockingQueue.poll(LinkedBlockingQueue.java:460)
+ java.base@17/java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1061)
+ java.base@17/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1122)
+ java.base@17/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+ java.base@17/java.lang.Thread.run(Thread.java:833) 
+[startup] [2024-11-10 19:22:29.753] [main] [WARN] [o.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext] - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.context.ApplicationContextException: Unable to start web server 
+[startup] [2024-11-10 19:22:29.754] [main] [INFO] [o.s.o.j.LocalContainerEntityManagerFactoryBean] - Closing JPA EntityManagerFactory for persistence unit 'default' 
+[startup] [2024-11-10 19:22:29.758] [main] [INFO] [c.z.h.HikariDataSource] - HikariPool-1 - Shutdown initiated... 
+[startup] [2024-11-10 19:22:29.773] [main] [INFO] [c.z.h.HikariDataSource] - HikariPool-1 - Shutdown completed. 
+[startup] [2024-11-10 19:22:29.792] [main] [INFO] [o.s.b.a.l.ConditionEvaluationReportLogger] - 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled. 
+[startup] [2024-11-10 19:22:29.823] [main] [ERROR] [o.s.b.d.LoggingFailureAnalysisReporter] - 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+The dependencies of some of the beans in the application context form a cycle:
+
+┌─────┐
+|  securityConfig (field private com.tripmate.account.security.CustomDaoAuthenticationProvider com.tripmate.account.security.SecurityConfig.customDaoAuthenticationProvider)
+↑     ↓
+|  customDaoAuthenticationProvider defined in file [D:\dev\tripApp\tripMateAcccount\build\classes\java\main\com\tripmate\account\security\CustomDaoAuthenticationProvider.class]
+└─────┘
+
+
+Action:
+
+Relying upon circular references is discouraged and they are prohibited by default. Update your application to remove the dependency cycle between beans. As a last resort, it may be possible to break the cycle automatically by setting spring.main.allow-circular-references to true.
+ 
