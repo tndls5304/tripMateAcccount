@@ -15,56 +15,44 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-@Configuration                                                                          //=생성자메서드를 호출하고 자신을 스프링이관리하는 컨테이너안에 등록한다는것
+@Configuration                                                                                                                //=생성자메서드를 호출하고 자신을 스프링이관리하는 컨테이너안에 등록한다는것
 @EnableWebSecurity
 public class SecurityConfig {
 
     @Autowired
-    private ObjectMapper objectMapper;                                                              //모든 컴포넌트들을 빈으로 등록시킨다음에 ->그 컴포넌트에  @Autowired가 달려있으면 이것부터 연결 다 시키고 -->@Bean달린걸 본다
+    private ObjectMapper objectMapper;                                                                                       //모든 컴포넌트들을 빈으로 등록시킨다음에 ->그 컴포넌트에  @Autowired가 달려있으면 이것부터 연결 다 시키고 -->@Bean달린걸 본다
     @Autowired
     private GeneralUserDetailsService generalUserDetailsService;
-    @Autowired
-    private CustomDaoAuthenticationProvider customDaoAuthenticationProvider;
-
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-
-
-/*
-    public SecurityConfig(ObjectMapper objectMapper, GeneralUserDetailsService generalUserDetailsService,CustomDaoAuthenticationProvider customDaoAuthenticationProvider) {
-        this.objectMapper = objectMapper;
-        this.generalUserDetailsService = generalUserDetailsService;
-        this.customDaoAuthenticationProvider=customDaoAuthenticationProvider;
-
+    @Bean
+    public ProviderManager providerManager() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setPasswordEncoder(passwordEncoder());
+        provider.setUserDetailsService(generalUserDetailsService);
+        return new ProviderManager(provider);
     }
 
- */
-
-
-//    @Autowired
-//    public void setAuthenticationManager( AuthenticationManager authenticationManager){
-//        this.authenticationManager=authenticationManager;
-//    }
-//
-
+    @Bean
+    public JsonUsernamePasswordAuthenticationFilter jsonUsernamePasswordLoginFilter() {
+        JsonUsernamePasswordAuthenticationFilter jsonFilter = new JsonUsernamePasswordAuthenticationFilter(objectMapper);
+        jsonFilter.setAuthenticationManager(providerManager()); // AuthenticationManager 설정
+        return jsonFilter;
+    }
 
     @Bean
     @Order(1)
     public SecurityFilterChain generalUserSecurityFilterChain(HttpSecurity http, GeneralUserDetailsService service, AuthenticationManager authenticationManager, AuthenticationManagerBuilder authManageBuilder) throws Exception {
-
-
         http
                 .csrf(AbstractHttpConfigurer::disable)//CSRF 보호를 비활성화(API 서버나 세션이 사용되지 않는 경우)
-                //.addFilter(jsonUsernamePasswordLoginFilter(authManager(http))) // JSON 로그인 필터 추가
-                // .addFilterBefore(jsonUsernamePasswordLoginFilter(authenticationManager()), UsernamePasswordAuthenticationFilter.class) // JSON 인증 필터 추가
-                //  .authenticationProvider(generalUserAuthenticationProvider(service))
+                 .addFilterBefore(jsonUsernamePasswordLoginFilter(), UsernamePasswordAuthenticationFilter.class) // JSON 인증 필터 추가
 
                 .authorizeHttpRequests(auth -> auth                                             //URL 패턴별 접근 권한을 정의
                         .requestMatchers("/", "/api/account/user/join", "/api/account/user/login", "/home")
@@ -99,21 +87,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-
-
-    //    @Bean
-//    public AuthenticationManager authManager(HttpSecurity http) throws Exception {
-//        AuthenticationManagerBuilder authenticationManagerBuilder =
-//                http.getSharedObject(AuthenticationManagerBuilder.class);
-//        authenticationManagerBuilder.authenticationProvider(generalUserAuthenticationProvider());
-//        return authenticationManagerBuilder.build();
-//    }
-    @Bean
-    public JsonUsernamePasswordAuthenticationFilter jsonUsernamePasswordLoginFilter(AuthenticationManager authenticationManager) {
-        JsonUsernamePasswordAuthenticationFilter jsonFilter = new JsonUsernamePasswordAuthenticationFilter(objectMapper);
-        jsonFilter.setAuthenticationManager(authenticationManager); // AuthenticationManager 설정
-        return jsonFilter;
-    }
 
 
     // 인증되지 않은 사용자의 요청이 보안 제약에 위배되었을 때 호출되는 엔트리 포인트 정의
