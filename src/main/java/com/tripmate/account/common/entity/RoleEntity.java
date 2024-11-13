@@ -1,17 +1,26 @@
-package com.tripmate.account.security;
+package com.tripmate.account.common.entity;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import org.springframework.security.core.GrantedAuthority;
 
 /**
  * GrantedAuthority 인터페이스를 구현하며, 사용자 권한(Authority)을 제공
  */
-public class Role  implements GrantedAuthority {
+@Entity
+@Table(name = "ROLE_TB")
+public class RoleEntity implements GrantedAuthority {
+    @Id
+    @Column(name = "ROLE_CD", nullable = false)
     private String code; // 예: RU00, RP00, RA00 등
+    @Column(name = "ROLE_NM", nullable = false)
     private String description; // 예: 일반 회원, 일반 비즈니스 회원 등
 
 
     // 생성자
-    public Role(String code, String description) {
+    public RoleEntity(String code, String description) {
         this.code = code;
         this.description = description;
     }

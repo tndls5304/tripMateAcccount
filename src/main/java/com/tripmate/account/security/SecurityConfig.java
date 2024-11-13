@@ -33,17 +33,24 @@ public class SecurityConfig {
     }
 
     @Bean
-    public ProviderManager providerManager() {
+    public ProviderManager customProviderManager() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setPasswordEncoder(passwordEncoder());
         provider.setUserDetailsService(generalUserDetailsService);
         return new ProviderManager(provider);
     }
 
+    /**
+     * 일반적으로 스프링 시큐리티는 폼 데이터로 요청을 받는데,JSON 데이터를 받아 로그인 인증을 진행하는 필터가 필요해서 이 필터를 빈으로 등록합니다.
+     * 빈을 등록하면서 위 메서드에서 커스텀한 ProviderManager를 설정해줍니다
+     * 설정하게 되면 로그인 요청이 들어올때 이 필터안에서 커스텀한 ProviderManager를 통해 이증로직을 처리하게 됩니다
+     * 만약 커스텀한 ProviderManager을 설정해주지 않으면 기본 AuthenticationManager를 사용해 요청을 처리하게 됩니다.
+     * @return
+     */
     @Bean
     public JsonUsernamePasswordAuthenticationFilter jsonUsernamePasswordLoginFilter() {
         JsonUsernamePasswordAuthenticationFilter jsonFilter = new JsonUsernamePasswordAuthenticationFilter(objectMapper);
-        jsonFilter.setAuthenticationManager(providerManager()); // AuthenticationManager 설정
+        jsonFilter.setAuthenticationManager(customProviderManager()); // AuthenticationManager 설정
         return jsonFilter;
     }
 

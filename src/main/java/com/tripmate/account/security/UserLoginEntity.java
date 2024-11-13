@@ -1,5 +1,6 @@
 package com.tripmate.account.security;
 
+import com.tripmate.account.common.entity.RoleEntity;
 import com.tripmate.account.common.entity.UserEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -11,21 +12,21 @@ import java.util.stream.Collectors;
 public class UserLoginEntity implements UserDetails {
     private String userId;
     private String userPwd;
-    private Set<Role> roles;
+    private Set<RoleEntity> roleEntities;
 
     public UserLoginEntity(UserEntity userEntity){
         this.userId=userEntity.getUserId();
         this.userPwd=userEntity.getUserPwd();
-        this.roles=userEntity.getRoles();
+        this.roleEntities =userEntity.getRoleEntities();
     }
 
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-    //    return roles;
+    //    return roleEntities;
         // Role을 SimpleGrantedAuthority로 변환
-        return roles.stream()
-                .map(role -> new SimpleGrantedAuthority(role.getAuthority()))
+        return roleEntities.stream()
+                .map(roleEntity -> new SimpleGrantedAuthority(roleEntity.getAuthority()))
                 .collect(Collectors.toSet());
     }
 

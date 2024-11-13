@@ -1,14 +1,11 @@
 package com.tripmate.account.common.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tripmate.account.common.entity.base.BaseEntity;
-import com.tripmate.account.security.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -48,6 +45,10 @@ public class UserEntity extends BaseEntity {
 
     @Column(name = "LAST_LOGIN_DT")
     LocalDate lastLoginDt;
+//
+//    @Column(name="ROLES")
+//    Set<RoleEntity> roleEntities;
+
     //== jwt 토큰 추가 ==//
 
     @Column(length = 1000)
@@ -64,10 +65,5 @@ public class UserEntity extends BaseEntity {
 
 
 
-    //권한가져오기-------------------------------------------------------
-    private Set<Role> roles; // 중복된 권한을 허용하지 않기 때문에, 같은 권한이 여러 번 추가되는 상황을 방지할 수 있습니다.
 
-    public Set<Role> getRoles() {
-        return roles;
-    }
 }

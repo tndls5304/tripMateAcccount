@@ -6,10 +6,10 @@ import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.Builder;
-
 import java.util.Objects;
 @Builder
 @Embeddable
+
 public class BasicAgreeId {
     @Enumerated(EnumType.STRING)
     @Column(name ="ACCOUNT_TYPE")
