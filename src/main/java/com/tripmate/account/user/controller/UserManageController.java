@@ -1,5 +1,6 @@
 package com.tripmate.account.user.controller;
 
+import com.tripmate.account.common.errorcode.CommonErrorCode;
 import com.tripmate.account.common.reponse.CommonResponse;
 import com.tripmate.account.security.GeneralUserDetailsService;
 import com.tripmate.account.user.dto.*;
@@ -16,8 +17,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Collection;
 import java.util.List;
+
 import static com.tripmate.account.common.errorcode.CommonErrorCode.SUCCESS;
 
 /**
@@ -34,8 +39,6 @@ import static com.tripmate.account.common.errorcode.CommonErrorCode.SUCCESS;
 public class UserManageController {
 
     private final UserManageService service;
-//    private final AuthenticationManager authenticationManager;
-    private final GeneralUserDetailsService generalUserDetailsService;
 
     /**
      * (숙박회원) 아이디 중복 검사
@@ -64,20 +67,22 @@ public class UserManageController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청 : 마케팅 약관이 없음", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "409", description = "이미 존재하는 id로 id 중복검사 실패", content = @Content(mediaType = "application/json"))
     })
-    public ResponseEntity<CommonResponse<Void>> userJoin( @Valid @RequestBody UserJoinReqDto userJoinReqDto) {
+    public ResponseEntity<CommonResponse<Void>> userJoin(@Valid @RequestBody UserJoinReqDto userJoinReqDto) {
         service.userJoin(userJoinReqDto);
         return new CommonResponse<>().toRespEntity(SUCCESS);
     }
 
 
-    //로그인
-//    @PostMapping("api/account/user/login")
-//    public ResponseEntity<CommonResponse<Void>> login(@RequestBody UserLoginReqDto userLoginReqDto) {
-//        Authentication authentication = authenticationManager.authenticate(
-//                new UsernamePasswordAuthenticationToken(userLoginReqDto.getUserId(), userLoginReqDto.getUserPwd()));
-//        generalUserDetailsService.loadUserByUsername(userLoginReqDto.getUserId());
-//        return new CommonResponse<>().toRespEntity( SUCCESS);
-//    }
+    //  로그인
+    @PostMapping("api/account/user/login")
+    public ResponseEntity<CommonResponse<String>> login(Authentication authentication) {
+        // 인증된 사용자 정보 확인
+        String username = authentication.getName(); // 사용자 아이디 가져오기
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities(); // 권한 정보 가져오기
+        String data = "id:" + username + "권한정보:" + authorities;
+        return new CommonResponse<String>().
+                toRespEntity(data, SUCCESS);
+    }
 /*
 인증 과정:
 
@@ -112,11 +117,12 @@ authenticationManager.authenticate(...) 메서드가 호출되면, Spring Securi
     /**
      * 마케팅 동의 수정 요청
      * 이전 마케팅약관에 동의를 한적 있다면 동의이력을 수정하거나 동의한적 없으면 동의이력 생성
+     *
      * @param ModifyMarketingAgreeDtoList 마케팅 동의 리스트
      * @return
      */
     @PostMapping("api/account/user/marketing")
-    public ResponseEntity<CommonResponse<Void>> modifyMarketingAgree(@Valid @RequestBody List<UserModifyMarketingAgreeReqDto> ModifyMarketingAgreeDtoList){
+    public ResponseEntity<CommonResponse<Void>> modifyMarketingAgree(@Valid @RequestBody List<UserModifyMarketingAgreeReqDto> ModifyMarketingAgreeDtoList) {
         service.modifyMarketingAgree(ModifyMarketingAgreeDtoList);
         return new CommonResponse<>().toRespEntity(SUCCESS);
     }

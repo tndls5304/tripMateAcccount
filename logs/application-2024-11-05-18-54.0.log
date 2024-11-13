@@ -1189,7 +1189,7 @@ jdk.internal.loader.ClassLoaders$AppClassLoader@4e25154f
  |  +-BasicFetch [com.tripmate.account.common.entity.UserEntity.refreshToken]
  |  +-BasicFetch [com.tripmate.account.common.entity.UserEntity.regDtm]
  |  +-BasicFetch [com.tripmate.account.common.entity.UserEntity.regUser]
- |  +-BasicFetch [com.tripmate.account.common.entity.UserEntity.roles]
+ |  +-BasicFetch [com.tripmate.account.common.entity.UserEntity.roleEntities]
  |  +-BasicFetch [com.tripmate.account.common.entity.UserEntity.updtDtm]
  |  +-BasicFetch [com.tripmate.account.common.entity.UserEntity.updtUser]
  |  \-BasicFetch [com.tripmate.account.common.entity.UserEntity.userPwd]

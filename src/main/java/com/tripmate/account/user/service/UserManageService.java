@@ -2,13 +2,16 @@ package com.tripmate.account.user.service;
 
 import com.tripmate.account.common.entity.*;
 import com.tripmate.account.common.entity.id.BasicAgreeId;
+import com.tripmate.account.common.entity.id.RoleHistoryId;
 import com.tripmate.account.common.enums.AccountType;
+import com.tripmate.account.common.enums.RoleCode;
 import com.tripmate.account.common.exception.DataConflictException;
 import com.tripmate.account.common.exception.InvalidRequestException;
 import com.tripmate.account.common.exception.ServerErrorException;
 import com.tripmate.account.common.reponse.CommonResponse;
 import com.tripmate.account.common.enums.AgreeFl;
 import com.tripmate.account.user.dto.*;
+import com.tripmate.account.user.repository.RoleThRepository;
 import com.tripmate.account.user.repository.UserTbRepository;
 import com.tripmate.account.user.repository.UserBasicAgreeThRepository;
 import com.tripmate.account.user.repository.UserMarketingAgreeThRepository;
@@ -39,6 +42,7 @@ public class UserManageService {
     private final UserBasicAgreeThRepository basicAgreeThRepository;
     private final UserMarketingAgreeThRepository marketingAgreeThRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RoleThRepository roleThRepository;
 
     /**
      * (숙박회원)  아이디 중복 검사
@@ -76,6 +80,7 @@ public class UserManageService {
         //
         insertBasicAgree(reqUserJoin);
         insertMarketingAgree(reqUserJoin);
+        insertRoleHistory(reqUserJoin);
     }
 
     /**
@@ -232,6 +237,7 @@ public class UserManageService {
 
         }
     }
+
     //마케팅 동의여부에 '동의'였던 데이터를 '비동의'로 바꿈
     public void UpdateDisAgreeForMarketing(String userId, List<MarketingAgreeEntity> agreedHistoryListForOneMarketing) {
         MarketingAgreeEntity existingEntity = agreedHistoryListForOneMarketing.get(0);
@@ -372,6 +378,20 @@ public class UserManageService {
         marketingAgreeThRepository.saveAll(marketingOkEntityList);
     }
 
+    //권한저장
+    public void insertRoleHistory(UserJoinReqDto reqUserJoin) {
+        RoleHistoryEntity roleHistoryEntity=RoleHistoryEntity.builder()
+                .id(
+                        RoleHistoryId.builder()
+                                .roleTargetType(AccountType.U)
+                                .roleTarget(reqUserJoin.getUserId())
+                                .roleCode(RoleCode.RU00)
+                                .build()
+                )
+                .regUser(reqUserJoin.getUserId())//TODO 서버이름 넣기
+                .build();
+        roleThRepository.save(roleHistoryEntity);
+    }
 /*
     public UserLoginRespDto login(UserLoginReqDto reqLoginDto) {
         //아이디로 일단 조회하고 계정이 없으면 예외던지기
