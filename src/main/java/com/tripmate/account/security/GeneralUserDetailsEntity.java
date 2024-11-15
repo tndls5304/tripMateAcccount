@@ -1,33 +1,31 @@
 package com.tripmate.account.security;
 
 import com.tripmate.account.common.entity.RoleEntity;
-import com.tripmate.account.common.entity.UserEntity;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
 import java.util.Collection;
 import java.util.Set;
-import java.util.stream.Collectors;
 
-public class UserLoginEntity implements UserDetails {
+public class GeneralUserDetailsEntity implements UserDetails {
     private String userId;
     private String userPwd;
-    private Set<RoleEntity> roleEntities;
+    private String nickname;
+    private Set<GrantedAuthority> roleEntitySet;
 
-    public UserLoginEntity(UserEntity userEntity){
-        this.userId=userEntity.getUserId();
-        this.userPwd=userEntity.getUserPwd();
-        this.roleEntities =userEntity.getRoleEntities();
+
+    public GeneralUserDetailsEntity(String username, String password, String nickname,
+                                    Set<GrantedAuthority> authoritySet) {
+        this.userId = username;
+        this.userPwd = password;
+        this.nickname = nickname;
+        this.roleEntitySet = authoritySet;
     }
 
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-    //    return roleEntities;
-        // Role을 SimpleGrantedAuthority로 변환
-        return roleEntities.stream()
-                .map(roleEntity -> new SimpleGrantedAuthority(roleEntity.getAuthority()))
-                .collect(Collectors.toSet());
+        return roleEntitySet;
     }
 
     @Override
@@ -39,7 +37,6 @@ public class UserLoginEntity implements UserDetails {
     public String getUsername() {
         return userId;
     }
-
 
 
     // 기본적으로 계정이 만료되지 않음

@@ -1,0 +1,26 @@
+[startup] [2024-11-13 22:06:00.561] [main] [INFO] [o.s.d.r.c.RepositoryConfigurationDelegate] - Bootstrapping Spring Data JPA repositories in DEFAULT mode. 
+[startup] [2024-11-13 22:06:00.709] [main] [INFO] [o.s.d.r.c.RepositoryConfigurationDelegate] - Finished Spring Data repository scanning in 129 ms. Found 3 JPA repository interfaces. 
+[startup] [2024-11-13 22:06:01.963] [main] [INFO] [o.s.b.w.e.t.TomcatWebServer] - Tomcat initialized with port 8080 (http) 
+[startup] [2024-11-13 22:06:01.979] [main] [INFO] [o.a.c.h.Http11NioProtocol] - Initializing ProtocolHandler ["http-nio-8080"] 
+[startup] [2024-11-13 22:06:01.984] [main] [INFO] [o.a.c.c.StandardService] - Starting service [Tomcat] 
+[startup] [2024-11-13 22:06:01.984] [main] [INFO] [o.a.c.c.StandardEngine] - Starting Servlet engine: [Apache Tomcat/10.1.30] 
+[startup] [2024-11-13 22:06:02.151] [main] [INFO] [o.a.c.c.C.[.[.[/]] - Initializing Spring embedded WebApplicationContext 
+[startup] [2024-11-13 22:06:02.152] [main] [INFO] [o.s.b.w.s.c.ServletWebServerApplicationContext] - Root WebApplicationContext: initialization completed in 3357 ms 
+[startup] [2024-11-13 22:06:02.492] [main] [INFO] [o.h.j.i.u.LogHelper] - HHH000204: Processing PersistenceUnitInfo [name: default] 
+[startup] [2024-11-13 22:06:02.580] [main] [INFO] [o.h.Version] - HHH000412: Hibernate ORM core version 6.5.3.Final 
+[startup] [2024-11-13 22:06:02.644] [main] [INFO] [o.h.c.i.RegionFactoryInitiator] - HHH000026: Second-level cache disabled 
+[startup] [2024-11-13 22:06:03.337] [main] [INFO] [o.s.o.j.p.SpringPersistenceUnitInfo] - No LoadTimeWeaver setup: ignoring JPA class transformer 
+[startup] [2024-11-13 22:06:03.403] [main] [INFO] [c.z.h.HikariDataSource] - HikariPool-1 - Starting... 
+[startup] [2024-11-13 22:06:03.709] [main] [INFO] [c.z.h.p.HikariPool] - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@43fe2008 
+[startup] [2024-11-13 22:06:03.714] [main] [INFO] [c.z.h.HikariDataSource] - HikariPool-1 - Start completed. 
+[startup] [2024-11-13 22:06:04.729] [main] [WARN] [o.h.m.RootClass] - HHH000038: Composite-id class does not override equals(): com.tripmate.account.common.entity.id.RoleHistoryId 
+[startup] [2024-11-13 22:06:04.730] [main] [WARN] [o.h.m.RootClass] - HHH000039: Composite-id class does not override hashCode(): com.tripmate.account.common.entity.id.RoleHistoryId 
+[startup] [2024-11-13 22:06:05.456] [main] [INFO] [o.h.m.i.EntityInstantiatorPojoStandard] - HHH000182: No default (no-argument) constructor for class: com.tripmate.account.common.entity.RoleEntity (class must be instantiated by Interceptor) 
+[startup] [2024-11-13 22:06:05.516] [main] [INFO] [o.h.m.i.PojoInstantiatorImpl] - HHH000182: No default (no-argument) constructor for class: com.tripmate.account.common.entity.id.RoleHistoryId (class must be instantiated by Interceptor) 
+[startup] [2024-11-13 22:06:05.812] [main] [INFO] [o.h.e.t.j.p.i.JtaPlatformInitiator] - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration) 
+[startup] [2024-11-13 22:06:06.259] [main] [INFO] [o.s.o.j.LocalContainerEntityManagerFactoryBean] - Initialized JPA EntityManagerFactory for persistence unit 'default' 
+[startup] [2024-11-13 22:06:06.824] [main] [INFO] [o.s.d.j.r.q.QueryEnhancerFactory] - Hibernate is in classpath; If applicable, HQL parser will be used. 
+[startup] [2024-11-13 22:06:07.698] [main] [INFO] [o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer] - Global AuthenticationManager configured with UserDetailsService bean with name generalUserDetailsService 
+[startup] [2024-11-13 22:06:08.625] [main] [INFO] [o.a.c.h.Http11NioProtocol] - Starting ProtocolHandler ["http-nio-8080"] 
+[startup] [2024-11-13 22:06:08.669] [main] [INFO] [o.s.b.w.e.t.TomcatWebServer] - Tomcat started on port 8080 (http) with context path '/' 
+[startup] [2024-11-13 22:06:08.695] [main] [INFO] [c.t.a.AccountApplication] - Started AccountApplication in 11.036 seconds (process running for 11.833) 

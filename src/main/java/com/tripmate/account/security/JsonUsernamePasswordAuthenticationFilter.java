@@ -1,5 +1,6 @@
 package com.tripmate.account.security;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,6 +11,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.security.web.authentication.session.SessionFixationProtectionStrategy;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import java.io.IOException;
@@ -35,6 +37,7 @@ public class JsonUsernamePasswordAuthenticationFilter extends AbstractAuthentica
     public JsonUsernamePasswordAuthenticationFilter(ObjectMapper objectMapper) {
         super(DEFAULT_LOGIN_PATH_REQUEST_MATCHER);
         setSessionAuthenticationStrategy(new SessionFixationProtectionStrategy());
+
         this.objectMapper = objectMapper;
     }
 
@@ -43,10 +46,12 @@ public class JsonUsernamePasswordAuthenticationFilter extends AbstractAuthentica
         if (!CONTENT_TYPE.equals(request.getContentType())) {
             throw new AuthenticationServiceException("Authentication Content-Type not supported: " + request.getContentType());
         }
-        //request.getInputStream()에서 바로 JSON 데이터를 읽고, Map<String, String> 타입으로 변환합니다. 그런 다음 UsernamePasswordAuthenticationToken에 사용자 이름과 비밀번호를 전달하고 인증을 시도합니다.
-        Map<String, String> credentials = objectMapper.readValue(request.getInputStream(), Map.class);
+        //request.getInputStream()에서 바로 JSON 데이터를 읽고, Map<String, String> 타입으로 변환
+        Map<String, String> credentials = objectMapper.readValue(request.getInputStream(),  new TypeReference<Map<String, String>>() {});
         //사용자가 입력한 id,pwd를 꺼내  비인증 상태의 토큰을 생성
         UsernamePasswordAuthenticationToken authRequestToken = new UsernamePasswordAuthenticationToken(credentials.get("userId"), credentials.get("userPwd"));
+
+        // 세부 정보를 설정 (예: HTTP 요청 관련 세부 정보)필요하면 추가하기 authRequestToken.setDetails(new WebAuthenticationDetails(request));
 
         //AuthenticationManager에 이 토큰을 전달함.
         AuthenticationManager ProviderManager= this.getAuthenticationManager();
