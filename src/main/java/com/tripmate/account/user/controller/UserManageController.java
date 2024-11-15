@@ -79,6 +79,8 @@ public class UserManageController {
         // 인증된 사용자 정보 확인
         String username = authentication.getName(); // 사용자 아이디 가져오기
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities(); // 권한 정보 가져오기
+        // 로그로 인증된 사용자 정보 출력
+        log.info("User logged in: {} with authorities: {}", username, authorities);
         String data = "id:" + username + "권한정보:" + authorities;
         return new CommonResponse<String>().
                 toRespEntity(data, SUCCESS);

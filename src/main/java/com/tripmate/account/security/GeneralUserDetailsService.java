@@ -1,7 +1,9 @@
 package com.tripmate.account.security;
 
-import com.tripmate.account.common.entity.RoleEntity;
 import com.tripmate.account.common.entity.UserEntity;
+import com.tripmate.account.common.enums.AccountType;
+import com.tripmate.account.common.enums.RoleCode;
+import com.tripmate.account.user.repository.RoleThRepository;
 import com.tripmate.account.user.repository.UserTbRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -9,8 +11,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import java.util.Collection;
-import java.util.Optional;
+
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -23,38 +25,50 @@ import java.util.stream.Collectors;
 public class GeneralUserDetailsService implements UserDetailsService {
 
     private final UserTbRepository repository;
+    private final RoleThRepository roleThRepository;
 
-    public GeneralUserDetailsService(UserTbRepository repository) {
+    public GeneralUserDetailsService(UserTbRepository repository, RoleThRepository roleThRepository) {
         this.repository = repository;
+        this.roleThRepository = roleThRepository;
     }
-//DaoAuthenticationProvider에서 호출함
+
+    /**
+     * 시큐리티 provider인 DaoAuthenticationProvider에서 호출하는 메서드다.
+     * 이 메서드는 클라이언트가 입력한 id로 계정을 조회한 후 UserDetails 타입의 객체로 반환하는 역할을 한다.
+     * @param userId 클라이언트가 입력한 사용자 ID를 나타낸다.
+     * @return UserDetails을 구현한 GeneralUserDetailsEntity  객체
+     * @throws UsernameNotFoundException 사용자를 찾을 수 없을 경우 발생
+     */
+
+
     @Override
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
-        Optional<UserEntity> userEntityOptional = repository.findById(userId);
+
+        // 1. RoleCode 리스트를 조회합니다.
+        UserEntity userEntity = repository.findById(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        // 2. RoleCode 리스트를 이용해 GrantedAuthority 객체 생성
+        Set<GrantedAuthority> authoritySet = new HashSet<>();
+
+        List<RoleCode> roleCodeList = roleThRepository.findRoleCodeByUserTypeAndId(AccountType.U,userEntity.getUserId());
+        for (RoleCode roleCode : roleCodeList) {
+            authoritySet.add(new SimpleGrantedAuthority(roleCode.name())); //이늄타입이라 String을 얻기위해 name()을 사용함  RoleCode.RU00이면 RU00이라는 문자열이 반환됩니다.
+        }
+
+        return new GeneralUserDetailsEntity(
+                userEntity.getUserId(),
+                userEntity.getUserPwd(),
+                userEntity.getNickname(),
+                authoritySet // 권한을 Set으로 추가
+        );
+    }
+}
+
+
+      /*  Optional<UserEntity> userEntityOptional = repository.findById(userId);
 
         if (userEntityOptional.isEmpty()) {
             throw new UsernameNotFoundException("User ID not found: " + userId);
         }
-
-        UserEntity idPassUserEntity = userEntityOptional.get();
-
-        // UserDetails 객체로 변환하여 반환
-        return new UserLoginEntity(
-                idPassUserEntity
-        );
-    }
-
-    /**
-     *userEntity의 getRoleEntities() 메서드를 통해 사용자의 권한(예: ROLE_ADMIN, ROLE_USER 등)을 가져오고, 이를 시큐리티가 권한을 비교할때 사용하는 SimpleGrantedAuthority 객체로 변환해 반환합니다.
-     * map(RoleEntity::getAuthority)는 각 RoleEntity 객체에서 권한 문자열을 가져오고, 그 문자열을 SimpleGrantedAuthority 객체로 변환해 최종적으로 권한 목록을 생성합니다
-     * @param userEntity
-     * @return
-     */
-    private Collection<? extends GrantedAuthority> getAuthorities(UserEntity userEntity) {
-        return userEntity.getRoleEntities().stream()
-                .map(RoleEntity::getAuthority)//getAuthority() 메서드를 호출하여 각 역할에서 권한 문자열을 가져옵니다."ROLE_ADMIN" 또는 "ROLE_USER"와 같은 문자열을 반환한다고 가정할 수 있습니다.
-                .map(SimpleGrantedAuthority::new) // 권한 문자열을 SimpleGrantedAuthority로 변환
-                .collect(Collectors.toList());
-    }
-}
-
+       */
