@@ -1,8 +1,6 @@
 package com.tripmate.account.user.controller;
 
-import com.tripmate.account.common.errorcode.CommonErrorCode;
 import com.tripmate.account.common.reponse.CommonResponse;
-import com.tripmate.account.security.GeneralUserDetailsService;
 import com.tripmate.account.user.dto.*;
 import com.tripmate.account.user.service.UserManageService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,8 +12,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
@@ -72,28 +68,6 @@ public class UserManageController {
         return new CommonResponse<>().toRespEntity(SUCCESS);
     }
 
-
-    //  로그인
-    @PostMapping("api/account/user/login")
-    public ResponseEntity<CommonResponse<String>> login(Authentication authentication) {
-        // 인증된 사용자 정보 확인
-        String username = authentication.getName(); // 사용자 아이디 가져오기
-        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities(); // 권한 정보 가져오기
-        // 로그로 인증된 사용자 정보 출력
-        log.info("User logged in: {} with authorities: {}", username, authorities);
-        String data = "id:" + username + "권한정보:" + authorities;
-        return new CommonResponse<String>().
-                toRespEntity(data, SUCCESS);
-    }
-/*
-인증 과정:
-
-authenticationManager.authenticate(...) 메서드가 호출되면, Spring Security는 다음과 같은 과정을 수행합니다:
-주어진 사용자 ID를 기반으로 사용자를 찾습니다.
-데이터베이스에서 해당 사용자의 정보를 가져오고, 제공된 비밀번호와 비교하여 유효성을 검증합니다.
-비밀번호가 일치하면 인증이 성공하고, 해당 사용자에 대한 Authentication 객체가 반환됩니다.
-비밀번호가 일치하지 않거나 사용자가 존재하지 않으면 AuthenticationException이 발생하여 예외 처리를 수행합니다.
- */
 
     /**
      * (숙박회원)비밀번호 변경 요청
