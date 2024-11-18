@@ -2,6 +2,8 @@ package com.tripmate.account.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tripmate.account.security.handler.CustomAccessDeniedHandler;
+import com.tripmate.account.security.handler.CustomAuthFailureHandler;
+import com.tripmate.account.security.handler.CustomAuthSuccessHandler;
 import com.tripmate.account.security.handler.CustomAuthenticationEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -18,7 +20,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-@Configuration                                                                                                                //=생성자메서드를 호출하고 자신을 스프링이관리하는 컨테이너안에 등록한다는것
+@Configuration
+//=생성자메서드를 호출하고 자신을 스프링이관리하는 컨테이너안에 등록한다는것
 @EnableWebSecurity
 public class SecurityConfig {
 
@@ -37,7 +40,18 @@ public class SecurityConfig {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setPasswordEncoder(passwordEncoder());
         provider.setUserDetailsService(generalUserDetailsService);
+        provider.setHideUserNotFoundExceptions(false);//⭐ID틀린걸 찾아내지못해서
         return new ProviderManager(provider);
+    }
+
+    @Bean
+    public CustomAuthSuccessHandler authSuccessHandler() {
+        return new CustomAuthSuccessHandler(objectMapper);
+    }
+
+    @Bean
+    public CustomAuthFailureHandler authFailureHandler() {
+        return new CustomAuthFailureHandler(objectMapper);
     }
 
     /**
@@ -45,12 +59,15 @@ public class SecurityConfig {
      * 빈을 등록하면서 위 메서드에서 커스텀한 ProviderManager를 설정해줍니다
      * 설정하게 되면 로그인 요청이 들어올때 이 필터안에서 커스텀한 ProviderManager를 통해 이증로직을 처리하게 됩니다
      * 만약 커스텀한 ProviderManager을 설정해주지 않으면 기본 AuthenticationManager를 사용해 요청을 처리하게 됩니다.
+     *
      * @return
      */
     @Bean
     public JsonUsernamePasswordAuthenticationFilter jsonUsernamePasswordLoginFilter() {
         JsonUsernamePasswordAuthenticationFilter jsonFilter = new JsonUsernamePasswordAuthenticationFilter(objectMapper);
         jsonFilter.setAuthenticationManager(customProviderManager()); // AuthenticationManager 설정
+        jsonFilter.setAuthenticationSuccessHandler(authSuccessHandler());
+        jsonFilter.setAuthenticationFailureHandler(authFailureHandler());
         return jsonFilter;
     }
 
@@ -59,7 +76,7 @@ public class SecurityConfig {
     public SecurityFilterChain generalUserSecurityFilterChain(HttpSecurity http, GeneralUserDetailsService service, AuthenticationManager authenticationManager, AuthenticationManagerBuilder authManageBuilder) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)//CSRF 보호를 비활성화(API 서버나 세션이 사용되지 않는 경우)
-                 .addFilterBefore(jsonUsernamePasswordLoginFilter(), UsernamePasswordAuthenticationFilter.class) // JSON 인증 필터 추가
+                .addFilterBefore(jsonUsernamePasswordLoginFilter(), UsernamePasswordAuthenticationFilter.class) // JSON 인증 필터 추가
 
                 .authorizeHttpRequests(auth -> auth                                             //URL 패턴별 접근 권한을 정의
                         .requestMatchers("/", "/api/account/user/join", "/api/account/user/login", "/home")
@@ -93,7 +110,6 @@ public class SecurityConfig {
 
         return http.build();
     }
-
 
 
     // 인증되지 않은 사용자의 요청이 보안 제약에 위배되었을 때 호출되는 엔트리 포인트 정의

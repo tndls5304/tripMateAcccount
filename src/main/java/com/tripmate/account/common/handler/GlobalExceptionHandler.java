@@ -67,7 +67,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, commonErrorCode.getHttpStatus());
     }
 
-    //
+
     //서버에러
     @ExceptionHandler(ServerErrorException.class)
     public ResponseEntity<CommonResponse<Void>> handleServerErrorException(ServerErrorException ex) {

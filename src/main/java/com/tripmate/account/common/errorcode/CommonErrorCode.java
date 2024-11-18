@@ -1,6 +1,5 @@
 package com.tripmate.account.common.errorcode;
 
-import com.tripmate.account.common.exception.ServerErrorException;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -64,8 +63,14 @@ public enum CommonErrorCode {
     //4000번대 :시큐리티
     UNAUTHORIZED_ACCESS("4000", "인증이 필요합니다.", HttpStatus.UNAUTHORIZED), //HttpStatus 401
     FORBIDDEN_ACCESS("4001", "접근 권한이 없습니다.", HttpStatus.FORBIDDEN),//403 Forbidden
-//    INVALID_TOKEN("4002", "유효하지 않은 토큰입니다.", HttpStatus.UNAUTHORIZED),
-//    EXPIRED_TOKEN("4003", "토큰이 만료되었습니다.", HttpStatus.UNAUTHORIZED),
+
+    USERNAME_NOT_FOUND("4002", "입력하신 id는 가입내역이 없습니다", HttpStatus.UNAUTHORIZED),
+    BAD_CREDENTIALS("4003", "입력하신 비밀번호는 틀렸습니다", HttpStatus.UNAUTHORIZED),
+    ACCOUNT_LOCKED("4004", "너무 많은 로그인 실패로 계정이 잠겼습니다 ", HttpStatus.FORBIDDEN),
+    CREDENTIALS_EXPIRED("4005", "오래된 비밀번호로 인증정보가 만료되었습니다.", HttpStatus.UNAUTHORIZED),
+    ACCOUNT_DISABLED("4006", "관리자에게 문의해주세요 계정이 비활성화되었습니다", HttpStatus.FORBIDDEN),
+    ACCOUNT_EXPIRED("4007", "계정사용기간이 만료되었습니다.", HttpStatus.UNAUTHORIZED),
+    UNEXPECTED_AUTHENTICATION_FAILED("4099", "인증에 실패했습니다.", HttpStatus.UNAUTHORIZED),
 
     // 5000번대: 일반 서버 오류
     INTERNAL_SERVER_ERROR("5000", "서버오류",HttpStatus.INTERNAL_SERVER_ERROR),
