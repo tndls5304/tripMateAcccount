@@ -70,6 +70,8 @@ public enum CommonErrorCode {
     CREDENTIALS_EXPIRED("4005", "오래된 비밀번호로 인증정보가 만료되었습니다.", HttpStatus.UNAUTHORIZED),
     ACCOUNT_DISABLED("4006", "관리자에게 문의해주세요 계정이 비활성화되었습니다", HttpStatus.FORBIDDEN),
     ACCOUNT_EXPIRED("4007", "계정사용기간이 만료되었습니다.", HttpStatus.UNAUTHORIZED),
+    CONTENT_TYPE_NOT_SUPPORTED("4008","요청 데이터 형식이 지원되지 않습니다. ",HttpStatus.BAD_REQUEST),
+
     UNEXPECTED_AUTHENTICATION_FAILED("4099", "인증에 실패했습니다.", HttpStatus.UNAUTHORIZED),
 
     // 5000번대: 일반 서버 오류
