@@ -22,14 +22,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 import static com.tripmate.account.common.errorcode.CommonErrorCode.*;
 import static java.lang.Integer.parseInt;
 
@@ -392,34 +390,6 @@ public class UserManageService {
                 .build();
         roleThRepository.save(roleHistoryEntity);
     }
-/*
-    public UserLoginRespDto login(UserLoginReqDto reqLoginDto) {
-        //아이디로 일단 조회하고 계정이 없으면 예외던지기
-        String reqUserId = reqLoginDto.getUserId();
-        UserEntity userEntity = userTbRepository.findById(reqUserId).orElseThrow(()
-                -> new InvalidRequestException(INVALID_USER_ID_MISMATCH));
-
-        //아이디가 일치하니까 ,비번을 비교
-        if (!passwordEncoder.matches(reqLoginDto.getUserPwd(), userEntity.getUserPwd())) {
-            throw new InvalidRequestException(INVALID_USER_PWD_MISMATCH);
-        }
-
-        // 비밀번호가 일치하니까 lastLoginDt 업데이트
-        userEntity.setLastLoginDt(LocalDate.now());
-        userTbRepository.save(userEntity); // 사용자 엔티티 저장
-
-        // 로그인 성공 시 UserLoginRespDto를 생성하여 반환
-        return UserLoginRespDto.builder()
-                .userId(user.getUserId())
-                .nickname(user.getNickname())
-                .phoneNo(user.getPhoneNo())
-                .emailId(user.getEmailId())
-                .emailDomain(user.getEmailDomain())
-                .lastLoginDt(user.getLastLoginDt()) // 로그인 시간
-                .build();
-    }
-*/
-
 }
 
 

@@ -2,19 +2,25 @@ package com.tripmate.account.security;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tripmate.account.jwt.JwtTokenProvider;
+import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.core.log.LogMessage;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.event.InteractiveAuthenticationSuccessEvent;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
-import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.security.web.authentication.session.SessionFixationProtectionStrategy;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -58,6 +64,23 @@ public class JsonUsernamePasswordAuthenticationFilter extends AbstractAuthentica
         //내부에서 인증을 처리하고 검증이 성공하면 인증된 토큰을 생성함.인증된 토큰은 SecurityContext에 저장
         return ProviderManager.authenticate(authRequestToken);
     }
+
+    @Override
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
+        // 인증된 사용자 정보
+        String username = authResult.getName();
+        Collection<? extends GrantedAuthority> authorities = authResult.getAuthorities();
+
+        // 인증 성공 후 JWT 생성
+        String jwtToken = new JwtTokenProvider.createAccessToken(authResult);
+
+        // 응답에 JWT 추가
+        response.addHeader("Authorization", "Bearer " + jwtToken);
+
+        // 클라이언트로 결과 응답 (필요시 커스텀 응답 작성 가능)
+        response.getWriter().write("Authentication successful!");
+    }
+
 }
 
 /*
