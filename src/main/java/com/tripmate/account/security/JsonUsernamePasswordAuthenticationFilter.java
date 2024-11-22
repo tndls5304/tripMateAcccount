@@ -7,18 +7,16 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.core.log.LogMessage;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.authentication.event.InteractiveAuthenticationSuccessEvent;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.authentication.session.SessionFixationProtectionStrategy;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
@@ -37,13 +35,11 @@ public class JsonUsernamePasswordAuthenticationFilter extends AbstractAuthentica
     private static final String HTTP_METHOD = "POST";
     private static final String CONTENT_TYPE = "application/json";
     private final ObjectMapper objectMapper;
-
     private static final AntPathRequestMatcher DEFAULT_LOGIN_PATH_REQUEST_MATCHER = new AntPathRequestMatcher(DEFAULT_LOGIN_REQUEST_URL, HTTP_METHOD);
 
     public JsonUsernamePasswordAuthenticationFilter(ObjectMapper objectMapper) {
         super(DEFAULT_LOGIN_PATH_REQUEST_MATCHER);
         setSessionAuthenticationStrategy(new SessionFixationProtectionStrategy());
-
         this.objectMapper = objectMapper;
     }
 
@@ -53,34 +49,24 @@ public class JsonUsernamePasswordAuthenticationFilter extends AbstractAuthentica
             throw new AuthenticationServiceException("Authentication Content-Type not supported: " + request.getContentType());
         }
         //request.getInputStream()에서 바로 JSON 데이터를 읽고, Map<String, String> 타입으로 변환
-        Map<String, String> credentials = objectMapper.readValue(request.getInputStream(),  new TypeReference<Map<String, String>>() {});
+        Map<String, String> credentials = objectMapper.readValue(request.getInputStream(), new TypeReference<Map<String, String>>() {
+        });
         //사용자가 입력한 id,pwd를 꺼내  비인증 상태의 토큰을 생성
         UsernamePasswordAuthenticationToken authRequestToken = new UsernamePasswordAuthenticationToken(credentials.get("userId"), credentials.get("userPwd"));
 
         // 세부 정보를 설정 (예: HTTP 요청 관련 세부 정보)필요하면 추가하기 authRequestToken.setDetails(new WebAuthenticationDetails(request));
 
         //AuthenticationManager에 이 토큰을 전달함.
-        AuthenticationManager ProviderManager= this.getAuthenticationManager();
+        AuthenticationManager ProviderManager = this.getAuthenticationManager();
         //내부에서 인증을 처리하고 검증이 성공하면 인증된 토큰을 생성함.인증된 토큰은 SecurityContext에 저장
         return ProviderManager.authenticate(authRequestToken);
     }
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-        // 인증된 사용자 정보
-        String username = authResult.getName();
-        Collection<? extends GrantedAuthority> authorities = authResult.getAuthorities();
+//성공 실패 핸들러 호출??
 
-        // 인증 성공 후 JWT 생성
-        String jwtToken = new JwtTokenProvider.createAccessToken(authResult);
-
-        // 응답에 JWT 추가
-        response.addHeader("Authorization", "Bearer " + jwtToken);
-
-        // 클라이언트로 결과 응답 (필요시 커스텀 응답 작성 가능)
-        response.getWriter().write("Authentication successful!");
     }
-
 }
 
 /*

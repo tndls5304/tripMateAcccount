@@ -7,21 +7,19 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Set;
 
-public class GeneralUserDetailsEntity implements UserDetails {
+public class GeneralUserDetailsEntity extends AllAccountDetails {
     private String userId;
     private String userPwd;
-    private String nickname;
     private Set<GrantedAuthority> roleEntitySet;
 
 
-    public GeneralUserDetailsEntity(String username, String password, String nickname,
-                                    Set<GrantedAuthority> authoritySet) {
+    public GeneralUserDetailsEntity(String username, String password, String nickname
+                                    ,Set<GrantedAuthority> authoritySet) {
         this.userId = username;
         this.userPwd = password;
-        this.nickname = nickname;
         this.roleEntitySet = authoritySet;
-    }
 
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

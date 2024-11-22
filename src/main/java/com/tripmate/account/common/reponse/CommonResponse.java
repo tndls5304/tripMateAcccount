@@ -36,7 +36,7 @@ public class CommonResponse<T> {
     }
 
     // 데이터가 있는 경우에 대한 ResponseEntity 반환
-    public ResponseEntity<CommonResponse<T>> toRespEntity(T data, CommonErrorCode commonErrorCode) {
+    public ResponseEntity<CommonResponse<T>> toRespEntity(CommonErrorCode commonErrorCode,T data) {
         this.codeNo = commonErrorCode.getCode();
         this.message = commonErrorCode.getMessage();
         this.data = data;

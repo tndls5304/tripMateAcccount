@@ -22,4 +22,6 @@ public interface RoleThRepository extends JpaRepository<RoleHistoryEntity, RoleH
     """)
     List<RoleCode> findRoleCodeByUserTypeAndId(@Param("roleTargetType") AccountType roleTargetType
                                              , @Param("roleTarget")String roleTarget);
+
+
 }

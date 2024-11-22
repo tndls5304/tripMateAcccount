@@ -1,6 +1,8 @@
 package com.tripmate.account.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tripmate.account.jwt.JwtTokenProvider;
+import com.tripmate.account.jwt.RefreshTokenRepository;
 import com.tripmate.account.security.handler.CustomAccessDeniedHandler;
 import com.tripmate.account.security.handler.CustomAuthFailureHandler;
 import com.tripmate.account.security.handler.CustomAuthSuccessHandler;
@@ -21,7 +23,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-//=생성자메서드를 호출하고 자신을 스프링이관리하는 컨테이너안에 등록한다는것
+//=생성자메서드를 호출하고 자신을 스프링이관리하는 컨테이너안에 등록한다는것 생성자 안만들어도 되나...???
 @EnableWebSecurity
 public class SecurityConfig {
 
@@ -29,6 +31,10 @@ public class SecurityConfig {
     private ObjectMapper objectMapper;                                                                                       //모든 컴포넌트들을 빈으로 등록시킨다음에 ->그 컴포넌트에  @Autowired가 달려있으면 이것부터 연결 다 시키고 -->@Bean달린걸 본다
     @Autowired
     private GeneralUserDetailsService generalUserDetailsService;
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+    @Autowired
+    private RefreshTokenRepository refreshTokenRepository;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -58,7 +64,7 @@ public class SecurityConfig {
      */
     @Bean
     public CustomAuthSuccessHandler authSuccessHandler() {
-        return new CustomAuthSuccessHandler(objectMapper);
+        return new CustomAuthSuccessHandler(objectMapper, jwtTokenProvider, refreshTokenRepository);
     }
 
     /**
