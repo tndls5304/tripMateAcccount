@@ -3,6 +3,7 @@ package com.tripmate.account;
 import java.util.function.Supplier;
 
 /**
+ * 람다 구조 (매개변수) -> { 실행할 코드 }
  * 람다를 쓰는 이유는 메소드를 인자값으로 전달해서 전달한 메소드 내부에서 실행 시점을 정할 수 있도록 처리하기 위함
  */
 public class LamdaSample {

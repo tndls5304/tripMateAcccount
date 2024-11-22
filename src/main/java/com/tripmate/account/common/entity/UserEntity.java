@@ -1,6 +1,7 @@
 package com.tripmate.account.common.entity;
 
 import com.tripmate.account.common.entity.base.BaseEntity;
+import com.tripmate.account.common.enums.AccountType;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -20,7 +21,7 @@ import java.util.Set;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @EntityListeners(AuditingEntityListener.class)  // JPA Auditing  기능 활성화
 public class UserEntity extends BaseEntity {
-    
+
     @Id
     @Column(name = "USER_ID", length = 20)
     String userId;
@@ -45,25 +46,15 @@ public class UserEntity extends BaseEntity {
 
     @Column(name = "LAST_LOGIN_DT")
     LocalDate lastLoginDt;
-//
-//    @Column(name="ROLES")
-//    Set<RoleEntity> roleEntities;
+    //-----추가
+    @Column(name = "CLIENT_TYPE", nullable = false)
+    AccountType accountType;
 
-    //== jwt 토큰 추가 ==//
 
-    @Column(length = 1000)
-    private String refreshToken;
-
-    public void updateRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
+    @PrePersist//엔티티가 저장되기 전에 호출됩니다.
+    public void setDefaultClientType() {
+        if (this.accountType == null) { // accountType이 null이라면
+            this.accountType = AccountType.U ;// 기본값 'U'를 설정
+        }
     }
-
-    public void destroyRefreshToken() {
-        this.refreshToken = null;
-    }
-
-
-
-
-
 }
