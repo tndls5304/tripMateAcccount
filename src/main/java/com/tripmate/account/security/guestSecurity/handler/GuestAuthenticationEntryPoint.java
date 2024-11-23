@@ -1,4 +1,4 @@
-package com.tripmate.account.security.handler;
+package com.tripmate.account.security.guestSecurity.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tripmate.account.common.reponse.CommonResponse;
@@ -25,7 +25,7 @@ import static com.tripmate.account.common.errorcode.CommonErrorCode.UNAUTHORIZED
  * GlobalExceptionHandler는 Spring Security 관련 설정에서 발생하는 예외를 잡지 못합니다 )
  */
 @Slf4j
-public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
+public class GuestAuthenticationEntryPoint implements AuthenticationEntryPoint {
     private final ObjectMapper objectMapper;
 
     /**
@@ -33,7 +33,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
      *
      * @param objectMapper JSON 직렬화를 위한 ObjectMapper 객체
      */
-    public CustomAuthenticationEntryPoint(ObjectMapper objectMapper) {
+    public GuestAuthenticationEntryPoint(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 

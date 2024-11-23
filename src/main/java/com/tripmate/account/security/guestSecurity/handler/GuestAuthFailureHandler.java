@@ -1,4 +1,4 @@
-package com.tripmate.account.security.handler;
+package com.tripmate.account.security.guestSecurity.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tripmate.account.common.errorcode.CommonErrorCode;
@@ -19,10 +19,10 @@ import java.io.IOException;
  * 오류 발생 시 {@link ObjectMapper}를 사용하여 {@link CommonResponse} 객체를 JSON 형식으로 변환하고, 이를 {@link HttpServletResponse}에 작성하여 클라이언트로 전송합니다.
  */
 
-public class CustomAuthFailureHandler extends SimpleUrlAuthenticationFailureHandler {
+public class GuestAuthFailureHandler extends SimpleUrlAuthenticationFailureHandler {
     private final ObjectMapper objectMapper;
 
-    public CustomAuthFailureHandler(ObjectMapper objectMapper) {
+    public GuestAuthFailureHandler(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 

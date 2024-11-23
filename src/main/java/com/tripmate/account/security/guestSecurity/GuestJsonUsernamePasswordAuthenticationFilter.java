@@ -1,8 +1,7 @@
-package com.tripmate.account.security;
+package com.tripmate.account.security.guestSecurity;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tripmate.account.jwt.JwtTokenProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,13 +11,11 @@ import org.springframework.security.authentication.AuthenticationServiceExceptio
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.authentication.session.SessionFixationProtectionStrategy;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -29,7 +26,7 @@ import java.util.Map;
  * 기본 필터로는 JSON 바디를 읽을 수 없기 때문에, 이같이 커스텀 필터를 통해 인증 과정을 수동으로 처리하는걸 추가 했습니다.
  * 동작하는 방식은 jSON 형식의 요청 바디에서 username과 password를 추출해 UsernamePasswordAuthenticationToken을 생성하고, AuthenticationManager로 전달하여 인증을 진행하게 합니다.
  */
-public class JsonUsernamePasswordAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
+public class GuestJsonUsernamePasswordAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
     private static final String DEFAULT_LOGIN_REQUEST_URL = "/api/account/user/login";
     private static final String HTTP_METHOD = "POST";
@@ -37,7 +34,7 @@ public class JsonUsernamePasswordAuthenticationFilter extends AbstractAuthentica
     private final ObjectMapper objectMapper;
     private static final AntPathRequestMatcher DEFAULT_LOGIN_PATH_REQUEST_MATCHER = new AntPathRequestMatcher(DEFAULT_LOGIN_REQUEST_URL, HTTP_METHOD);
 
-    public JsonUsernamePasswordAuthenticationFilter(ObjectMapper objectMapper) {
+    public GuestJsonUsernamePasswordAuthenticationFilter(ObjectMapper objectMapper) {
         super(DEFAULT_LOGIN_PATH_REQUEST_MATCHER);
         setSessionAuthenticationStrategy(new SessionFixationProtectionStrategy());
         this.objectMapper = objectMapper;
