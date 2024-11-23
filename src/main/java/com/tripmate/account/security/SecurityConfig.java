@@ -1,12 +1,14 @@
 package com.tripmate.account.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tripmate.account.jwt.JwtTokenProvider;
+import com.tripmate.account.jwt.GuestJwtTokenProvider;
 import com.tripmate.account.jwt.RefreshTokenRepository;
-import com.tripmate.account.security.handler.CustomAccessDeniedHandler;
-import com.tripmate.account.security.handler.CustomAuthFailureHandler;
-import com.tripmate.account.security.handler.CustomAuthSuccessHandler;
-import com.tripmate.account.security.handler.CustomAuthenticationEntryPoint;
+import com.tripmate.account.security.guestSecurity.GuestJsonUsernamePasswordAuthenticationFilter;
+import com.tripmate.account.security.guestSecurity.GuestUserDetailsService;
+import com.tripmate.account.security.guestSecurity.handler.GuestAccessDeniedHandler;
+import com.tripmate.account.security.guestSecurity.handler.GuestAuthFailureHandler;
+import com.tripmate.account.security.guestSecurity.handler.GuestAuthSuccessHandler;
+import com.tripmate.account.security.guestSecurity.handler.GuestAuthenticationEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,9 +32,9 @@ public class SecurityConfig {
     @Autowired
     private ObjectMapper objectMapper;                                                                                       //모든 컴포넌트들을 빈으로 등록시킨다음에 ->그 컴포넌트에  @Autowired가 달려있으면 이것부터 연결 다 시키고 -->@Bean달린걸 본다
     @Autowired
-    private GeneralUserDetailsService generalUserDetailsService;
+    private GuestUserDetailsService guestUserDetailsService;
     @Autowired
-    private JwtTokenProvider jwtTokenProvider;
+    private GuestJwtTokenProvider guestJwtTokenProvider;
     @Autowired
     private RefreshTokenRepository refreshTokenRepository;
 
@@ -53,7 +55,7 @@ public class SecurityConfig {
     public ProviderManager customProviderManager() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setPasswordEncoder(passwordEncoder());
-        provider.setUserDetailsService(generalUserDetailsService);
+        provider.setUserDetailsService(guestUserDetailsService);
         provider.setHideUserNotFoundExceptions(false);
         return new ProviderManager(provider);
     }
@@ -63,8 +65,8 @@ public class SecurityConfig {
      * 인증이 성공하면 JSON 형식으로 성공 응답을 반환하는 CustomAuthSuccessHandler를 사용합니다.
      */
     @Bean
-    public CustomAuthSuccessHandler authSuccessHandler() {
-        return new CustomAuthSuccessHandler(objectMapper, jwtTokenProvider, refreshTokenRepository);
+    public GuestAuthSuccessHandler authSuccessHandler() {
+        return new GuestAuthSuccessHandler(objectMapper, guestJwtTokenProvider, refreshTokenRepository);
     }
 
     /**
@@ -72,8 +74,8 @@ public class SecurityConfig {
      * 인증에 실패하면 JSON 형식으로 실패 응답을 반환하는 CustomAuthFailureHandler를 사용합니다.
      */
     @Bean
-    public CustomAuthFailureHandler authFailureHandler() {
-        return new CustomAuthFailureHandler(objectMapper);
+    public GuestAuthFailureHandler authFailureHandler() {
+        return new GuestAuthFailureHandler(objectMapper);
     }
 
     /**
@@ -85,8 +87,8 @@ public class SecurityConfig {
      * @return 필터
      */
     @Bean
-    public JsonUsernamePasswordAuthenticationFilter jsonUsernamePasswordLoginFilter() {
-        JsonUsernamePasswordAuthenticationFilter jsonFilter = new JsonUsernamePasswordAuthenticationFilter(objectMapper);
+    public GuestJsonUsernamePasswordAuthenticationFilter jsonUsernamePasswordLoginFilter() {
+        GuestJsonUsernamePasswordAuthenticationFilter jsonFilter = new GuestJsonUsernamePasswordAuthenticationFilter(objectMapper);
         jsonFilter.setAuthenticationManager(customProviderManager()); // AuthenticationManager 설정
         jsonFilter.setAuthenticationSuccessHandler(authSuccessHandler());
         jsonFilter.setAuthenticationFailureHandler(authFailureHandler());
@@ -99,8 +101,8 @@ public class SecurityConfig {
      * 이 엔트리 포인트가 작동하여 401 Unauthorized 응답을 반환합니다.
      */
     @Bean
-    public CustomAuthenticationEntryPoint authenticationEntryPoint() {
-        return new CustomAuthenticationEntryPoint(objectMapper);
+    public GuestAuthenticationEntryPoint authenticationEntryPoint() {
+        return new GuestAuthenticationEntryPoint(objectMapper);
     }
 
     /**
@@ -108,8 +110,8 @@ public class SecurityConfig {
      * 권한이 부족한 사용자에게 접근을 차단하고, 403 Forbidden 응답을 반환합니다.
      */
     @Bean
-    public CustomAccessDeniedHandler accessDeniedHandler() {
-        return new CustomAccessDeniedHandler(objectMapper);
+    public GuestAccessDeniedHandler accessDeniedHandler() {
+        return new GuestAccessDeniedHandler(objectMapper);
     }
 
     /**
@@ -124,7 +126,7 @@ public class SecurityConfig {
      */
     @Bean
     @Order(1)
-    public SecurityFilterChain generalUserSecurityFilterChain(HttpSecurity http, GeneralUserDetailsService service, AuthenticationManager authenticationManager, AuthenticationManagerBuilder authManageBuilder) throws Exception {
+    public SecurityFilterChain generalUserSecurityFilterChain(HttpSecurity http, GuestUserDetailsService service, AuthenticationManager authenticationManager, AuthenticationManagerBuilder authManageBuilder) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)//CSRF 보호를 비활성화(API 서버나 세션이 사용되지 않는 경우)
                 .addFilterBefore(jsonUsernamePasswordLoginFilter(), UsernamePasswordAuthenticationFilter.class) // JSON 인증 필터 추가

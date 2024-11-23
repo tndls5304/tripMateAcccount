@@ -1,20 +1,20 @@
-package com.tripmate.account.security;
+package com.tripmate.account.security.guestSecurity;
 
-import com.tripmate.account.common.entity.RoleEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Set;
 
-public class GeneralUserDetailsEntity extends AllAccountDetails {
+public class GuestUserDetails implements UserDetails{
     private String userId;
     private String userPwd;
     private Set<GrantedAuthority> roleEntitySet;
 
 
-    public GeneralUserDetailsEntity(String username, String password, String nickname
-                                    ,Set<GrantedAuthority> authoritySet) {
+
+    public GuestUserDetails(String username, String password, String nickname
+                                    , Set<GrantedAuthority> authoritySet) {
         this.userId = username;
         this.userPwd = password;
         this.roleEntitySet = authoritySet;

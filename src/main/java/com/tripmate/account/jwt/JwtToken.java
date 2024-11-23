@@ -12,8 +12,6 @@ import lombok.NoArgsConstructor;
 public class JwtToken {
     private String accessToken;    // Access Token
     private String refreshToken;   // Refresh Token
-    private String grantType;      // 인증 타입 (Bearer)
 
-    public JwtToken(String accessToken, String refreshToken) {
-    }
+
 }

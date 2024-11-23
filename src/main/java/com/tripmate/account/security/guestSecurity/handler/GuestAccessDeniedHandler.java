@@ -1,4 +1,4 @@
-package com.tripmate.account.security.handler;
+package com.tripmate.account.security.guestSecurity.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tripmate.account.common.reponse.CommonResponse;
@@ -21,7 +21,7 @@ import static com.tripmate.account.common.errorcode.CommonErrorCode.FORBIDDEN_AC
  * AccessDeniedHandler 인터페이스를 구현하여, 권한이 없는 요청에 대해 JSON 형태로 API 응답을 반환하도록 합니다.
  */
 @Slf4j
-public class CustomAccessDeniedHandler implements AccessDeniedHandler {
+public class GuestAccessDeniedHandler implements AccessDeniedHandler {
     private final ObjectMapper objectMapper;
 
     /**
@@ -29,7 +29,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
      *
      * @param objectMapper JSON 직렬화를 위한 ObjectMapper 객체
      */
-    public CustomAccessDeniedHandler(ObjectMapper objectMapper) {
+    public GuestAccessDeniedHandler(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 
