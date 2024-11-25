@@ -1,4 +1,4 @@
-package com.tripmate.account.user.dto;
+package com.tripmate.account.guest.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tripmate.account.common.enums.AgreeFl;

@@ -13,7 +13,7 @@ import lombok.experimental.SuperBuilder;
 @Table(name = "ROLE_TH")
 @NoArgsConstructor
 public class RoleHistoryEntity extends BaseEntity {
-    //복합키 권한대상의 타입+ 대상id+권한 코드 RU00, RP00, RA00 등
+    //복합키 권한대상의 타입+ 대상id+권한 코드 RG00, RP00, RA00 등
     @EmbeddedId
     RoleHistoryId id;
 }

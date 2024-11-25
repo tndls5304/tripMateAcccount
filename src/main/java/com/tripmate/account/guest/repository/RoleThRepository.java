@@ -1,4 +1,4 @@
-package com.tripmate.account.user.repository;
+package com.tripmate.account.guest.repository;
 
 import com.tripmate.account.common.entity.RoleHistoryEntity;
 import com.tripmate.account.common.entity.id.RoleHistoryId;
@@ -7,7 +7,6 @@ import com.tripmate.account.common.enums.RoleCode;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

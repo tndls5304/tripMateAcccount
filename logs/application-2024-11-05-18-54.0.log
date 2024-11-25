@@ -1350,9 +1350,9 @@ jdk.internal.loader.ClassLoaders$AppClassLoader@4e25154f
 [startup] [2024-11-05 18:54:07.682] [main] [DEBUG] [o.s.o.j.SharedEntityManagerCreator$SharedEntityManagerInvocationHandler] - Creating new EntityManager for shared EntityManager invocation 
 [startup] [2024-11-05 18:54:07.725] [main] [DEBUG] [o.h.s.i.StatisticsInitiator] - Statistics initialized [enabled=false] 
 [startup] [2024-11-05 18:54:07.733] [main] [DEBUG] [o.s.o.j.SharedEntityManagerCreator$SharedEntityManagerInvocationHandler] - Creating new EntityManager for shared EntityManager invocation 
-[startup] [2024-11-05 18:54:07.810] [main] [DEBUG] [o.s.d.r.c.s.RepositoryFactorySupport] - Initializing repository instance for com.tripmate.account.user.repository.UserTbRepository… 
+[startup] [2024-11-05 18:54:07.810] [main] [DEBUG] [o.s.d.r.c.s.RepositoryFactorySupport] - Initializing repository instance for com.tripmate.account.guest.repository.UserTbRepository…
 [startup] [2024-11-05 18:54:07.839] [main] [DEBUG] [o.s.o.j.SharedEntityManagerCreator$SharedEntityManagerInvocationHandler] - Creating new EntityManager for shared EntityManager invocation 
-[startup] [2024-11-05 18:54:07.885] [main] [DEBUG] [o.s.d.r.c.s.RepositoryFactorySupport] - Finished creation of repository instance for com.tripmate.account.user.repository.UserTbRepository. 
+[startup] [2024-11-05 18:54:07.885] [main] [DEBUG] [o.s.d.r.c.s.RepositoryFactorySupport] - Finished creation of repository instance for com.tripmate.account.guest.repository.UserTbRepository.
 [startup] [2024-11-05 18:54:07.891] [main] [DEBUG] [o.s.b.f.s.DefaultListableBeanFactory] - Autowiring by type from bean name 'generalUserDetailsService' via constructor to bean named 'userTbRepository' 
 [startup] [2024-11-05 18:54:07.893] [main] [DEBUG] [o.s.b.f.s.DefaultListableBeanFactory] - Creating shared instance of singleton bean 'authManager' 
 [startup] [2024-11-05 18:54:07.894] [main] [DEBUG] [o.s.b.f.s.DefaultListableBeanFactory] - Creating shared instance of singleton bean 'securityConfig' 

@@ -1,4 +1,4 @@
-package com.tripmate.account.user.service;
+package com.tripmate.account.guest.service;
 
 import com.tripmate.account.common.entity.*;
 import com.tripmate.account.common.entity.id.BasicAgreeId;
@@ -10,11 +10,11 @@ import com.tripmate.account.common.exception.InvalidRequestException;
 import com.tripmate.account.common.exception.ServerErrorException;
 import com.tripmate.account.common.reponse.CommonResponse;
 import com.tripmate.account.common.enums.AgreeFl;
-import com.tripmate.account.user.dto.*;
-import com.tripmate.account.user.repository.RoleThRepository;
-import com.tripmate.account.user.repository.UserTbRepository;
-import com.tripmate.account.user.repository.UserBasicAgreeThRepository;
-import com.tripmate.account.user.repository.UserMarketingAgreeThRepository;
+import com.tripmate.account.guest.dto.*;
+import com.tripmate.account.guest.repository.RoleThRepository;
+import com.tripmate.account.guest.repository.UserTbRepository;
+import com.tripmate.account.guest.repository.UserBasicAgreeThRepository;
+import com.tripmate.account.guest.repository.UserMarketingAgreeThRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -381,9 +381,9 @@ public class UserManageService {
         RoleHistoryEntity roleHistoryEntity=RoleHistoryEntity.builder()
                 .id(
                         RoleHistoryId.builder()
-                                .roleTargetType(AccountType.U)
+                                .roleTargetType(AccountType.G)
                                 .roleTarget(reqUserJoin.getUserId())
-                                .roleCode(RoleCode.RU00)
+                                .roleCode(RoleCode.RG00)
                                 .build()
                 )
                 .regUser(reqUserJoin.getUserId())//TODO 서버이름 넣기

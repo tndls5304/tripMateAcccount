@@ -1,8 +1,7 @@
-package com.tripmate.account.security.guestSecurity;
+package com.tripmate.account.security.guest;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -14,7 +13,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.authentication.session.SessionFixationProtectionStrategy;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-
 import java.io.IOException;
 import java.util.Map;
 
@@ -28,7 +26,7 @@ import java.util.Map;
  */
 public class GuestJsonUsernamePasswordAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
-    private static final String DEFAULT_LOGIN_REQUEST_URL = "/api/account/user/login";
+    private static final String DEFAULT_LOGIN_REQUEST_URL = "/api/guest/account/login";
     private static final String HTTP_METHOD = "POST";
     private static final String CONTENT_TYPE = "application/json";
     private final ObjectMapper objectMapper;
@@ -42,19 +40,21 @@ public class GuestJsonUsernamePasswordAuthenticationFilter extends AbstractAuthe
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
-        System.out.println("***********************attemptAuthentication 왔다 ");
+
         if (!CONTENT_TYPE.equals(request.getContentType())) {
             throw new AuthenticationServiceException("Authentication Content-Type not supported: " + request.getContentType());
         }
         //request.getInputStream()에서 바로 JSON 데이터를 읽고, Map<String, String> 타입으로 변환
         Map<String, String> credentials = objectMapper.readValue(request.getInputStream(), new TypeReference<Map<String, String>>() {
         });
+
         //사용자가 입력한 id,pwd를 꺼내  비인증 상태의 토큰을 생성
         UsernamePasswordAuthenticationToken authRequestToken = new UsernamePasswordAuthenticationToken(credentials.get("userId"), credentials.get("userPwd"));
-        System.out.println("***************************비인증토큰만듬"+authRequestToken);
+
         // 세부 정보를 설정 (예: HTTP 요청 관련 세부 정보)필요하면 추가하기 authRequestToken.setDetails(new WebAuthenticationDetails(request));
 
         //AuthenticationManager에 이 토큰을 전달함.
+
         AuthenticationManager ProviderManager = this.getAuthenticationManager();
         //내부에서 인증을 처리하고 검증이 성공하면 인증된 토큰을 생성함.인증된 토큰은 SecurityContext에 저장
         return ProviderManager.authenticate(authRequestToken);
@@ -63,7 +63,7 @@ public class GuestJsonUsernamePasswordAuthenticationFilter extends AbstractAuthe
 //    @Override
 //    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
 //        System.out.println("**************성공핸들러 호출해볼까?*****");
-//
+//    this.successHandler.onAuthenticationSuccess(request, response, authResult);
 //    }
 }
 

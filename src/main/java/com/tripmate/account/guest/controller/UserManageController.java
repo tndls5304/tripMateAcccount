@@ -1,8 +1,8 @@
-package com.tripmate.account.user.controller;
+package com.tripmate.account.guest.controller;
 
 import com.tripmate.account.common.reponse.CommonResponse;
-import com.tripmate.account.user.dto.*;
-import com.tripmate.account.user.service.UserManageService;
+import com.tripmate.account.guest.dto.*;
+import com.tripmate.account.guest.service.UserManageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -12,11 +12,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
 import java.util.List;
 
 import static com.tripmate.account.common.errorcode.CommonErrorCode.SUCCESS;
@@ -42,7 +39,7 @@ public class UserManageController {
      * @param userId 중복 검사 요청 id
      * @return 중복된 아이디가 존재시 에러 코드와 메시지를 포함한 ResponseEntity 를 반환,중복되지 않을 경우 성공 응답을 반환
      */
-    @GetMapping("api/account/user/join/duplicate")
+    @GetMapping("api/guest/account/join/duplicate")
     @Operation(summary = "투숙객 회원가입시 id 중복 검사", description = "userId를 이용해 투숙객의 id 중복 검사")
     public ResponseEntity<CommonResponse<Void>> checkUserIdDuplicate(@Valid @RequestParam String userId) {
         return service.checkUserIdDuplicate(userId);
@@ -54,7 +51,7 @@ public class UserManageController {
      * @param userJoinReqDto 개인정보와 (필수)약관동의리스트,마케팅약관동의리스트(선택적)를 받음
      * @return 회원가입 성공시 성공 응답코드와 메세지 전달, 실패시 예외 발생--> 에러코드,메세지 전달
      */
-    @PostMapping("api/account/user/join")
+    @PostMapping("api/guest/account/join")
     @Operation(summary = "투숙객 회원가입 등록 ", description = "투숙객 회원가입 요청 API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공", content = @Content(mediaType = "application/json")),
@@ -75,7 +72,7 @@ public class UserManageController {
      * @param modifyUserPwdDto 현재 비밀번호와 바꿀 비밀번호
      * @return 현재 비밀번호 유효성검사를 한 후 성공이면 비밀번호 성공 응답코드,메세지 전달
      */
-    @PutMapping("api/account/user/pwd")
+    @PutMapping("api/guest/account/pwd")
     @Operation(summary = "투숙객 비밀번호 변경 ", description = "현재 비밀번호와 바꿀 비밀번호를 입력후 변경 요청 API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공", content = @Content(mediaType = "application/json")),
@@ -97,7 +94,7 @@ public class UserManageController {
      * @param ModifyMarketingAgreeDtoList 마케팅 동의 리스트
      * @return
      */
-    @PostMapping("api/account/user/marketing")
+    @PostMapping("api/guest/account/marketing")
     public ResponseEntity<CommonResponse<Void>> modifyMarketingAgree(@Valid @RequestBody List<UserModifyMarketingAgreeReqDto> ModifyMarketingAgreeDtoList) {
         service.modifyMarketingAgree(ModifyMarketingAgreeDtoList);
         return new CommonResponse<>().toRespEntity(SUCCESS);

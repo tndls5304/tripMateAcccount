@@ -1,4 +1,4 @@
-package com.tripmate.account.security.guestSecurity.handler;
+package com.tripmate.account.security.guest.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tripmate.account.common.errorcode.CommonErrorCode;
@@ -7,14 +7,13 @@ import com.tripmate.account.jwt.JwtToken;
 import com.tripmate.account.jwt.GuestJwtTokenProvider;
 import com.tripmate.account.jwt.RefreshTokenInfo;
 import com.tripmate.account.jwt.RefreshTokenRepository;
-import com.tripmate.account.security.guestSecurity.GuestUserDetails;
+import com.tripmate.account.security.guest.GuestUserDetails;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import java.io.IOException;
 import java.util.Optional;

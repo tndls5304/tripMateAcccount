@@ -1,15 +1,13 @@
 package com.tripmate.account.jwt;
 
 import com.tripmate.account.common.enums.JwtTokenType;
-import com.tripmate.account.security.guestSecurity.GuestUserDetails;
-import com.tripmate.account.user.repository.RoleThRepository;
+import com.tripmate.account.security.guest.GuestUserDetails;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
