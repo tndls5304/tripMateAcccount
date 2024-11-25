@@ -42,6 +42,7 @@ public class GuestJsonUsernamePasswordAuthenticationFilter extends AbstractAuthe
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
+        System.out.println("***********************attemptAuthentication 왔다 ");
         if (!CONTENT_TYPE.equals(request.getContentType())) {
             throw new AuthenticationServiceException("Authentication Content-Type not supported: " + request.getContentType());
         }
@@ -50,7 +51,7 @@ public class GuestJsonUsernamePasswordAuthenticationFilter extends AbstractAuthe
         });
         //사용자가 입력한 id,pwd를 꺼내  비인증 상태의 토큰을 생성
         UsernamePasswordAuthenticationToken authRequestToken = new UsernamePasswordAuthenticationToken(credentials.get("userId"), credentials.get("userPwd"));
-
+        System.out.println("***************************비인증토큰만듬"+authRequestToken);
         // 세부 정보를 설정 (예: HTTP 요청 관련 세부 정보)필요하면 추가하기 authRequestToken.setDetails(new WebAuthenticationDetails(request));
 
         //AuthenticationManager에 이 토큰을 전달함.
@@ -59,11 +60,11 @@ public class GuestJsonUsernamePasswordAuthenticationFilter extends AbstractAuthe
         return ProviderManager.authenticate(authRequestToken);
     }
 
-    @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-//성공 실패 핸들러 호출??
-
-    }
+//    @Override
+//    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
+//        System.out.println("**************성공핸들러 호출해볼까?*****");
+//
+//    }
 }
 
 /*

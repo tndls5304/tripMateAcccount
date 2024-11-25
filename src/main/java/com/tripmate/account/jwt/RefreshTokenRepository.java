@@ -1,7 +1,9 @@
 package com.tripmate.account.jwt;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface RefreshTokenRepository extends JpaRepository<RefreshTokenInfo,String> {
     // 사용자의 리프레시 토큰 조회
    // Optional<RefreshTokenInfo> findByUserId(String userId);
