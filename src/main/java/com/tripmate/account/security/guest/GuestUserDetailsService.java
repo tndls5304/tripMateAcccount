@@ -1,10 +1,10 @@
-package com.tripmate.account.security.guestSecurity;
+package com.tripmate.account.security.guest;
 
 import com.tripmate.account.common.entity.UserEntity;
 import com.tripmate.account.common.enums.AccountType;
 import com.tripmate.account.common.enums.RoleCode;
-import com.tripmate.account.user.repository.RoleThRepository;
-import com.tripmate.account.user.repository.UserTbRepository;
+import com.tripmate.account.guest.repository.RoleThRepository;
+import com.tripmate.account.guest.repository.UserTbRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -34,6 +34,7 @@ public class GuestUserDetailsService implements UserDetailsService {
     /**
      * 시큐리티 provider인 DaoAuthenticationProvider에서 호출하는 메서드다.
      * 이 메서드는 클라이언트가 입력한 id로 계정을 조회한 후 UserDetails 타입의 객체로 반환하는 역할을 한다.
+     *
      * @param userId 클라이언트가 입력한 사용자 ID를 나타낸다.
      * @return UserDetails을 구현한 GuestUserDetails  객체
      * @throws UsernameNotFoundException 사용자를 찾을 수 없을 경우 발생
@@ -50,15 +51,14 @@ public class GuestUserDetailsService implements UserDetailsService {
         // 2. RoleCode 리스트를 이용해 GrantedAuthority 객체 생성
         Set<GrantedAuthority> authoritySet = new HashSet<>();
 
-        List<RoleCode> roleCodeList = roleThRepository.findRoleCodeByUserTypeAndId(AccountType.U,userEntity.getUserId());
+        List<RoleCode> roleCodeList = roleThRepository.findRoleCodeByUserTypeAndId(AccountType.G, userEntity.getUserId());
         for (RoleCode roleCode : roleCodeList) {
-            authoritySet.add(new SimpleGrantedAuthority(roleCode.name())); //이늄타입이라 String을 얻기위해 name()을 사용함  RoleCode.RU00이면 RU00이라는 문자열이 반환됩니다.
+            authoritySet.add(new SimpleGrantedAuthority(roleCode.name())); //이늄타입이라 String을 얻기위해 name()을 사용함  RoleCode.RG00이면 RG00이라는 문자열이 반환됩니다.
         }
 
         return new GuestUserDetails(
                 userEntity.getUserId(),
                 userEntity.getUserPwd(),
-                userEntity.getNickname(),
                 authoritySet // 권한을 Set으로 추가
         );
     }

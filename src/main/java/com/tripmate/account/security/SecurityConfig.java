@@ -3,12 +3,12 @@ package com.tripmate.account.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tripmate.account.jwt.GuestJwtTokenProvider;
 import com.tripmate.account.jwt.RefreshTokenRepository;
-import com.tripmate.account.security.guestSecurity.GuestJsonUsernamePasswordAuthenticationFilter;
-import com.tripmate.account.security.guestSecurity.GuestUserDetailsService;
-import com.tripmate.account.security.guestSecurity.handler.GuestAccessDeniedHandler;
-import com.tripmate.account.security.guestSecurity.handler.GuestAuthFailureHandler;
-import com.tripmate.account.security.guestSecurity.handler.GuestAuthSuccessHandler;
-import com.tripmate.account.security.guestSecurity.handler.GuestAuthenticationEntryPoint;
+import com.tripmate.account.security.guest.GuestJsonUsernamePasswordAuthenticationFilter;
+import com.tripmate.account.security.guest.GuestUserDetailsService;
+import com.tripmate.account.security.guest.handler.GuestAccessDeniedHandler;
+import com.tripmate.account.security.guest.handler.GuestAuthFailureHandler;
+import com.tripmate.account.security.guest.handler.GuestAuthSuccessHandler;
+import com.tripmate.account.security.guest.handler.GuestAuthenticationEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -90,7 +90,7 @@ public class SecurityConfig {
      * @return 필터
      */
     @Bean
-    public GuestJsonUsernamePasswordAuthenticationFilter jsonUsernamePasswordLoginFilter() {
+    public GuestJsonUsernamePasswordAuthenticationFilter guestJsonUsernamePasswordLoginFilter() {
         GuestJsonUsernamePasswordAuthenticationFilter jsonFilter = new GuestJsonUsernamePasswordAuthenticationFilter(objectMapper);
         jsonFilter.setAuthenticationManager(customProviderManager()); // AuthenticationManager 설정
         jsonFilter.setAuthenticationSuccessHandler(authSuccessHandler());
@@ -131,13 +131,13 @@ public class SecurityConfig {
      */
     @Bean
     @Order(1)
-    public SecurityFilterChain generalUserSecurityFilterChain(HttpSecurity http, GuestUserDetailsService service, AuthenticationManager authenticationManager, AuthenticationManagerBuilder authManageBuilder) throws Exception {
+    public SecurityFilterChain guestSecurityFilterChain(HttpSecurity http, GuestUserDetailsService service, AuthenticationManager authenticationManager, AuthenticationManagerBuilder authManageBuilder) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)//CSRF 보호를 비활성화(API 서버나 세션이 사용되지 않는 경우)
-                .addFilterBefore(jsonUsernamePasswordLoginFilter(), UsernamePasswordAuthenticationFilter.class) // JSON 인증 필터 추가
+                .addFilterBefore(guestJsonUsernamePasswordLoginFilter(), UsernamePasswordAuthenticationFilter.class) // JSON 인증 필터 추가
 
                 .authorizeHttpRequests(auth -> auth                                             //URL 패턴별 접근 권한을 정의
-                        .requestMatchers("/", "/api/account/user/join", "/api/account/user/login", "/home")
+                        .requestMatchers("/", "/api/guest/account/join", "/api/guest/account/login", "/home")
                         .permitAll()  // 인증 없이 접근 가능
                         .anyRequest().authenticated()                                        // 나머지 요청은 인증 필요
                 )

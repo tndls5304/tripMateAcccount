@@ -1,4 +1,4 @@
-package com.tripmate.account.user.repository;
+package com.tripmate.account.guest.repository;
 
 import com.tripmate.account.common.entity.BasicAgreeEntity;
 import com.tripmate.account.common.entity.id.BasicAgreeId;

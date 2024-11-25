@@ -1,4 +1,4 @@
-package com.tripmate.account.security.guestSecurity.handler;
+package com.tripmate.account.security.guest.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tripmate.account.common.reponse.CommonResponse;

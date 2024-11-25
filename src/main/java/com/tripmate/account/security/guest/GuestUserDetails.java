@@ -1,4 +1,4 @@
-package com.tripmate.account.security.guestSecurity;
+package com.tripmate.account.security.guest;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -6,15 +6,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Set;
 
-public class GuestUserDetails implements UserDetails{
+public class GuestUserDetails implements UserDetails {
     private String userId;
     private String userPwd;
     private Set<GrantedAuthority> roleEntitySet;
 
 
-
-    public GuestUserDetails(String username, String password, String nickname
-                                    , Set<GrantedAuthority> authoritySet) {
+    public GuestUserDetails(String username, String password
+            , Set<GrantedAuthority> authoritySet) {
         this.userId = username;
         this.userPwd = password;
         this.roleEntitySet = authoritySet;

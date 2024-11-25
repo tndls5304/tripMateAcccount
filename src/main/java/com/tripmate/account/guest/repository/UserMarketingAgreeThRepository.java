@@ -1,4 +1,4 @@
-package com.tripmate.account.user.repository;
+package com.tripmate.account.guest.repository;
 
 import com.tripmate.account.common.enums.AgreeFl;
 import com.tripmate.account.common.entity.MarketingAgreeEntity;
