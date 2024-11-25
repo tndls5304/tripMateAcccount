@@ -41,7 +41,7 @@ public class GuestAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandl
     //존재하지 않는다면 토큰두개 발행.
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-
+        System.out.println("************성공핸들러 호출됐슴다~~~~~~~~~~~~~~~~~");
         GuestUserDetails guestUserDetails= (GuestUserDetails) authentication.getPrincipal();
         Optional<RefreshTokenInfo> optionalRefreshToken = refreshTokenRepository.findById(guestUserDetails.getUsername());
         JwtToken newToken;

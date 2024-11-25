@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 
 @Entity
-@Builder
+
 public class RefreshTokenInfo {
     @Id
     private String userId;
