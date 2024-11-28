@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Component
@@ -43,7 +42,7 @@ public class GuestJwtTokenProvider {
 
     //저장된 리프레쉬토큰이 시간이 유효한지 검사함.
     public Boolean isValidSavedRefreshToken(RefreshTokenInfo savedRefreshToken) {
-        return savedRefreshToken.getExpireTime().isAfter(LocalDateTime.now());
+        return savedRefreshToken.getExpireTime().isAfter(new Date());
     }
 
     //만료시간 계산
@@ -106,7 +105,7 @@ public class GuestJwtTokenProvider {
                 .claim("roles", getRolesList(guestUserDetails))
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
-        refreshTokenRepository.save(new RefreshTokenInfo(guestUserDetails.getUsername(), refreshToken));
+        refreshTokenRepository.save(new JwtToken(accessToken, refreshToken)); //순서를 어떻게알고 들어가지???
         return new JwtToken(accessToken, refreshToken);
     }
 }

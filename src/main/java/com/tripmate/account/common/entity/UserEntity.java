@@ -54,7 +54,7 @@ public class UserEntity extends BaseEntity {
     @PrePersist//엔티티가 저장되기 전에 호출됩니다.
     public void setDefaultClientType() {
         if (this.accountType == null) { // accountType이 null이라면
-            this.accountType = AccountType.U ;// 기본값 'U'를 설정
+            this.accountType = AccountType.G ;// 기본값 'G'를 설정
         }
     }
 }

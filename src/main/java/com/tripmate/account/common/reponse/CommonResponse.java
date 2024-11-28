@@ -5,7 +5,7 @@ import com.tripmate.account.common.errorcode.CommonErrorCode;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
-
+//---------------TODO  제네릭 컨테이너 공부 필요
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CommonResponse<T> {

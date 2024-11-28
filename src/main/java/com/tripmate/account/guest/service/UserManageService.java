@@ -180,7 +180,7 @@ public class UserManageService {
     public void insertNewMarketingAgree(String userId, int marketingPkSq, AgreeFl reqAgreeFlForOneMarketing, String reqTemplateSq) {
         MarketingAgreeEntity marketingAgreeEntity = MarketingAgreeEntity.builder()
                 .agreeSq(getMarketingPk(userId, marketingPkSq))
-                .accountType(AccountType.U)
+                .accountType(AccountType.G)
                 .accountId(userId)
                 .agreeFl(reqAgreeFlForOneMarketing)
                 .agreeDtm(LocalDateTime.now())
@@ -329,7 +329,7 @@ public class UserManageService {
             BasicAgreeEntity requireAgreeEntity = BasicAgreeEntity.builder()
                     .id(
                             BasicAgreeId.builder()
-                                    .accountType(AccountType.U)//TODO 'U'는 JWT에서 가져올 예정
+                                    .accountType(AccountType.G)//TODO 'U'는 JWT에서 가져올 예정
                                     .accountId(reqUserJoin.getUserId())
                                     .templateSq(parseInt(reqBasicAgree.getTemplateSq()))
                                     .build()

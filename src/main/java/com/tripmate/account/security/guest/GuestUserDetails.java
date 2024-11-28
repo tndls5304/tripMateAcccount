@@ -9,6 +9,7 @@ import java.util.Set;
 public class GuestUserDetails implements UserDetails {
     private String userId;
     private String userPwd;
+
     private Set<GrantedAuthority> roleEntitySet;
 
 
@@ -19,6 +20,7 @@ public class GuestUserDetails implements UserDetails {
         this.roleEntitySet = authoritySet;
 
     }
+//⭐⭐ Collection<String> collection = set;  :  우항기준으로 생각하기! Set은 Collection으로 업캐스팅 가능
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
