@@ -50,7 +50,8 @@ public class GuestUserDetailsService implements UserDetailsService {
 
         // 2. RoleCode 리스트를 이용해 GrantedAuthority 객체 생성
         Set<GrantedAuthority> authoritySet = new HashSet<>();
-
+        //권한 코드는 리스트로 빼와서  SimpleGrantedAuthority의 생성자의 인자값으로 넘겨주면 String 멤버변수에 저장
+        //Set에는
         List<RoleCode> roleCodeList = roleThRepository.findRoleCodeByUserTypeAndId(AccountType.G, userEntity.getUserId());
         for (RoleCode roleCode : roleCodeList) {
             authoritySet.add(new SimpleGrantedAuthority(roleCode.name())); //이늄타입이라 String을 얻기위해 name()을 사용함  RoleCode.RG00이면 RG00이라는 문자열이 반환됩니다.

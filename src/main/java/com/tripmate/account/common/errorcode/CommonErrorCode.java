@@ -18,6 +18,7 @@ public enum CommonErrorCode {
 
     //0000번 : 성공
     SUCCESS("0000", "성공",HttpStatus.OK),
+
     // 1000~1099: 클라이언트 유효성 검사 관련 에러 코드-DTO에서함
     ID_BLANK("1001", "아이디는 빈 값이 될 수 없습니다.",HttpStatus.BAD_REQUEST),
     ID_INVALID("1002", "아이디는 대,소문자의 알파벳과 숫자, 언더스코어(_)가 허용됩니다 단,하나 이상의 영문자를 기입하셔야 합니다",HttpStatus.BAD_REQUEST),
@@ -55,24 +56,45 @@ public enum CommonErrorCode {
     INVALID_USER_ID_MISMATCH("1202","아이디에 해당하는 계정은 존재하지 않습니다",HttpStatus.BAD_REQUEST),
     INVALID_USER_PWD_MISMATCH("1203","비밀번호가 틀렸습니다",HttpStatus.BAD_REQUEST),
 
-    //2000번대:db연결 문제
-    DATABASE_CONNENCTION_ERROR("2000", "데이터베이스 연결 오류",HttpStatus.INTERNAL_SERVER_ERROR),
+
+
+    //2000번대 : 인증 및 권한 오류 시큐리티----------바꾸기 TODO
+    UNAUTHORIZED_ACCESS("2000", "인증이 필요합니다.", HttpStatus.UNAUTHORIZED), //HttpStatus 401
+    FORBIDDEN_ACCESS("2001", "접근 권한이 없습니다.", HttpStatus.FORBIDDEN),//403 Forbidden
+
+    USERNAME_NOT_FOUND("2002", "입력하신 id는 가입내역이 없습니다", HttpStatus.UNAUTHORIZED),
+    BAD_CREDENTIALS("2003", "입력하신 비밀번호는 틀렸습니다", HttpStatus.UNAUTHORIZED),
+    ACCOUNT_LOCKED("2004", "너무 많은 로그인 실패로 계정이 잠겼습니다 ", HttpStatus.FORBIDDEN),
+    CREDENTIALS_EXPIRED("2005", "오래된 비밀번호로 인증정보가 만료되었습니다.", HttpStatus.UNAUTHORIZED),
+    ACCOUNT_DISABLED("2006", "관리자에게 문의해주세요 계정이 비활성화되었습니다", HttpStatus.FORBIDDEN),
+    ACCOUNT_EXPIRED("2007", "계정사용기간이 만료되었습니다.", HttpStatus.UNAUTHORIZED),
+    CONTENT_TYPE_NOT_SUPPORTED("2008","요청 데이터 형식이 지원되지 않습니다. ",HttpStatus.BAD_REQUEST),
+
+    UNEXPECTED_AUTHENTICATION_FAILED("2099", "인증에 실패했습니다.", HttpStatus.UNAUTHORIZED),
+
+    //2100번대 : jwt 토큰 권한 인증
+    JWT_REFRESH_TOKEN_EXPIRED("2100","로그인 세션이 만료되었습니다. 다시 로그인해 주세요.",HttpStatus.UNAUTHORIZED),
+    JWT_REFRESH_TOKEN_INVALID_FORMAT("2101","토큰형식이 잘못되었습니다",HttpStatus.BAD_REQUEST),
+    JWT_REFRESH_TOKEN_INVALID_SIGNATURE("2102","토큰이 위조 되었습니다",HttpStatus.UNAUTHORIZED),
+    JWT_REFRESH_TOKEN_UNKNOWN_ERROR("2103","알수없는 토큰오류입니다",HttpStatus.INTERNAL_SERVER_ERROR),
+
+    JWT_ACCESS_TOKEN_EXPIRED("2104","세션이 만료되었습니다. 새로고침 중입니다..",HttpStatus.UNAUTHORIZED),
+    JWT_ACCESS_TOKEN_INVALID_FORMAT("2105","토큰형식이 잘못되었습니다",HttpStatus.BAD_REQUEST),
+    JWT_ACCESS_TOKEN_INVALID_SIGNATURE("2106","토큰이 위조 되었습니다",HttpStatus.UNAUTHORIZED),
+    JWT_ACCESS_TOKEN_UNKNOWN_ERROR("2107","알수없는 토큰오류입니다",HttpStatus.INTERNAL_SERVER_ERROR),
+
+    JWT_REQ_VALIDATION_ACCESS_BLANK("2108","요청하신 토큰이 누락됐습니다",HttpStatus.BAD_REQUEST),
+    JWT_REQ_VALIDATION_REFRESH_BLANK("2109","요청하신 토큰이 누락됐습니다",HttpStatus.BAD_REQUEST),
+
+    JWT_SAVED_REFRESH_TOKEN_NOT_FOUND("2110","토큰을 찾을 수없습니다 다시 로그인 해주세요", HttpStatus.NOT_FOUND),
+    JWT_REFRESH_TOKEN_MISMATCH("2111","토큰이 일치하지 않습니다 다시 로그인해주세요 ",HttpStatus.BAD_REQUEST),
 
     //3000번대:일반고객 상대
 
-    //4000번대 :시큐리티
-    UNAUTHORIZED_ACCESS("4000", "인증이 필요합니다.", HttpStatus.UNAUTHORIZED), //HttpStatus 401
-    FORBIDDEN_ACCESS("4001", "접근 권한이 없습니다.", HttpStatus.FORBIDDEN),//403 Forbidden
+    //4000번대:db연결 문제
+    DATABASE_CONNENCTION_ERROR("4000", "데이터베이스 연결 오류",HttpStatus.INTERNAL_SERVER_ERROR),
 
-    USERNAME_NOT_FOUND("4002", "입력하신 id는 가입내역이 없습니다", HttpStatus.UNAUTHORIZED),
-    BAD_CREDENTIALS("4003", "입력하신 비밀번호는 틀렸습니다", HttpStatus.UNAUTHORIZED),
-    ACCOUNT_LOCKED("4004", "너무 많은 로그인 실패로 계정이 잠겼습니다 ", HttpStatus.FORBIDDEN),
-    CREDENTIALS_EXPIRED("4005", "오래된 비밀번호로 인증정보가 만료되었습니다.", HttpStatus.UNAUTHORIZED),
-    ACCOUNT_DISABLED("4006", "관리자에게 문의해주세요 계정이 비활성화되었습니다", HttpStatus.FORBIDDEN),
-    ACCOUNT_EXPIRED("4007", "계정사용기간이 만료되었습니다.", HttpStatus.UNAUTHORIZED),
-    CONTENT_TYPE_NOT_SUPPORTED("4008","요청 데이터 형식이 지원되지 않습니다. ",HttpStatus.BAD_REQUEST),
 
-    UNEXPECTED_AUTHENTICATION_FAILED("4099", "인증에 실패했습니다.", HttpStatus.UNAUTHORIZED),
 
     // 5000번대: 일반 서버 오류
     INTERNAL_SERVER_ERROR("5000", "서버오류",HttpStatus.INTERNAL_SERVER_ERROR),

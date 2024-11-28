@@ -1,8 +1,7 @@
 package com.tripmate.account.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tripmate.account.jwt.GuestJwtTokenProvider;
-import com.tripmate.account.jwt.RefreshTokenRepository;
+import com.tripmate.account.jwt.JwtAuthService;
 import com.tripmate.account.security.guest.GuestJsonUsernamePasswordAuthenticationFilter;
 import com.tripmate.account.security.guest.GuestUserDetailsService;
 import com.tripmate.account.security.guest.handler.GuestAccessDeniedHandler;
@@ -33,9 +32,9 @@ public class SecurityConfig {
     private ObjectMapper objectMapper;                                                                                       //모든 컴포넌트들을 빈으로 등록시킨다음에 ->그 컴포넌트에  @Autowired가 달려있으면 이것부터 연결 다 시키고 -->@Bean달린걸 본다
     @Autowired
     private GuestUserDetailsService guestUserDetailsService;
-
     @Autowired
-    private RefreshTokenRepository refreshTokenRepository;
+    private JwtAuthService jwtAuthService;
+
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -58,10 +57,7 @@ public class SecurityConfig {
         provider.setHideUserNotFoundExceptions(false);
         return new ProviderManager(provider);
     }
-    @Bean
-    public GuestJwtTokenProvider guestJwtTokenProvider(){
-        return new GuestJwtTokenProvider(refreshTokenRepository);
-    }
+
 
     /**
      * 인증 성공 후 호출되는 핸들러를 설정합니다.
@@ -69,7 +65,7 @@ public class SecurityConfig {
      */
     @Bean
     public GuestAuthSuccessHandler authSuccessHandler() {
-        return new GuestAuthSuccessHandler(objectMapper, guestJwtTokenProvider(), refreshTokenRepository);
+        return new GuestAuthSuccessHandler(jwtAuthService,objectMapper);
     }
 
     /**

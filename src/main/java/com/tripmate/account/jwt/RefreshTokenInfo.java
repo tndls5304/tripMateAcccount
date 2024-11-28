@@ -5,45 +5,39 @@ import jakarta.persistence.Id;
 import lombok.Builder;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 @Entity
 
 public class RefreshTokenInfo {
     @Id
-    private String userId;
-    private String refreshToken;
-    private LocalDateTime expireTime;
+    private String userIdRole;
+    private String refreshValue;
 
     public RefreshTokenInfo() {
     }
 
-    public RefreshTokenInfo(String userId, String refreshToken) {
-        this.userId = userId;
-        this.refreshToken = refreshToken;
+    public RefreshTokenInfo(String userIdRole, String refreshValue) {
+        this.userIdRole = userIdRole;
+        this.refreshValue = refreshValue;
     }
 
     //getter setter
-    public String getUserId() {
-        return userId;
+    public String getUserIdRole() {
+        return userIdRole;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUserIdRole(String userIdRole) {
+        this.userIdRole = userIdRole;
     }
 
-    public String getRefreshToken() {
-        return refreshToken;
+    public String getRefreshValue() {
+        return refreshValue;
     }
 
-    public void setRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
+    public void setRefreshValue(String refreshValue) {
+        this.refreshValue = refreshValue;
     }
 
-    public void setExpireTime(LocalDateTime expireTime) {
-        this.expireTime = expireTime;
-    }
-    public LocalDateTime getExpireTime(){
-        return expireTime;
-    }
 }
