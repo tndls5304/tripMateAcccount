@@ -2,13 +2,11 @@ package com.tripmate.account.jwt;
 
 import com.tripmate.account.common.errorcode.CommonErrorCode;
 import com.tripmate.account.filter.exception.JwtValidateException;
-import com.tripmate.account.jwt.dto.JwtTokenReqDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -34,8 +32,7 @@ public class JwtAuthService {
     }
 
 
-    //처음 로그인할때 jwt생성하기
-    // 클라이언트가 토큰을 가지고 있던 말던 서버에서 access, refresh토큰을 새로 만든다. db에 리프레시토큰만 저장하고 (userId+권한,리프레시토큰값)
+    //로그인할때 jwt 생성하기 클라이언트에 토큰을 유무와 상관없이 서버에서 access, refresh토큰을 새로 만든다.-> db에는 리프레시토큰만 저장한다. (userId+권한,리프레시토큰값)
 
     public JwtToken processJwtWhenLogin(String userId, List<String> roles) {
         String accessToken = createAccessToken(userId, roles);
@@ -80,77 +77,55 @@ public class JwtAuthService {
         }
     }
 
-    public JwtToken reCreateJwtToken(String reqAccessToken, String reqRefreshToken) {
-        //-----클라이언트측  refresh토큰  VS 2번서버측 refresh토큰을 비교하기-----
+    public JwtToken reCreateJwtToken(String clientAccessToken, String clientRefreshToken) {
+        /*클라이언트가 access토큰만료로 새로운 토큰이 필요하다고 요청이 왔을때 호출되는 메서드다. 그럼 먼저 클라이언트가 보낸 access토큰과 refresh토큰정보를 파싱해 변조하진 않았는지 확인해봐야 한다.
+         클라이언트가 보낸 refresh,access토큰과 서버의 access,refresh토큰을 각각 비교해보면 된다.
+         첫번쨰로는 클라이언트측 refresh토큰  VS 2번서버의 refresh토큰을 비교할것이다.*/
 
-        // 클라이언트측의 refresh토큰을 파싱하고	 id와 role 뺀다 (만약 ExpiredJwtException오류 발생한다면 재로그인 오류 코드 전달)
-        Claims reqRefreshClaims = parseRefreshToken(reqRefreshToken);
-        String id = reqRefreshClaims.getSubject();
-        List<String> roles = reqRefreshClaims.get("roles", List.class);
-        String key = createKeyOfDb(id, roles);
+        //1)클라이언트가 보낸 refresh 토큰을 파싱해서 id와 roles를 조회한다 (만약 refresh토큰이 만료되어 파싱중 오류가 발생한다면 재로그인하라는 메세지 전달한다)
+        Claims reqRefreshClaims = parseRefreshToken(clientRefreshToken);
+        String clientId = reqRefreshClaims.getSubject();
+        List<String> clientRoles = reqRefreshClaims.get("roles", List.class);
 
-        RefreshTokenInfo savedRefreshTokenInfo = refreshTokenRepository.findById(key)
+        //2)클라이언트측 refresh토큰을 파싱해 알아낸 사용자 정보(id,roles)로 서버측 DB에 저장된 refresh토큰을 조회할때 키로 쓴다
+        String clientInForKey = createKeyOfDb(clientId, clientRoles);
+
+        //3) 클라이언트 refresh토큰에서 알아낸 사용자 정보(id,roles)로 서버의 refresh토큰을 조회해본다. 조회할 수 없다면 클라이언트와 서버측 refresh토큰은 다르다는것을 알수 있다. 재로그인 요청 메세지를 보낸다
+        RefreshTokenInfo savedRefreshTokenInfo = refreshTokenRepository.findById(clientInForKey)
                 .orElseThrow(() -> new JwtValidateException(CommonErrorCode.JWT_SAVED_REFRESH_TOKEN_NOT_FOUND));
 
         String serverRefreshToken = savedRefreshTokenInfo.getRefreshValue();
 
-        if (!StringUtils.equals(reqRefreshToken, serverRefreshToken)) {
+        //4) 클라이언트와 서버의 refresh토큰 값을 비교하고 다르다면 기록해두고 에러메세지를 보낸다
+        if (!StringUtils.equals(clientRefreshToken, serverRefreshToken)) {
             log.warn("Refresh token mismatch for clientAccessId : {},rolesOfClientAccess:{}. clientAccessRoles : {}, Server token: {}",
-                    id, roles, reqRefreshToken, serverRefreshToken);
+                    clientId, clientRoles, clientRefreshToken, serverRefreshToken);
             throw new JwtValidateException(CommonErrorCode.JWT_REFRESH_TOKEN_MISMATCH);
         }
 
+        /*.클라이언트와 서버의 refresh토큰이 일치하는걸 확인했으니 이제 클라이언트의 access토큰  VS 서버의 access토큰 비교 하기!
+           비교하기에 앞서 서버의 access토큰이 필요한데 서버에는 access토큰을 저장하지 않는다. 그래서 만들어야한다.
+           서버의 access토큰을 만들기위해 refresh토큰에서 알아낸 정보를 가져와 만들것이다. 그런데 클라이언트와 똑같은조건으로 비교해야하니 클라이언트의 access 토큰에서 발급일,만료일 정보를 넣어 만들것이다*/
 
-        //클라이언트측  요청 access 토큰  VS 서버측 access 토큰을 비교하기
-        Claims reqAccessClaims = parseAccessTokenWhenExpiry(reqAccessToken);
-        //토큰은 만료됐으니 ExpiredJwtException 가 발생하면 access토큰의 클레임에서 발급일, 만료일을 뺀다
+        //1)서버의 refresh토큰에서 사용자 정보를 가져온다
+        Claims serverRefreshClaims=parseRefreshToken(serverRefreshToken);
 
-        /*
-        서버측 access토큰 준비하기
-                1)클라이언트측 access토큰의 발급일,만료일은 그대로 넣어준다. + 클라이언트측 refresh토큰에서 얻은 id,role을 넣는다
+        //2)클라이언트의 access토큰에서도 사용자 정보를 가져온다. access토큰끼리 비교할때 똑같은 조건을 위해 발급일,만료일이 필요하기 떄문 (*파싱할때 만료된 상태로 요청이 올 수있으니 만료상태로 파싱할떄 오류를 내뱉지 않고 claim을 가져와야 한다.
+        Claims clientAccessClaims = parseAccessTokenWhenExpiry(clientAccessToken);
 
-         */
-        String serverAccessToken = createServerAccessToken(reqAccessClaims, reqRefreshClaims);
+        //이제 서버의 access토큰을 만들자 (서버의 refresh토큰에서 알아낸 정보를 바탕으로 만들건데 비교해야할 클라이언트의 access토큰 발급일,만료일을 입력한다)
+        String serverAccessToken = createServerAccessToken(serverRefreshClaims, clientAccessClaims);
 
-        if (!StringUtils.equals(reqAccessToken, serverAccessToken)) {
+        //서버의 access토큰이 만들어졌으니 클라이언트의 access토큰과 비교한다.
+        if (!StringUtils.equals(clientAccessToken, serverAccessToken)) {
             //서버에 저장된 access토큰과 클라이언트측 access토큰이 다르면 오류내뱉기
         }
-        //동일하다면  억세스토큰, 리프레쉬토큰을 새로 생성한다
-        String newAccess = createAccessToken(id, roles);
-        String newRefresh = createRefreshToken(id, roles);
-        //리프레쉬 토큰을 DB에 업데이트하기
+        //이로써 클라이언트측 서버측 jwt는 동일하다 이제 클라이언트가 요청한 새로운 jwt토큰을 만들어준다
+        String newAccess = createAccessToken(clientId, clientRoles);
+        String newRefresh = createRefreshToken(clientId, clientRoles);
 
-        refreshTokenRepository.save(new RefreshTokenInfo(key, newRefresh));
-        return new JwtToken(newAccess, newRefresh);
-
-        String clientAccessId = reqAccessClaims.getId();
-        List<String> clientAccessRoles = reqAccessClaims.get("role", List.class);
-
-
-        key = createKeyOfDb(clientAccessId, clientAccessRoles);
-
-        RefreshTokenInfo savedRefreshTokenInfo = refreshTokenRepository.findById(key)
-                .orElseThrow(() -> new JwtValidateException(CommonErrorCode.JWT_SAVED_REFRESH_TOKEN_NOT_FOUND));
-
-        String serverRefreshToken = savedRefreshTokenInfo.getRefreshValue();
-        //서버에 저장된 토큰과 비교후 다르면 오류
-        if (!StringUtils.equalsIgnoreCase(reqRefreshToken, serverRefreshToken)) {
-            log.warn("Refresh token mismatch for clientAccessId : {},rolesOfClientAccess:{}. clientAccessRoles : {}, Server token: {}",
-                    clientAccessId, clientAccessRoles, reqAccessToken, serverRefreshToken);
-            throw new JwtValidateException(CommonErrorCode.JWT_REFRESH_TOKEN_MISMATCH);
-        }
-        Claims reqRefreshClaims = parseRefreshToken(reqRefreshToken);
-        String serverAccessToken = createServerAccessToken(reqAccessClaims, reqRefreshClaims);
-
-        if (!StringUtils.equals(reqAccessToken, serverAccessToken)) {
-            //서버에 저장된 access토큰과 클라이언트측 access토큰이 다르면 오류내뱉기
-        }
-        //클라이언트와 서버측이 완전히 토큰이 일치하는거니까 토큰 두개를 새걸로 생성해준다
-        String newAccess = createAccessToken(clientAccessId, clientAccessRoles);
-        String newRefresh = createRefreshToken(clientAccessId, clientAccessRoles);
-
-        key = createKeyOfDb(clientAccessId, clientAccessRoles);
-        refreshTokenRepository.save(new RefreshTokenInfo(key, newRefresh));
+        //새로 생성된 jwt를 보내기전에 서버에도 저장한다.
+        refreshTokenRepository.save(new RefreshTokenInfo(clientInForKey, newRefresh));
         return new JwtToken(newAccess, newRefresh);
     }
 
@@ -162,7 +137,6 @@ public class JwtAuthService {
 
         String idOfClientRefreshToken = clientRefreshTokenClaims.getSubject();
         List<String> rolesOfClientRefresh = clientRefreshTokenClaims.get("roles", List.class);
-
 
         return Jwts.builder()
                 .setSubject(idOfClientRefreshToken)
@@ -245,16 +219,3 @@ public class JwtAuthService {
         }
     }
 }
-/*
-access토큰을 갱신할때
-refresh토큰도 시간이 유효하더라도
-갱신하는데 이유는?
-
-갱신하지 않는 경우의 문제점----------------------------------------------
-(1) Refresh 토큰 유출 위험 증가
-유효 기간 동안 Refresh 토큰이 변하지 않으면, 유출된 Refresh 토큰으로 Access 토큰을 반복 생성할 수 있습니다.
-갱신 과정을 통해 Refresh 토큰이 주기적으로 바뀌면, 이전 토큰이 유출되어도 곧 무효화됩니다.
-(2) 서버의 제어력 감소
-Refresh 토큰 갱신이 없으면, 서버가 세션을 제어할 기회가 줄어듭니다.
-예를 들어, 비밀번호 변경, 로그아웃, 혹은 보안 정책 변경 시 영향을 주기 어렵습니다.
- */

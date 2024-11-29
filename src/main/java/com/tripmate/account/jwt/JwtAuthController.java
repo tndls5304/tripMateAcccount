@@ -21,7 +21,7 @@ public class JwtAuthController {
     }
 
     @PostMapping("api/jwt/refresh")
-    public void refreshToken(@RequestBody JwtTokenReqDto jwtTokenReqDto) {
+    public void reCreateJwtWhenAccessExpiration(@RequestBody JwtTokenReqDto jwtTokenReqDto) {
         //클라이언트에서 준 두토큰이 맞는지 검증한 후 새로운 토큰을 만든다
         //디비에 업데이트 한다
         String accessToken=jwtTokenReqDto.getAccessToken();
