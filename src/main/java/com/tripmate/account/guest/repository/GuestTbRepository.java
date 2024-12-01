@@ -1,11 +1,11 @@
 package com.tripmate.account.guest.repository;
 
-import com.tripmate.account.common.entity.UserEntity;
+import com.tripmate.account.common.entity.GuestEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserTbRepository extends JpaRepository<UserEntity, String> {
+public interface GuestTbRepository extends JpaRepository<GuestEntity, String> {
 }
 
 

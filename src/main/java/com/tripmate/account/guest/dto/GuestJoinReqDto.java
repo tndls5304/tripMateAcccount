@@ -13,13 +13,12 @@ import java.util.List;
 @ToString
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserJoinReqDto {
+public class GuestJoinReqDto {
 
-    //user테이블
     @NotBlank(message = "1001")
     @Pattern(regexp = "^(?=.*[a-zA-Z])[a-zA-Z0-9_]+$", message = "1002")           //하나 이상의 소문자 또는 대문자 영문자가 포함되어야 하며, 숫자와 언더스코어도 허용
     @Size(min = 1, max = 20, message = "1003")
-    String userId;
+    String guestId;
 
     @NotBlank(message = "1004")
     @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "1005")                //  "영문자 혹은 숫자만 입력 가능"
@@ -44,9 +43,9 @@ public class UserJoinReqDto {
 
     //필수 약관 동의
     @NotEmpty(message = "1015")
-    List<@Valid UserBasicAgreeReqDto> basicAgreeDtoList;
+    List<@Valid GuestBasicAgreeReqDto> basicAgreeDtoList;
 
     //(선택)마케팅 약관동의
     @NotEmpty(message = "1019")
-    List<@Valid UserCreateMarketingAgreeDto> marketingAgreeDtoList;
+    List<@Valid GuestCreateMarketingAgreeDto> marketingAgreeDtoList;
 }

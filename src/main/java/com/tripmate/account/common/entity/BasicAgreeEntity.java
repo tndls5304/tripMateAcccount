@@ -1,13 +1,12 @@
 package com.tripmate.account.common.entity;
 
-import com.tripmate.account.common.entity.id.BasicAgreeId;
+import com.tripmate.account.common.entity.compositekey.BasicAgreeId;
 import com.tripmate.account.common.entity.base.BaseEntity;
 import com.tripmate.account.common.enums.AgreeFl;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;

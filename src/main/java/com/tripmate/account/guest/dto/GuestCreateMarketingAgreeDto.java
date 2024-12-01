@@ -11,7 +11,7 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @Schema(description = "숙박회원의 마케팅 약관 동의 등록 요청 DTO ")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserCreateMarketingAgreeDto {
+public class GuestCreateMarketingAgreeDto {
 
     @NotBlank(message = "1020")
     String templateSq;

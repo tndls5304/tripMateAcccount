@@ -11,7 +11,7 @@ import lombok.experimental.FieldDefaults;
 @ToString
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserLoginReqDto {
+public class GuestLoginReqDto {
     @NotBlank(message = "1001")
     String userId;
 

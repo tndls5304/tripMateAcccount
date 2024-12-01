@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 
-public interface UserMarketingAgreeThRepository extends JpaRepository<MarketingAgreeEntity, String> {
+public interface GuestMarketingAgreeThRepository extends JpaRepository<MarketingAgreeEntity, String> {
     @Query("""
             SELECT m
             FROM  MarketingAgreeEntity m

@@ -34,12 +34,12 @@ public class JwtAuthService {
 
     //로그인할때 jwt 생성하기 클라이언트에 토큰을 유무와 상관없이 서버에서 access, refresh토큰을 새로 만든다.-> db에는 리프레시토큰만 저장한다. (userId+권한,리프레시토큰값)
 
-    public JwtToken processJwtWhenLogin(String userId, List<String> roles) {
-        String accessToken = createAccessToken(userId, roles);
-        String refreshToken = createRefreshToken(userId, roles);
+    public JwtToken processJwtWhenLogin(String clientId, List<String> clientRoles) {
+        String accessToken = createAccessToken(clientId, clientRoles);
+        String refreshToken = createRefreshToken(clientId, clientRoles);
 
-        String keyOfDb = createKeyOfDb(userId, roles);
-        refreshTokenRepository.save(new RefreshTokenInfo(keyOfDb, refreshToken));
+        String clientInForKey = createKeyOfDb(clientId, clientRoles);
+        refreshTokenRepository.save(new RefreshTokenInfo(clientInForKey, refreshToken));
 
         return new JwtToken(accessToken, refreshToken);
         //TODO 순서대로 매칭이 되겠나?
@@ -56,31 +56,31 @@ public class JwtAuthService {
         return userId + "DEFAULT";
     }
 
-    private Claims parseAccessTokenWhenExpiry(String reqAccessToken) {
-        //클라이언트 access토큰 파싱하면 만료됐으니  ExpiredJwtException 가 발생하면
-        //	   	     access토큰의 클레임에서 발급일, 만료일을 뺀다 만료돼지 않아도 괜찮음
-        try {
-            return Jwts.parser()
-                    .setSigningKey(secretKey)
-                    .parseClaimsJws(reqAccessToken)
-                    .getBody();
-        } catch (ExpiredJwtException e) {
-            return e.getClaims();
-        } catch (IllegalArgumentException | UnsupportedJwtException | MalformedJwtException e) {
-            throw new JwtValidateException(CommonErrorCode.JWT_ACCESS_TOKEN_INVALID_FORMAT);
-        } catch (SignatureException e) {
-            //토큰의 서명이 올바르지 않은 경우 발생합니다. 예를 들어, 서명 키가 잘못되었거나, 토큰이 클라이언트에서 변조된 경우.
-            //토큰이 변조되었거나 위조된 가능성을 판단하고 요청을 차단해야 합니다.
-            throw new JwtValidateException(CommonErrorCode.JWT_ACCESS_TOKEN_INVALID_SIGNATURE);
-        } catch (Exception e) {
-            throw new JwtValidateException(CommonErrorCode.JWT_ACCESS_TOKEN_UNKNOWN_ERROR); // 기타 알 수 없는 오류
-        }
-    }
-
-    public JwtToken reCreateJwtToken(String clientAccessToken, String clientRefreshToken) {
-        /*클라이언트가 access토큰만료로 새로운 토큰이 필요하다고 요청이 왔을때 호출되는 메서드다. 그럼 먼저 클라이언트가 보낸 access토큰과 refresh토큰정보를 파싱해 변조하진 않았는지 확인해봐야 한다.
-         클라이언트가 보낸 refresh,access토큰과 서버의 access,refresh토큰을 각각 비교해보면 된다.
-         첫번쨰로는 클라이언트측 refresh토큰  VS 2번서버의 refresh토큰을 비교할것이다.*/
+    /**
+     * 클라이언트가 access 토큰만료로 새로운 토큰이 필요하다고 요청이 왔을때 호출되는 메서드다.
+     * 새로운 토큰을 만들어주기전에 클라이언트측에서 보낸 토큰이 이 클라언트의 토큰이 맞는지 변조되진 않았는지 확인 해볼필요가 있다.
+     * 확인을 어떻게 하냐? 클라이언트에서 보낸 refresh,access토큰 VS 서버의 access,refresh토큰을 각각 비교해보면 된다. 일치한다면 새로운 토큰을 재발행 해주기로 한다.
+     * 첫번쨰로는 클라이언트측 refresh토큰  VS 2번서버의 refresh토큰을 비교할것이다
+     *     그 방법으로는
+     *   	1) 클라이언트가 보낸 refresh 토큰을 파싱해서 사용자 정보를 알아낸다.
+     *  	2) 클라이언트 refresh 토큰에 들어있는 정보를 키로 사용해 DB에 있는 refresh 토큰을 조회해온다.
+     *  	3) 조회해온 서버에 저장된 refresh 토큰과  VS 클라이언트측 refresh토큰을 비교하기
+     *두번쨰로는 클라이언트가 준 access토큰  VS 서버에서 만든 access토큰 비교 하기
+     *비교하기에 앞서 서버의 access토큰이 필요한데 서버에는 access토큰을 저장하지 않는다. 그래서 만들어야한다.
+     *서버의 access토큰을 만들기위해 서버의 refresh토큰에서 알아낸 정보를 가져와 access토큰을 만들것이다.
+     *그런데 클라이언트와 똑같은조건으로 비교해야하니 발급일,만료일은 클라이언트의 access 토큰에서 입력받아서 만들것이다.
+     * 	   그 방법으로는 먼저 서버 access토큰을 만들어보자
+     * 	    1)서버의 refresh토큰에서 사용자 정보(id,roles)를 가져온다
+     * 		2)똑같은 조건으로 비교하기 위해 클라이언트측 access토큰에서 발급일과 만료일을 알아낸다.
+     * 		3)서버의 refresh토큰에서 알아낸 사용자정보로 새로운 access토큰을 만든다 이떄 발급일,만료일정보는 클라이언트의 access토큰에서 알아낸 날로 입력한다
+            4)서버의 access토큰을 생성했다면 클라이언트의 access토큰과 비교한다.
+     * 	비교후 일치하면 새로운 jwt토큰을 생성한다. 생성후 DB에도 저장한다.
+     * @param clientAccessToken  클라이언트측에서 보낸 만료된 access토큰
+     * @param clientRefreshToken 클라이언트측에서 보낸 refresh토큰
+     * @return
+     */
+    public JwtToken reissueJwtToken(String clientAccessToken, String clientRefreshToken) {
+        /*첫번쨰로는 클라이언트측 refresh토큰  VS 2번서버의 refresh토큰을 비교할것이다.*/
 
         //1)클라이언트가 보낸 refresh 토큰을 파싱해서 id와 roles를 조회한다 (만약 refresh토큰이 만료되어 파싱중 오류가 발생한다면 재로그인하라는 메세지 전달한다)
         Claims reqRefreshClaims = parseRefreshToken(clientRefreshToken);
@@ -108,7 +108,7 @@ public class JwtAuthService {
            서버의 access토큰을 만들기위해 refresh토큰에서 알아낸 정보를 가져와 만들것이다. 그런데 클라이언트와 똑같은조건으로 비교해야하니 클라이언트의 access 토큰에서 발급일,만료일 정보를 넣어 만들것이다*/
 
         //1)서버의 refresh토큰에서 사용자 정보를 가져온다
-        Claims serverRefreshClaims=parseRefreshToken(serverRefreshToken);
+        Claims serverRefreshClaims = parseRefreshToken(serverRefreshToken);
 
         //2)클라이언트의 access토큰에서도 사용자 정보를 가져온다. access토큰끼리 비교할때 똑같은 조건을 위해 발급일,만료일이 필요하기 떄문 (*파싱할때 만료된 상태로 요청이 올 수있으니 만료상태로 파싱할떄 오류를 내뱉지 않고 claim을 가져와야 한다.
         Claims clientAccessClaims = parseAccessTokenWhenExpiry(clientAccessToken);
@@ -129,20 +129,42 @@ public class JwtAuthService {
         return new JwtToken(newAccess, newRefresh);
     }
 
+    private Claims parseAccessTokenWhenExpiry(String reqAccessToken) {
+        //클라이언트 access토큰 파싱하면 만료됐으니  ExpiredJwtException 가 발생하면
+        //	   	     access토큰의 클레임에서 발급일, 만료일을 뺀다 만료돼지 않아도 괜찮음
+        try {
+            return Jwts.parser()
+                    .setSigningKey(secretKey)
+                    .parseClaimsJws(reqAccessToken)
+                    .getBody();
+        } catch (ExpiredJwtException e) {
+            return e.getClaims();
+        } catch (IllegalArgumentException | UnsupportedJwtException | MalformedJwtException e) {
+            throw new JwtValidateException(CommonErrorCode.JWT_ACCESS_TOKEN_INVALID_FORMAT);
+        } catch (SignatureException e) {
+            //토큰의 서명이 올바르지 않은 경우 발생합니다. 예를 들어, 서명 키가 잘못되었거나, 토큰이 클라이언트에서 변조된 경우.
+            //토큰이 변조되었거나 위조된 가능성을 판단하고 요청을 차단해야 합니다.
+            throw new JwtValidateException(CommonErrorCode.JWT_ACCESS_TOKEN_INVALID_SIGNATURE);
+        } catch (Exception e) {
+            throw new JwtValidateException(CommonErrorCode.JWT_ACCESS_TOKEN_UNKNOWN_ERROR); // 기타 알 수 없는 오류
+        }
+    }
 
-    private String createServerAccessToken(Claims clientAccessClaims, Claims clientRefreshTokenClaims) {
-        //(reqAccessClaims, reqRefreshClaims);
-        Date issuedAtOfClientAccess = clientAccessClaims.getIssuedAt();
-        Date expirateOfClientAccess = clientAccessClaims.getExpiration();
 
-        String idOfClientRefreshToken = clientRefreshTokenClaims.getSubject();
-        List<String> rolesOfClientRefresh = clientRefreshTokenClaims.get("roles", List.class);
+    private String createServerAccessToken(Claims serverRefreshClaims, Claims clientAccessClaims) {
+        //서버의 access토큰을 만들기 위해 서버에 저장된 refresh토큰을 통해 사용자 정보(id,roles)를 알아낸다.
+        String serverSavedId = serverRefreshClaims.getSubject();
+        List<String> serverSavedRoles = serverRefreshClaims.get("roles", List.class);
+
+        //클라이언트 access토큰과 똑같은 조건으로 비교하기 위해 클라이언트access토큰에서 발급일과 만료일을 알아낸다
+        Date clientIssuedAt = clientAccessClaims.getIssuedAt();
+        Date clientExpiration = clientAccessClaims.getExpiration();
 
         return Jwts.builder()
-                .setSubject(idOfClientRefreshToken)
-                .claim("roles", rolesOfClientRefresh)
-                .setIssuedAt(issuedAtOfClientAccess)
-                .setExpiration(expirateOfClientAccess)
+                .setSubject(serverSavedId)
+                .claim("roles", serverSavedRoles)
+                .setIssuedAt(clientIssuedAt)
+                .setExpiration(clientExpiration)
                 .signWith(SignatureAlgorithm.HS512, secretKey)
                 .compact();
     }

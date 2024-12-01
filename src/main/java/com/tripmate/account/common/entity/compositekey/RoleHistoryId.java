@@ -1,4 +1,4 @@
-package com.tripmate.account.common.entity.id;
+package com.tripmate.account.common.entity.compositekey;
 
 import com.tripmate.account.common.enums.AccountType;
 import com.tripmate.account.common.enums.RoleCode;
@@ -15,7 +15,6 @@ import java.util.Objects;
 @Embeddable
 @Getter
 public class RoleHistoryId {
-
 
     @Column(name ="ROLE_TARGET_TYPE")
     @Enumerated(EnumType.STRING)

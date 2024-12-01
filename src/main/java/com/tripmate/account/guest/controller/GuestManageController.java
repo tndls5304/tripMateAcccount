@@ -2,7 +2,7 @@ package com.tripmate.account.guest.controller;
 
 import com.tripmate.account.common.reponse.CommonResponse;
 import com.tripmate.account.guest.dto.*;
-import com.tripmate.account.guest.service.UserManageService;
+import com.tripmate.account.guest.service.GuestManageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -29,26 +29,26 @@ import static com.tripmate.account.common.errorcode.CommonErrorCode.SUCCESS;
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "투숙객 계정 관련 ", description = "투숙객 계정관련 API")
-public class UserManageController {
+public class GuestManageController {
 
-    private final UserManageService service;
+    private final GuestManageService service;
 
     /**
      * (숙박회원) 아이디 중복 검사
      *
-     * @param userId 중복 검사 요청 id
+     * @param guestId 중복 검사 요청 id
      * @return 중복된 아이디가 존재시 에러 코드와 메시지를 포함한 ResponseEntity 를 반환,중복되지 않을 경우 성공 응답을 반환
      */
     @GetMapping("api/guest/account/join/duplicate")
     @Operation(summary = "투숙객 회원가입시 id 중복 검사", description = "userId를 이용해 투숙객의 id 중복 검사")
-    public ResponseEntity<CommonResponse<Void>> checkUserIdDuplicate(@Valid @RequestParam String userId) {
-        return service.checkUserIdDuplicate(userId);
+    public ResponseEntity<CommonResponse<Void>> checkUserIdDuplicate(@Valid @RequestParam String guestId) {
+        return service.checkUserIdDuplicate(guestId);
     }
 
     /**
      * (숙박회원) 가입 요청
      *
-     * @param userJoinReqDto 개인정보와 (필수)약관동의리스트,마케팅약관동의리스트(선택적)를 받음
+     * @param guestJoinReqDto 개인정보와 (필수)약관동의리스트,마케팅약관동의리스트(선택적)를 받음
      * @return 회원가입 성공시 성공 응답코드와 메세지 전달, 실패시 예외 발생--> 에러코드,메세지 전달
      */
     @PostMapping("api/guest/account/join")
@@ -60,8 +60,8 @@ public class UserManageController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청 : 마케팅 약관이 없음", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "409", description = "이미 존재하는 id로 id 중복검사 실패", content = @Content(mediaType = "application/json"))
     })
-    public ResponseEntity<CommonResponse<Void>> userJoin(@Valid @RequestBody UserJoinReqDto userJoinReqDto) {
-        service.userJoin(userJoinReqDto);
+    public ResponseEntity<CommonResponse<Void>> guestJoin(@Valid @RequestBody GuestJoinReqDto guestJoinReqDto) {
+        service.guestJoin(guestJoinReqDto);
         return new CommonResponse<>().toRespEntity(SUCCESS);
     }
 
@@ -81,7 +81,7 @@ public class UserManageController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청 : 마케팅 약관이 없음", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "409", description = "이미 존재하는 id로 id 중복검사 실패", content = @Content(mediaType = "application/json"))
     })
-    public ResponseEntity<CommonResponse<Void>> updatePwd(@Valid @RequestBody UserModifyPwdReqDto modifyUserPwdDto) {
+    public ResponseEntity<CommonResponse<Void>> updatePwd(@Valid @RequestBody GuestModifyPwdReqDto modifyUserPwdDto) {
         service.modifyPwd(modifyUserPwdDto);
         return new CommonResponse<>().toRespEntity(SUCCESS);
     }
@@ -95,7 +95,7 @@ public class UserManageController {
      * @return
      */
     @PostMapping("api/guest/account/marketing")
-    public ResponseEntity<CommonResponse<Void>> modifyMarketingAgree(@Valid @RequestBody List<UserModifyMarketingAgreeReqDto> ModifyMarketingAgreeDtoList) {
+    public ResponseEntity<CommonResponse<Void>> modifyMarketingAgree(@Valid @RequestBody List<GuestModifyMarketingAgreeReqDto> ModifyMarketingAgreeDtoList) {
         service.modifyMarketingAgree(ModifyMarketingAgreeDtoList);
         return new CommonResponse<>().toRespEntity(SUCCESS);
     }

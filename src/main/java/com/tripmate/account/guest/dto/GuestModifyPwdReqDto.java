@@ -11,7 +11,7 @@ import lombok.experimental.FieldDefaults;
 @Schema(description = "숙박이용자의 비밀번호 번경 요청 DTO")
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserModifyPwdReqDto {
+public class GuestModifyPwdReqDto {
 
     String userId;//TODO 화면에서 받을건 아님 추후 세션에서 받기
     @NotBlank(message = "1004")

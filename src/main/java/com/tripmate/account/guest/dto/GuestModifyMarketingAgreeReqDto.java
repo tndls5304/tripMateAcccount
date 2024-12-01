@@ -14,7 +14,7 @@ import lombok.experimental.FieldDefaults;
 @Schema(description = "마케팅 동의서 수정 요청 DTO")
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserModifyMarketingAgreeReqDto {
+public class GuestModifyMarketingAgreeReqDto {
 
     @NotBlank(message = "1020")
     String templateSq;
