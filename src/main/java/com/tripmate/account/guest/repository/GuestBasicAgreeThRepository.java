@@ -1,8 +1,8 @@
 package com.tripmate.account.guest.repository;
 
 import com.tripmate.account.common.entity.BasicAgreeEntity;
-import com.tripmate.account.common.entity.id.BasicAgreeId;
+import com.tripmate.account.common.entity.compositekey.BasicAgreeId;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserBasicAgreeThRepository extends JpaRepository<BasicAgreeEntity, BasicAgreeId> {
+public interface GuestBasicAgreeThRepository extends JpaRepository<BasicAgreeEntity, BasicAgreeId> {
 }

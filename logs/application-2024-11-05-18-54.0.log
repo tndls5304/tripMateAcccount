@@ -145,10 +145,10 @@ jdk.internal.loader.ClassLoaders$AppClassLoader@4e25154f
 	Managed classes names [
 		com.tripmate.account.common.entity.base.BaseEntity
 		com.tripmate.account.common.entity.BasicAgreeEntity
-		com.tripmate.account.common.entity.id.BasicAgreeId
+		com.tripmate.account.common.entity.compositekey.BasicAgreeId
 		com.tripmate.account.common.entity.MarketingAgreeEntity
 		com.tripmate.account.common.entity.TemplateEntity
-		com.tripmate.account.common.entity.UserEntity]
+		com.tripmate.account.common.entity.GuestEntity]
 	Mapping files names []
 	Properties [] 
 [startup] [2024-11-05 18:54:02.545] [main] [DEBUG] [o.h.i.i.IntegratorServiceImpl] - Adding Integrator [org.hibernate.boot.beanvalidation.BeanValidationIntegrator]. 
@@ -432,7 +432,7 @@ jdk.internal.loader.ClassLoaders$AppClassLoader@4e25154f
 [startup] [2024-11-05 18:54:05.340] [main] [DEBUG] [o.h.m.BasicValue] - Skipping column re-registration: basic_agree_th.template_sq 
 [startup] [2024-11-05 18:54:05.341] [main] [DEBUG] [o.h.b.m.i.PropertyBinder] - Building property templateSq 
 [startup] [2024-11-05 18:54:05.342] [main] [DEBUG] [o.h.b.m.i.PropertyBinder] - Building property id 
-[startup] [2024-11-05 18:54:05.343] [main] [DEBUG] [o.h.b.m.i.BinderHelper] - #makeIdGenerator(Component(com.tripmate.account.common.entity.id.BasicAgreeId), id, assigned, , ...) 
+[startup] [2024-11-05 18:54:05.343] [main] [DEBUG] [o.h.b.m.i.BinderHelper] - #makeIdGenerator(Component(com.tripmate.account.common.entity.compositekey.BasicAgreeId), id, assigned, , ...)
 [startup] [2024-11-05 18:54:05.344] [main] [DEBUG] [o.h.b.m.i.AnnotatedColumn] - Binding column: AnnotatedColumn(column='REG_DTM') 
 [startup] [2024-11-05 18:54:05.346] [main] [DEBUG] [o.h.b.m.i.PropertyBinder] - MetadataSourceProcessor property regDtm with lazy=false 
 [startup] [2024-11-05 18:54:05.346] [main] [DEBUG] [o.h.b.m.i.AbstractPropertyHolder] - Attempting to locate auto-apply AttributeConverter for property [com.tripmate.account.common.entity.BasicAgreeEntity:regDtm] 
@@ -624,100 +624,100 @@ jdk.internal.loader.ClassLoaders$AppClassLoader@4e25154f
 [startup] [2024-11-05 18:54:05.455] [main] [DEBUG] [o.h.b.r.c.i.ClassLoaderServiceImpl] - HHH000194: Package not found or no package-info.java: com.tripmate.account.common.entity 
 [startup] [2024-11-05 18:54:05.455] [main] [DEBUG] [o.h.j.e.i.CallbackDefinitionResolverLegacyImpl] - Adding touchForUpdate as PreUpdate callback for entity com.tripmate.account.common.entity.TemplateEntity 
 [startup] [2024-11-05 18:54:05.456] [main] [DEBUG] [o.h.j.e.i.CallbackDefinitionResolverLegacyImpl] - Adding touchForCreate as PrePersist callback for entity com.tripmate.account.common.entity.TemplateEntity 
-[startup] [2024-11-05 18:54:05.457] [main] [DEBUG] [o.h.b.m.i.EntityBinder] - Binding entity from annotated class: com.tripmate.account.common.entity.UserEntity 
+[startup] [2024-11-05 18:54:05.457] [main] [DEBUG] [o.h.b.m.i.EntityBinder] - Binding entity from annotated class: com.tripmate.account.common.entity.GuestEntity
 [startup] [2024-11-05 18:54:05.457] [main] [DEBUG] [o.h.b.m.i.EntityBinder] - Import with entity name UserEntity 
-[startup] [2024-11-05 18:54:05.458] [main] [DEBUG] [o.h.b.m.i.EntityBinder] - Bind entity com.tripmate.account.common.entity.UserEntity on table user_tb 
+[startup] [2024-11-05 18:54:05.458] [main] [DEBUG] [o.h.b.m.i.EntityBinder] - Bind entity com.tripmate.account.common.entity.GuestEntity on table user_tb
 [startup] [2024-11-05 18:54:05.458] [main] [DEBUG] [o.h.b.m.i.AnnotatedColumn] - Binding column: AnnotatedDiscriminatorColumn(column='DTYPE') 
 [startup] [2024-11-05 18:54:05.463] [main] [DEBUG] [o.h.b.m.i.AnnotatedColumn] - Binding column: AnnotatedColumn(column='USER_ID') 
-[startup] [2024-11-05 18:54:05.464] [main] [DEBUG] [o.h.b.i.ClassLoaderAccessImpl] - Not known whether passed class name [com.tripmate.account.common.entity.UserEntity] is safe 
-[startup] [2024-11-05 18:54:05.464] [main] [DEBUG] [o.h.b.i.ClassLoaderAccessImpl] - No temp ClassLoader provided; using live ClassLoader for loading potentially unsafe class : com.tripmate.account.common.entity.UserEntity 
+[startup] [2024-11-05 18:54:05.464] [main] [DEBUG] [o.h.b.i.ClassLoaderAccessImpl] - Not known whether passed class name [com.tripmate.account.common.entity.GuestEntity] is safe
+[startup] [2024-11-05 18:54:05.464] [main] [DEBUG] [o.h.b.i.ClassLoaderAccessImpl] - No temp ClassLoader provided; using live ClassLoader for loading potentially unsafe class : com.tripmate.account.common.entity.GuestEntity
 [startup] [2024-11-05 18:54:05.464] [main] [DEBUG] [o.h.b.m.i.PropertyBinder] - MetadataSourceProcessor property userId with lazy=false 
-[startup] [2024-11-05 18:54:05.465] [main] [DEBUG] [o.h.b.m.i.AbstractPropertyHolder] - Attempting to locate auto-apply AttributeConverter for property [com.tripmate.account.common.entity.UserEntity:userId] 
+[startup] [2024-11-05 18:54:05.465] [main] [DEBUG] [o.h.b.m.i.AbstractPropertyHolder] - Attempting to locate auto-apply AttributeConverter for property [com.tripmate.account.common.entity.GuestEntity:userId]
 [startup] [2024-11-05 18:54:05.465] [main] [DEBUG] [o.h.b.m.i.BasicValueBinder] - building BasicValue for userId 
 [startup] [2024-11-05 18:54:05.465] [main] [DEBUG] [o.h.m.BasicValue] - Skipping column re-registration: user_tb.user_id 
 [startup] [2024-11-05 18:54:05.466] [main] [DEBUG] [o.h.b.m.i.PropertyBinder] - Building property userId 
 [startup] [2024-11-05 18:54:05.466] [main] [DEBUG] [o.h.b.m.i.BinderHelper] - #makeIdGenerator(BasicValue([Column(user_id)]), userId, assigned, , ...) 
 [startup] [2024-11-05 18:54:05.466] [main] [DEBUG] [o.h.b.m.i.AnnotatedColumn] - Binding column: AnnotatedColumn(column='REG_DTM') 
 [startup] [2024-11-05 18:54:05.467] [main] [DEBUG] [o.h.b.m.i.PropertyBinder] - MetadataSourceProcessor property regDtm with lazy=false 
-[startup] [2024-11-05 18:54:05.467] [main] [DEBUG] [o.h.b.m.i.AbstractPropertyHolder] - Attempting to locate auto-apply AttributeConverter for property [com.tripmate.account.common.entity.UserEntity:regDtm] 
+[startup] [2024-11-05 18:54:05.467] [main] [DEBUG] [o.h.b.m.i.AbstractPropertyHolder] - Attempting to locate auto-apply AttributeConverter for property [com.tripmate.account.common.entity.GuestEntity:regDtm]
 [startup] [2024-11-05 18:54:05.467] [main] [DEBUG] [o.h.b.m.i.BasicValueBinder] - building BasicValue for regDtm 
 [startup] [2024-11-05 18:54:05.468] [main] [DEBUG] [o.h.m.BasicValue] - Skipping column re-registration: user_tb.reg_dtm 
 [startup] [2024-11-05 18:54:05.468] [main] [DEBUG] [o.h.b.m.i.PropertyBinder] - Building property regDtm 
 [startup] [2024-11-05 18:54:05.468] [main] [DEBUG] [o.h.b.m.i.AnnotatedColumn] - Binding column: AnnotatedColumn(column='REG_USER') 
 [startup] [2024-11-05 18:54:05.469] [main] [DEBUG] [o.h.b.m.i.PropertyBinder] - MetadataSourceProcessor property regUser with lazy=false 
-[startup] [2024-11-05 18:54:05.469] [main] [DEBUG] [o.h.b.m.i.AbstractPropertyHolder] - Attempting to locate auto-apply AttributeConverter for property [com.tripmate.account.common.entity.UserEntity:regUser] 
+[startup] [2024-11-05 18:54:05.469] [main] [DEBUG] [o.h.b.m.i.AbstractPropertyHolder] - Attempting to locate auto-apply AttributeConverter for property [com.tripmate.account.common.entity.GuestEntity:regUser]
 [startup] [2024-11-05 18:54:05.469] [main] [DEBUG] [o.h.b.m.i.BasicValueBinder] - building BasicValue for regUser 
 [startup] [2024-11-05 18:54:05.470] [main] [DEBUG] [o.h.m.BasicValue] - Skipping column re-registration: user_tb.reg_user 
 [startup] [2024-11-05 18:54:05.470] [main] [DEBUG] [o.h.b.m.i.PropertyBinder] - Building property regUser 
 [startup] [2024-11-05 18:54:05.471] [main] [DEBUG] [o.h.b.m.i.AnnotatedColumn] - Binding column: AnnotatedColumn(column='UPDT_DTM') 
 [startup] [2024-11-05 18:54:05.471] [main] [DEBUG] [o.h.b.m.i.PropertyBinder] - MetadataSourceProcessor property updtDtm with lazy=false 
-[startup] [2024-11-05 18:54:05.472] [main] [DEBUG] [o.h.b.m.i.AbstractPropertyHolder] - Attempting to locate auto-apply AttributeConverter for property [com.tripmate.account.common.entity.UserEntity:updtDtm] 
+[startup] [2024-11-05 18:54:05.472] [main] [DEBUG] [o.h.b.m.i.AbstractPropertyHolder] - Attempting to locate auto-apply AttributeConverter for property [com.tripmate.account.common.entity.GuestEntity:updtDtm]
 [startup] [2024-11-05 18:54:05.472] [main] [DEBUG] [o.h.b.m.i.BasicValueBinder] - building BasicValue for updtDtm 
 [startup] [2024-11-05 18:54:05.472] [main] [DEBUG] [o.h.m.BasicValue] - Skipping column re-registration: user_tb.updt_dtm 
 [startup] [2024-11-05 18:54:05.473] [main] [DEBUG] [o.h.b.m.i.PropertyBinder] - Building property updtDtm 
 [startup] [2024-11-05 18:54:05.473] [main] [DEBUG] [o.h.b.m.i.AnnotatedColumn] - Binding column: AnnotatedColumn(column='UPDT_USER') 
 [startup] [2024-11-05 18:54:05.473] [main] [DEBUG] [o.h.b.m.i.PropertyBinder] - MetadataSourceProcessor property updtUser with lazy=false 
-[startup] [2024-11-05 18:54:05.474] [main] [DEBUG] [o.h.b.m.i.AbstractPropertyHolder] - Attempting to locate auto-apply AttributeConverter for property [com.tripmate.account.common.entity.UserEntity:updtUser] 
+[startup] [2024-11-05 18:54:05.474] [main] [DEBUG] [o.h.b.m.i.AbstractPropertyHolder] - Attempting to locate auto-apply AttributeConverter for property [com.tripmate.account.common.entity.GuestEntity:updtUser]
 [startup] [2024-11-05 18:54:05.474] [main] [DEBUG] [o.h.b.m.i.BasicValueBinder] - building BasicValue for updtUser 
 [startup] [2024-11-05 18:54:05.474] [main] [DEBUG] [o.h.m.BasicValue] - Skipping column re-registration: user_tb.updt_user 
 [startup] [2024-11-05 18:54:05.475] [main] [DEBUG] [o.h.b.m.i.PropertyBinder] - Building property updtUser 
 [startup] [2024-11-05 18:54:05.475] [main] [DEBUG] [o.h.b.m.i.AnnotatedColumn] - Binding column: AnnotatedColumn(column='EMAIL_DOMAIN') 
 [startup] [2024-11-05 18:54:05.476] [main] [DEBUG] [o.h.b.m.i.PropertyBinder] - MetadataSourceProcessor property emailDomain with lazy=false 
-[startup] [2024-11-05 18:54:05.476] [main] [DEBUG] [o.h.b.m.i.AbstractPropertyHolder] - Attempting to locate auto-apply AttributeConverter for property [com.tripmate.account.common.entity.UserEntity:emailDomain] 
+[startup] [2024-11-05 18:54:05.476] [main] [DEBUG] [o.h.b.m.i.AbstractPropertyHolder] - Attempting to locate auto-apply AttributeConverter for property [com.tripmate.account.common.entity.GuestEntity:emailDomain]
 [startup] [2024-11-05 18:54:05.476] [main] [DEBUG] [o.h.b.m.i.BasicValueBinder] - building BasicValue for emailDomain 
 [startup] [2024-11-05 18:54:05.477] [main] [DEBUG] [o.h.m.BasicValue] - Skipping column re-registration: user_tb.email_domain 
 [startup] [2024-11-05 18:54:05.478] [main] [DEBUG] [o.h.b.m.i.PropertyBinder] - Building property emailDomain 
 [startup] [2024-11-05 18:54:05.478] [main] [DEBUG] [o.h.b.m.i.AnnotatedColumn] - Binding column: AnnotatedColumn(column='EMAIL_ID') 
 [startup] [2024-11-05 18:54:05.479] [main] [DEBUG] [o.h.b.m.i.PropertyBinder] - MetadataSourceProcessor property emailId with lazy=false 
-[startup] [2024-11-05 18:54:05.479] [main] [DEBUG] [o.h.b.m.i.AbstractPropertyHolder] - Attempting to locate auto-apply AttributeConverter for property [com.tripmate.account.common.entity.UserEntity:emailId] 
+[startup] [2024-11-05 18:54:05.479] [main] [DEBUG] [o.h.b.m.i.AbstractPropertyHolder] - Attempting to locate auto-apply AttributeConverter for property [com.tripmate.account.common.entity.GuestEntity:emailId]
 [startup] [2024-11-05 18:54:05.479] [main] [DEBUG] [o.h.b.m.i.BasicValueBinder] - building BasicValue for emailId 
 [startup] [2024-11-05 18:54:05.479] [main] [DEBUG] [o.h.m.BasicValue] - Skipping column re-registration: user_tb.email_id 
 [startup] [2024-11-05 18:54:05.480] [main] [DEBUG] [o.h.b.m.i.PropertyBinder] - Building property emailId 
 [startup] [2024-11-05 18:54:05.480] [main] [DEBUG] [o.h.b.m.i.AnnotatedColumn] - Binding column: AnnotatedColumn(column='LAST_LOGIN_DT') 
 [startup] [2024-11-05 18:54:05.481] [main] [DEBUG] [o.h.b.m.i.PropertyBinder] - MetadataSourceProcessor property lastLoginDt with lazy=false 
-[startup] [2024-11-05 18:54:05.481] [main] [DEBUG] [o.h.b.m.i.AbstractPropertyHolder] - Attempting to locate auto-apply AttributeConverter for property [com.tripmate.account.common.entity.UserEntity:lastLoginDt] 
+[startup] [2024-11-05 18:54:05.481] [main] [DEBUG] [o.h.b.m.i.AbstractPropertyHolder] - Attempting to locate auto-apply AttributeConverter for property [com.tripmate.account.common.entity.GuestEntity:lastLoginDt]
 [startup] [2024-11-05 18:54:05.481] [main] [DEBUG] [o.h.b.m.i.BasicValueBinder] - building BasicValue for lastLoginDt 
 [startup] [2024-11-05 18:54:05.481] [main] [DEBUG] [o.h.m.BasicValue] - Skipping column re-registration: user_tb.last_login_dt 
 [startup] [2024-11-05 18:54:05.482] [main] [DEBUG] [o.h.b.m.i.PropertyBinder] - Building property lastLoginDt 
 [startup] [2024-11-05 18:54:05.482] [main] [DEBUG] [o.h.b.m.i.AnnotatedColumn] - Binding column: AnnotatedColumn(column='NICKNAME') 
 [startup] [2024-11-05 18:54:05.483] [main] [DEBUG] [o.h.b.m.i.PropertyBinder] - MetadataSourceProcessor property nickname with lazy=false 
-[startup] [2024-11-05 18:54:05.483] [main] [DEBUG] [o.h.b.m.i.AbstractPropertyHolder] - Attempting to locate auto-apply AttributeConverter for property [com.tripmate.account.common.entity.UserEntity:nickname] 
+[startup] [2024-11-05 18:54:05.483] [main] [DEBUG] [o.h.b.m.i.AbstractPropertyHolder] - Attempting to locate auto-apply AttributeConverter for property [com.tripmate.account.common.entity.GuestEntity:nickname]
 [startup] [2024-11-05 18:54:05.483] [main] [DEBUG] [o.h.b.m.i.BasicValueBinder] - building BasicValue for nickname 
 [startup] [2024-11-05 18:54:05.483] [main] [DEBUG] [o.h.m.BasicValue] - Skipping column re-registration: user_tb.nickname 
 [startup] [2024-11-05 18:54:05.484] [main] [DEBUG] [o.h.b.m.i.PropertyBinder] - Building property nickname 
 [startup] [2024-11-05 18:54:05.484] [main] [DEBUG] [o.h.b.m.i.AnnotatedColumn] - Binding column: AnnotatedColumn(column='PHONE_NO') 
 [startup] [2024-11-05 18:54:05.485] [main] [DEBUG] [o.h.b.m.i.PropertyBinder] - MetadataSourceProcessor property phoneNo with lazy=false 
-[startup] [2024-11-05 18:54:05.485] [main] [DEBUG] [o.h.b.m.i.AbstractPropertyHolder] - Attempting to locate auto-apply AttributeConverter for property [com.tripmate.account.common.entity.UserEntity:phoneNo] 
+[startup] [2024-11-05 18:54:05.485] [main] [DEBUG] [o.h.b.m.i.AbstractPropertyHolder] - Attempting to locate auto-apply AttributeConverter for property [com.tripmate.account.common.entity.GuestEntity:phoneNo]
 [startup] [2024-11-05 18:54:05.485] [main] [DEBUG] [o.h.b.m.i.BasicValueBinder] - building BasicValue for phoneNo 
 [startup] [2024-11-05 18:54:05.485] [main] [DEBUG] [o.h.m.BasicValue] - Skipping column re-registration: user_tb.phone_no 
 [startup] [2024-11-05 18:54:05.485] [main] [DEBUG] [o.h.b.m.i.PropertyBinder] - Building property phoneNo 
 [startup] [2024-11-05 18:54:05.485] [main] [DEBUG] [o.h.b.m.i.AnnotatedColumn] - Binding column: AnnotatedColumn(column='PWD_UPD_DT') 
 [startup] [2024-11-05 18:54:05.487] [main] [DEBUG] [o.h.b.m.i.PropertyBinder] - MetadataSourceProcessor property pwdUpdDt with lazy=false 
-[startup] [2024-11-05 18:54:05.487] [main] [DEBUG] [o.h.b.m.i.AbstractPropertyHolder] - Attempting to locate auto-apply AttributeConverter for property [com.tripmate.account.common.entity.UserEntity:pwdUpdDt] 
+[startup] [2024-11-05 18:54:05.487] [main] [DEBUG] [o.h.b.m.i.AbstractPropertyHolder] - Attempting to locate auto-apply AttributeConverter for property [com.tripmate.account.common.entity.GuestEntity:pwdUpdDt]
 [startup] [2024-11-05 18:54:05.487] [main] [DEBUG] [o.h.b.m.i.BasicValueBinder] - building BasicValue for pwdUpdDt 
 [startup] [2024-11-05 18:54:05.488] [main] [DEBUG] [o.h.m.BasicValue] - Skipping column re-registration: user_tb.pwd_upd_dt 
 [startup] [2024-11-05 18:54:05.488] [main] [DEBUG] [o.h.b.m.i.PropertyBinder] - Building property pwdUpdDt 
 [startup] [2024-11-05 18:54:05.488] [main] [DEBUG] [o.h.b.m.i.AnnotatedColumn] - Binding column: AnnotatedColumn() 
 [startup] [2024-11-05 18:54:05.489] [main] [DEBUG] [o.h.b.m.i.PropertyBinder] - MetadataSourceProcessor property refreshToken with lazy=false 
-[startup] [2024-11-05 18:54:05.489] [main] [DEBUG] [o.h.b.m.i.AbstractPropertyHolder] - Attempting to locate auto-apply AttributeConverter for property [com.tripmate.account.common.entity.UserEntity:refreshToken] 
+[startup] [2024-11-05 18:54:05.489] [main] [DEBUG] [o.h.b.m.i.AbstractPropertyHolder] - Attempting to locate auto-apply AttributeConverter for property [com.tripmate.account.common.entity.GuestEntity:refreshToken]
 [startup] [2024-11-05 18:54:05.489] [main] [DEBUG] [o.h.b.m.i.BasicValueBinder] - building BasicValue for refreshToken 
 [startup] [2024-11-05 18:54:05.489] [main] [DEBUG] [o.h.m.BasicValue] - Skipping column re-registration: user_tb.refresh_token 
 [startup] [2024-11-05 18:54:05.490] [main] [DEBUG] [o.h.b.m.i.PropertyBinder] - Building property refreshToken 
 [startup] [2024-11-05 18:54:05.491] [main] [DEBUG] [o.h.b.m.i.AnnotatedColumn] - Binding column: AnnotatedColumn() 
 [startup] [2024-11-05 18:54:05.492] [main] [DEBUG] [o.h.b.m.i.PropertyBinder] - MetadataSourceProcessor property roles with lazy=false 
-[startup] [2024-11-05 18:54:05.492] [main] [DEBUG] [o.h.b.m.i.AbstractPropertyHolder] - Attempting to locate auto-apply AttributeConverter for property [com.tripmate.account.common.entity.UserEntity:roles] 
+[startup] [2024-11-05 18:54:05.492] [main] [DEBUG] [o.h.b.m.i.AbstractPropertyHolder] - Attempting to locate auto-apply AttributeConverter for property [com.tripmate.account.common.entity.GuestEntity:roles]
 [startup] [2024-11-05 18:54:05.494] [main] [DEBUG] [o.h.b.m.i.BasicValueBinder] - building BasicValue for roles 
 [startup] [2024-11-05 18:54:05.494] [main] [DEBUG] [o.h.m.BasicValue] - Skipping column re-registration: user_tb.roles 
 [startup] [2024-11-05 18:54:05.495] [main] [DEBUG] [o.h.b.m.i.PropertyBinder] - Building property roles 
 [startup] [2024-11-05 18:54:05.496] [main] [DEBUG] [o.h.b.m.i.AnnotatedColumn] - Binding column: AnnotatedColumn(column='USER_PWD') 
 [startup] [2024-11-05 18:54:05.496] [main] [DEBUG] [o.h.b.m.i.PropertyBinder] - MetadataSourceProcessor property userPwd with lazy=false 
-[startup] [2024-11-05 18:54:05.498] [main] [DEBUG] [o.h.b.m.i.AbstractPropertyHolder] - Attempting to locate auto-apply AttributeConverter for property [com.tripmate.account.common.entity.UserEntity:userPwd] 
+[startup] [2024-11-05 18:54:05.498] [main] [DEBUG] [o.h.b.m.i.AbstractPropertyHolder] - Attempting to locate auto-apply AttributeConverter for property [com.tripmate.account.common.entity.GuestEntity:userPwd]
 [startup] [2024-11-05 18:54:05.499] [main] [DEBUG] [o.h.b.m.i.BasicValueBinder] - building BasicValue for userPwd 
 [startup] [2024-11-05 18:54:05.499] [main] [DEBUG] [o.h.m.BasicValue] - Skipping column re-registration: user_tb.user_pwd 
 [startup] [2024-11-05 18:54:05.500] [main] [DEBUG] [o.h.b.m.i.PropertyBinder] - Building property userPwd 
 [startup] [2024-11-05 18:54:05.502] [main] [DEBUG] [o.h.b.r.c.i.ClassLoaderServiceImpl] - HHH000194: Package not found or no package-info.java: com.tripmate.account.common.entity 
-[startup] [2024-11-05 18:54:05.503] [main] [DEBUG] [o.h.j.e.i.CallbackDefinitionResolverLegacyImpl] - Adding touchForUpdate as PreUpdate callback for entity com.tripmate.account.common.entity.UserEntity 
-[startup] [2024-11-05 18:54:05.504] [main] [DEBUG] [o.h.j.e.i.CallbackDefinitionResolverLegacyImpl] - Adding touchForCreate as PrePersist callback for entity com.tripmate.account.common.entity.UserEntity 
+[startup] [2024-11-05 18:54:05.503] [main] [DEBUG] [o.h.j.e.i.CallbackDefinitionResolverLegacyImpl] - Adding touchForUpdate as PreUpdate callback for entity com.tripmate.account.common.entity.GuestEntity
+[startup] [2024-11-05 18:54:05.504] [main] [DEBUG] [o.h.j.e.i.CallbackDefinitionResolverLegacyImpl] - Adding touchForCreate as PrePersist callback for entity com.tripmate.account.common.entity.GuestEntity
 [startup] [2024-11-05 18:54:05.505] [main] [DEBUG] [o.h.b.m.i.BasicValueBinder] - Starting `BasicValueBinder#fillSimpleValue` for accountId 
 [startup] [2024-11-05 18:54:05.507] [main] [DEBUG] [o.h.b.m.i.BasicValueBinder] - Starting `BasicValueBinder#fillSimpleValue` for accountType 
 [startup] [2024-11-05 18:54:05.510] [main] [DEBUG] [o.h.b.m.i.BasicValueBinder] - Starting `BasicValueBinder#fillSimpleValue` for templateSq 
@@ -788,8 +788,8 @@ jdk.internal.loader.ClassLoaders$AppClassLoader@4e25154f
 [startup] [2024-11-05 18:54:05.781] [main] [DEBUG] [o.h.v.i.e.ValidatorFactoryConfigurationHelper] - HV000234: Using org.hibernate.validator.internal.engine.scripting.DefaultScriptEvaluatorFactory as ValidatorFactory-scoped script evaluator factory. 
 [startup] [2024-11-05 18:54:05.782] [main] [DEBUG] [o.h.b.i.ClassLoaderAccessImpl] - Not known whether passed class name [com.tripmate.account.common.entity.MarketingAgreeEntity] is safe 
 [startup] [2024-11-05 18:54:05.783] [main] [DEBUG] [o.h.b.i.ClassLoaderAccessImpl] - No temp ClassLoader provided; using live ClassLoader for loading potentially unsafe class : com.tripmate.account.common.entity.MarketingAgreeEntity 
-[startup] [2024-11-05 18:54:05.824] [main] [DEBUG] [o.h.b.i.ClassLoaderAccessImpl] - Not known whether passed class name [com.tripmate.account.common.entity.UserEntity] is safe 
-[startup] [2024-11-05 18:54:05.825] [main] [DEBUG] [o.h.b.i.ClassLoaderAccessImpl] - No temp ClassLoader provided; using live ClassLoader for loading potentially unsafe class : com.tripmate.account.common.entity.UserEntity 
+[startup] [2024-11-05 18:54:05.824] [main] [DEBUG] [o.h.b.i.ClassLoaderAccessImpl] - Not known whether passed class name [com.tripmate.account.common.entity.GuestEntity] is safe
+[startup] [2024-11-05 18:54:05.825] [main] [DEBUG] [o.h.b.i.ClassLoaderAccessImpl] - No temp ClassLoader provided; using live ClassLoader for loading potentially unsafe class : com.tripmate.account.common.entity.GuestEntity
 [startup] [2024-11-05 18:54:05.836] [main] [DEBUG] [o.h.b.i.ClassLoaderAccessImpl] - Not known whether passed class name [com.tripmate.account.common.entity.TemplateEntity] is safe 
 [startup] [2024-11-05 18:54:05.837] [main] [DEBUG] [o.h.b.i.ClassLoaderAccessImpl] - No temp ClassLoader provided; using live ClassLoader for loading potentially unsafe class : com.tripmate.account.common.entity.TemplateEntity 
 [startup] [2024-11-05 18:54:05.844] [main] [DEBUG] [o.h.b.i.ClassLoaderAccessImpl] - Not known whether passed class name [com.tripmate.account.common.entity.BasicAgreeEntity] is safe 
@@ -1131,9 +1131,9 @@ jdk.internal.loader.ClassLoaders$AppClassLoader@4e25154f
 [startup] [2024-11-05 18:54:06.346] [main] [DEBUG] [o.h.b.i.ClassLoaderAccessImpl] - Not known whether passed class name [com.tripmate.account.common.entity.MarketingAgreeEntity] is safe 
 [startup] [2024-11-05 18:54:06.346] [main] [DEBUG] [o.h.b.i.ClassLoaderAccessImpl] - No temp ClassLoader provided; using live ClassLoader for loading potentially unsafe class : com.tripmate.account.common.entity.MarketingAgreeEntity 
 [startup] [2024-11-05 18:54:06.675] [main] [DEBUG] [o.h.b.i.b.BytecodeProviderImpl] - HHH000513: Unable to create the ReflectionOptimizer for [com.tripmate.account.common.entity.MarketingAgreeEntity]: private accessor [accountId] 
-[startup] [2024-11-05 18:54:06.712] [main] [DEBUG] [o.h.b.i.ClassLoaderAccessImpl] - Not known whether passed class name [com.tripmate.account.common.entity.UserEntity] is safe 
-[startup] [2024-11-05 18:54:06.713] [main] [DEBUG] [o.h.b.i.ClassLoaderAccessImpl] - No temp ClassLoader provided; using live ClassLoader for loading potentially unsafe class : com.tripmate.account.common.entity.UserEntity 
-[startup] [2024-11-05 18:54:06.765] [main] [DEBUG] [o.h.b.i.b.BytecodeProviderImpl] - HHH000513: Unable to create the ReflectionOptimizer for [com.tripmate.account.common.entity.UserEntity]: private accessor [emailDomain] 
+[startup] [2024-11-05 18:54:06.712] [main] [DEBUG] [o.h.b.i.ClassLoaderAccessImpl] - Not known whether passed class name [com.tripmate.account.common.entity.GuestEntity] is safe
+[startup] [2024-11-05 18:54:06.713] [main] [DEBUG] [o.h.b.i.ClassLoaderAccessImpl] - No temp ClassLoader provided; using live ClassLoader for loading potentially unsafe class : com.tripmate.account.common.entity.GuestEntity
+[startup] [2024-11-05 18:54:06.765] [main] [DEBUG] [o.h.b.i.b.BytecodeProviderImpl] - HHH000513: Unable to create the ReflectionOptimizer for [com.tripmate.account.common.entity.GuestEntity]: private accessor [emailDomain]
 [startup] [2024-11-05 18:54:06.767] [main] [DEBUG] [o.h.b.i.ClassLoaderAccessImpl] - Not known whether passed class name [com.tripmate.account.common.entity.TemplateEntity] is safe 
 [startup] [2024-11-05 18:54:06.767] [main] [DEBUG] [o.h.b.i.ClassLoaderAccessImpl] - No temp ClassLoader provided; using live ClassLoader for loading potentially unsafe class : com.tripmate.account.common.entity.TemplateEntity 
 [startup] [2024-11-05 18:54:06.802] [main] [DEBUG] [o.h.b.i.b.BytecodeProviderImpl] - HHH000513: Unable to create the ReflectionOptimizer for [com.tripmate.account.common.entity.TemplateEntity]: private accessor [content] 
@@ -1142,7 +1142,7 @@ jdk.internal.loader.ClassLoaders$AppClassLoader@4e25154f
 [startup] [2024-11-05 18:54:06.824] [main] [DEBUG] [o.h.b.i.b.BytecodeProviderImpl] - HHH000513: Unable to create the ReflectionOptimizer for [com.tripmate.account.common.entity.BasicAgreeEntity]: private accessor [agreeDt] 
 [startup] [2024-11-05 18:54:06.866] [main] [DEBUG] [o.h.o.m.m.creation] - Starting post-init callbacks 
 [startup] [2024-11-05 18:54:06.866] [main] [DEBUG] [o.h.o.m.m.creation] - Starting PostInitCallbackEntry : Entity(com.tripmate.account.common.entity.MarketingAgreeEntity) `staticFetchableList` generator 
-[startup] [2024-11-05 18:54:06.867] [main] [DEBUG] [o.h.o.m.m.creation] - Starting PostInitCallbackEntry : Entity(com.tripmate.account.common.entity.UserEntity) `staticFetchableList` generator 
+[startup] [2024-11-05 18:54:06.867] [main] [DEBUG] [o.h.o.m.m.creation] - Starting PostInitCallbackEntry : Entity(com.tripmate.account.common.entity.GuestEntity) `staticFetchableList` generator
 [startup] [2024-11-05 18:54:06.867] [main] [DEBUG] [o.h.o.m.m.creation] - Starting PostInitCallbackEntry : Entity(com.tripmate.account.common.entity.TemplateEntity) `staticFetchableList` generator 
 [startup] [2024-11-05 18:54:06.867] [main] [DEBUG] [o.h.o.m.m.creation] - Starting PostInitCallbackEntry : EmbeddableMappingType(com.tripmate.account.common.entity.BasicAgreeEntity#{id})#finishInitialization 
 [startup] [2024-11-05 18:54:06.868] [main] [DEBUG] [o.h.o.m.m.creation] - Starting PostInitCallbackEntry : Entity(com.tripmate.account.common.entity.BasicAgreeEntity) `staticFetchableList` generator 
@@ -1177,33 +1177,33 @@ jdk.internal.loader.ClassLoaders$AppClassLoader@4e25154f
 [startup] [2024-11-05 18:54:07.115] [main] [DEBUG] [o.h.p.e.AbstractEntityPersister] -  Update (0): update marketing_agree_th set account_id=?,account_type=?,agree_dtm=?,agree_fl=?,d_agree_dtm=?,template_sq=?,updt_dtm=?,updt_user=? where agree_sq=? 
 [startup] [2024-11-05 18:54:07.115] [main] [DEBUG] [o.h.p.e.AbstractEntityPersister] -  Delete (0): delete from marketing_agree_th where agree_sq=? 
 [startup] [2024-11-05 18:54:07.116] [main] [DEBUG] [o.h.o.s.a.create] - Created new SQL alias : ue1_0 
-[startup] [2024-11-05 18:54:07.116] [main] [DEBUG] [o.h.o.s.a.create] - Registration of TableGroup [StandardTableGroup(com.tripmate.account.common.entity.UserEntity)] with identifierForTableGroup [com.tripmate.account.common.entity.UserEntity] for NavigablePath [com.tripmate.account.common.entity.UserEntity]  
+[startup] [2024-11-05 18:54:07.116] [main] [DEBUG] [o.h.o.s.a.create] - Registration of TableGroup [StandardTableGroup(com.tripmate.account.common.entity.GuestEntity)] with identifierForTableGroup [com.tripmate.account.common.entity.GuestEntity] for NavigablePath [com.tripmate.account.common.entity.GuestEntity]
 [startup] [2024-11-05 18:54:07.117] [main] [DEBUG] [o.h.o.r.g.AST] - DomainResult Graph:
- \-EntityResultImpl [com.tripmate.account.common.entity.UserEntity]
- |  +-BasicFetch [com.tripmate.account.common.entity.UserEntity.emailDomain]
- |  +-BasicFetch [com.tripmate.account.common.entity.UserEntity.emailId]
- |  +-BasicFetch [com.tripmate.account.common.entity.UserEntity.lastLoginDt]
- |  +-BasicFetch [com.tripmate.account.common.entity.UserEntity.nickname]
- |  +-BasicFetch [com.tripmate.account.common.entity.UserEntity.phoneNo]
- |  +-BasicFetch [com.tripmate.account.common.entity.UserEntity.pwdUpdDt]
- |  +-BasicFetch [com.tripmate.account.common.entity.UserEntity.refreshToken]
- |  +-BasicFetch [com.tripmate.account.common.entity.UserEntity.regDtm]
- |  +-BasicFetch [com.tripmate.account.common.entity.UserEntity.regUser]
- |  +-BasicFetch [com.tripmate.account.common.entity.UserEntity.roleEntities]
- |  +-BasicFetch [com.tripmate.account.common.entity.UserEntity.updtDtm]
- |  +-BasicFetch [com.tripmate.account.common.entity.UserEntity.updtUser]
- |  \-BasicFetch [com.tripmate.account.common.entity.UserEntity.userPwd]
+ \-EntityResultImpl [com.tripmate.account.common.entity.GuestEntity]
+ |  +-BasicFetch [com.tripmate.account.common.entity.GuestEntity.emailDomain]
+ |  +-BasicFetch [com.tripmate.account.common.entity.GuestEntity.emailId]
+ |  +-BasicFetch [com.tripmate.account.common.entity.GuestEntity.lastLoginDt]
+ |  +-BasicFetch [com.tripmate.account.common.entity.GuestEntity.nickname]
+ |  +-BasicFetch [com.tripmate.account.common.entity.GuestEntity.phoneNo]
+ |  +-BasicFetch [com.tripmate.account.common.entity.GuestEntity.pwdUpdDt]
+ |  +-BasicFetch [com.tripmate.account.common.entity.GuestEntity.refreshToken]
+ |  +-BasicFetch [com.tripmate.account.common.entity.GuestEntity.regDtm]
+ |  +-BasicFetch [com.tripmate.account.common.entity.GuestEntity.regUser]
+ |  +-BasicFetch [com.tripmate.account.common.entity.GuestEntity.roleEntities]
+ |  +-BasicFetch [com.tripmate.account.common.entity.GuestEntity.updtDtm]
+ |  +-BasicFetch [com.tripmate.account.common.entity.GuestEntity.updtUser]
+ |  \-BasicFetch [com.tripmate.account.common.entity.GuestEntity.userPwd]
  
 [startup] [2024-11-05 18:54:07.118] [main] [DEBUG] [o.h.o.s.a.tree] - SQL AST Tree:
     SelectStatement {
       FromClause {
-        StandardTableGroup (ue1 : com.tripmate.account.common.entity.UserEntity) {
+        StandardTableGroup (ue1 : com.tripmate.account.common.entity.GuestEntity) {
           primaryTableReference : user_tb as ue1_0
         }
       }
     }
  
-[startup] [2024-11-05 18:54:07.118] [main] [DEBUG] [o.h.p.e.AbstractEntityPersister] - Static SQL for entity: com.tripmate.account.common.entity.UserEntity 
+[startup] [2024-11-05 18:54:07.118] [main] [DEBUG] [o.h.p.e.AbstractEntityPersister] - Static SQL for entity: com.tripmate.account.common.entity.GuestEntity
 [startup] [2024-11-05 18:54:07.118] [main] [DEBUG] [o.h.p.e.AbstractEntityPersister] -  Version select: select user_id from user_tb where user_id=? 
 [startup] [2024-11-05 18:54:07.118] [main] [DEBUG] [o.h.p.e.AbstractEntityPersister] -  Insert (0): insert into user_tb (email_domain,email_id,last_login_dt,nickname,phone_no,pwd_upd_dt,refresh_token,reg_dtm,reg_user,roles,updt_dtm,updt_user,user_pwd,user_id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?) 
 [startup] [2024-11-05 18:54:07.119] [main] [DEBUG] [o.h.p.e.AbstractEntityPersister] -  Update (0): update user_tb set email_domain=?,email_id=?,last_login_dt=?,nickname=?,phone_no=?,pwd_upd_dt=?,refresh_token=?,roles=?,updt_dtm=?,updt_user=?,user_pwd=? where user_id=? 
@@ -1350,9 +1350,9 @@ jdk.internal.loader.ClassLoaders$AppClassLoader@4e25154f
 [startup] [2024-11-05 18:54:07.682] [main] [DEBUG] [o.s.o.j.SharedEntityManagerCreator$SharedEntityManagerInvocationHandler] - Creating new EntityManager for shared EntityManager invocation 
 [startup] [2024-11-05 18:54:07.725] [main] [DEBUG] [o.h.s.i.StatisticsInitiator] - Statistics initialized [enabled=false] 
 [startup] [2024-11-05 18:54:07.733] [main] [DEBUG] [o.s.o.j.SharedEntityManagerCreator$SharedEntityManagerInvocationHandler] - Creating new EntityManager for shared EntityManager invocation 
-[startup] [2024-11-05 18:54:07.810] [main] [DEBUG] [o.s.d.r.c.s.RepositoryFactorySupport] - Initializing repository instance for com.tripmate.account.guest.repository.UserTbRepository…
+[startup] [2024-11-05 18:54:07.810] [main] [DEBUG] [o.s.d.r.c.s.RepositoryFactorySupport] - Initializing repository instance for com.tripmate.account.guest.repository.GuestTbRepository…
 [startup] [2024-11-05 18:54:07.839] [main] [DEBUG] [o.s.o.j.SharedEntityManagerCreator$SharedEntityManagerInvocationHandler] - Creating new EntityManager for shared EntityManager invocation 
-[startup] [2024-11-05 18:54:07.885] [main] [DEBUG] [o.s.d.r.c.s.RepositoryFactorySupport] - Finished creation of repository instance for com.tripmate.account.guest.repository.UserTbRepository.
+[startup] [2024-11-05 18:54:07.885] [main] [DEBUG] [o.s.d.r.c.s.RepositoryFactorySupport] - Finished creation of repository instance for com.tripmate.account.guest.repository.GuestTbRepository.
 [startup] [2024-11-05 18:54:07.891] [main] [DEBUG] [o.s.b.f.s.DefaultListableBeanFactory] - Autowiring by type from bean name 'generalUserDetailsService' via constructor to bean named 'userTbRepository' 
 [startup] [2024-11-05 18:54:07.893] [main] [DEBUG] [o.s.b.f.s.DefaultListableBeanFactory] - Creating shared instance of singleton bean 'authManager' 
 [startup] [2024-11-05 18:54:07.894] [main] [DEBUG] [o.s.b.f.s.DefaultListableBeanFactory] - Creating shared instance of singleton bean 'securityConfig' 

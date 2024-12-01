@@ -1,8 +1,8 @@
 package com.tripmate.account.guest.service;
 
 import com.tripmate.account.common.entity.*;
-import com.tripmate.account.common.entity.id.BasicAgreeId;
-import com.tripmate.account.common.entity.id.RoleHistoryId;
+import com.tripmate.account.common.entity.compositekey.BasicAgreeId;
+import com.tripmate.account.common.entity.compositekey.RoleHistoryId;
 import com.tripmate.account.common.enums.AccountType;
 import com.tripmate.account.common.enums.RoleCode;
 import com.tripmate.account.common.exception.DataConflictException;
@@ -11,10 +11,10 @@ import com.tripmate.account.common.exception.ServerErrorException;
 import com.tripmate.account.common.reponse.CommonResponse;
 import com.tripmate.account.common.enums.AgreeFl;
 import com.tripmate.account.guest.dto.*;
-import com.tripmate.account.guest.repository.RoleThRepository;
-import com.tripmate.account.guest.repository.UserTbRepository;
-import com.tripmate.account.guest.repository.UserBasicAgreeThRepository;
-import com.tripmate.account.guest.repository.UserMarketingAgreeThRepository;
+import com.tripmate.account.guest.repository.GuestRoleThRepository;
+import com.tripmate.account.guest.repository.GuestTbRepository;
+import com.tripmate.account.guest.repository.GuestBasicAgreeThRepository;
+import com.tripmate.account.guest.repository.GuestMarketingAgreeThRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -34,22 +34,22 @@ import static java.lang.Integer.parseInt;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class UserManageService {
+public class GuestManageService {
 
-    private final UserTbRepository userTbRepository;
-    private final UserBasicAgreeThRepository basicAgreeThRepository;
-    private final UserMarketingAgreeThRepository marketingAgreeThRepository;
+    private final GuestTbRepository guestTbRepository;
+    private final GuestBasicAgreeThRepository basicAgreeThRepository;
+    private final GuestMarketingAgreeThRepository marketingAgreeThRepository;
     private final PasswordEncoder passwordEncoder;
-    private final RoleThRepository roleThRepository;
+    private final GuestRoleThRepository guestRoleThRepository;
 
     /**
      * (숙박회원)  아이디 중복 검사
      *
-     * @param userId 입력한 아이디가 이미 존재하는지 여부를 확인
+     * @param guestId 입력한 아이디가 이미 존재하는지 여부를 확인
      * @return 중복된 아이디가 존재할 경우 예외발생-> 에러응답코드와 메세지를 담은 ResponseEntity 전달
      */
-    public ResponseEntity<CommonResponse<Void>> checkUserIdDuplicate(String userId) {
-        if (userTbRepository.existsById(userId)) {
+    public ResponseEntity<CommonResponse<Void>> checkUserIdDuplicate(String guestId) {
+        if (guestTbRepository.existsById(guestId)) {
             throw new DataConflictException(CONFLICT_ACCOUNT_ALREADY_EXISTS);
         }
         return new CommonResponse<Void>().toRespEntity(SUCCESS);
@@ -67,12 +67,12 @@ public class UserManageService {
      * @param reqUserJoin 개인정보, 필수 약관 동의 리스트, 마케팅 약관 동의 리스트를 포함한 가입 요청 정보
      */
     @Transactional
-    public void userJoin(UserJoinReqDto reqUserJoin) {
-        if (userTbRepository.existsById(reqUserJoin.getUserId())) {
+    public void guestJoin(GuestJoinReqDto reqUserJoin) {
+        if (guestTbRepository.existsById(reqUserJoin.getGuestId())) {
             throw new DataConflictException(CONFLICT_ACCOUNT_ALREADY_EXISTS);
         }
         insertAccountInfo(reqUserJoin);
-        userTbRepository.flush(); //⭐서버가 이 3가지 작업을 할동안 이계정의 또 다른서버를 띄우고 동시에 요청이 갈 수 있다
+        guestTbRepository.flush(); //⭐서버가 이 3가지 작업을 할동안 이계정의 또 다른서버를 띄우고 동시에 요청이 갈 수 있다
         // 중복으로 저장하려고 할떄 이 서버에서 계정정보를 저장하고 필수, 마케팅약관 까지 다등록할때까지 다른서버에서 쓰레드가 계속 기다릴것이다
         //근데 그런 기다리는시간을 줄이기 위해서 먼저 계정정보를 저장했네? 그럼 다른서버에서도 계정을 등록하기전에 이걸보고 굳이 오래 기다리지 않는다
         //
@@ -89,21 +89,21 @@ public class UserManageService {
      * @param modifyPwdDto 클라이언트의 현재 비밀번호(oldPwd)와 바꾸고 싶은 새 비밀번호(newPwd)
      */
     @Transactional//더티체킹: 엔티티가 영속성 컨텍스트에 속한 상태가 되고 트랜잭션이 끝나는 시점에 변경된 엔티티가 자동으로 감지되어 UPDATE 쿼리가 실행
-    public void modifyPwd(UserModifyPwdReqDto modifyPwdDto) {
-        Optional<UserEntity> userOptional = userTbRepository.findById(modifyPwdDto.getUserId());//이부분 세션할때 바꾸기
+    public void modifyPwd(GuestModifyPwdReqDto modifyPwdDto) {
+        Optional<GuestEntity> userOptional = guestTbRepository.findById(modifyPwdDto.getUserId());//이부분 세션할때 바꾸기
 
         // 접속 id에 해당하는 계정이 존재하는지 확인하기 TODO id는 세션이나 jwt에 들고오는걸로 바꾸기
         if (userOptional.isEmpty()) {
             throw new InvalidRequestException(INVALID_USER_ID_MISMATCH);
         }
 
-        UserEntity existingUserEntity = userOptional.get();
+        GuestEntity existingGuestEntity = userOptional.get();
 
-        if (passwordEncoder.matches(modifyPwdDto.getOldPwd(), existingUserEntity.getUserPwd())) {
-            existingUserEntity.setUserPwd(passwordEncoder.encode(modifyPwdDto.getNewPwd()));
-            existingUserEntity.setPwdUpdDt(LocalDate.now());
-            existingUserEntity.setUpdtDtm(LocalDateTime.now());
-            // existingUserEntity.setUpdtUser(); TODO 서버이름 넣기
+        if (passwordEncoder.matches(modifyPwdDto.getOldPwd(), existingGuestEntity.getUserPwd())) {
+            existingGuestEntity.setUserPwd(passwordEncoder.encode(modifyPwdDto.getNewPwd()));
+            existingGuestEntity.setPwdUpdDt(LocalDate.now());
+            existingGuestEntity.setUpdtDtm(LocalDateTime.now());
+            // existingGuestEntity.setUpdtUser(); TODO 서버이름 넣기
             return;
         }
         throw new InvalidRequestException(INVALID_USER_PWD_MISMATCH);
@@ -143,13 +143,13 @@ public class UserManageService {
      * @throws ServerErrorException    데이터베이스에서 여러 개의 동의 상태가 발견되었을 때 발생합니다. 서버 오류가 발생한 경우다.
      */
 
-    public void modifyMarketingAgree(List<UserModifyMarketingAgreeReqDto> reqModifyMarketingList) {
+    public void modifyMarketingAgree(List<GuestModifyMarketingAgreeReqDto> reqModifyMarketingList) {
         if (reqModifyMarketingList == null || reqModifyMarketingList.isEmpty()) {
             throw new InvalidRequestException(INVALID_MARKETING_AGREE_BLANK);
         }
         int marketingPkSq = 1;
 
-        for (UserModifyMarketingAgreeReqDto reqModifyOneMarketing : reqModifyMarketingList) {
+        for (GuestModifyMarketingAgreeReqDto reqModifyOneMarketing : reqModifyMarketingList) {
             String userId = "1test";//TODO
 
             String partPkOfMarketing = getPartPkOfMarketing(userId);
@@ -207,7 +207,7 @@ public class UserManageService {
      * @param agreedHistoryListForOneMarketing
      */
     //이력에 있던 것들은 모두 '비동의'상태로 바꿔주고 수정자는 '서버이름'을 쓰고 에러는 어떤에러인지 로그로 알려주기.
-    public void ModifyErrorMarketingHistory(List<MarketingAgreeEntity> agreedHistoryListForOneMarketing, UserModifyMarketingAgreeReqDto reqModifyOneMarketing) {
+    public void ModifyErrorMarketingHistory(List<MarketingAgreeEntity> agreedHistoryListForOneMarketing, GuestModifyMarketingAgreeReqDto reqModifyOneMarketing) {
         if (agreedHistoryListForOneMarketing.isEmpty()) {
             //예외뱉기 TODO 어떤에러지???????????리스트마다 이 짓을 해야하나
         }
@@ -302,8 +302,8 @@ public class UserManageService {
     }
 
     //회원가입할때 계정정보 저장하기
-    public void insertAccountInfo(UserJoinReqDto reqUserJoin) {
-        UserEntity userJoinEntity = UserEntity.builder()
+    public void insertAccountInfo(GuestJoinReqDto reqUserJoin) {
+        GuestEntity userJoinEntity = GuestEntity.builder()
                 .userId(reqUserJoin.getUserId())
                 .userPwd(
                         passwordEncoder.encode(reqUserJoin.getUserPwd()) //수동생성방법:BCrypt.hashpw(reqUserJoin.getUserPwd(), BCrypt.gensalt())   :BCrypt.hashpw 메서드는 주어진 비밀번호를 BCrypt 해시로 변환하고, BCrypt.gensalt()는 랜덤 솔트 값을 생성하여 비밀번호에 추가
@@ -315,17 +315,17 @@ public class UserManageService {
                 .regUser(reqUserJoin.getUserId())//서버이름으로 바꾸기⭐
                 .pwdUpdDt(LocalDate.now())//가입하면 비번업데이트 날짜도 기록함
                 .build();
-        userTbRepository.save(userJoinEntity);
+        guestTbRepository.save(userJoinEntity);
     }
 
 
     //회원가입할때  필수 약관 동의 리스트 저장하기
-    public void insertBasicAgree(UserJoinReqDto reqUserJoin) {
-        List<UserBasicAgreeReqDto> reqBasicAgreeList = reqUserJoin.getBasicAgreeDtoList();
+    public void insertBasicAgree(GuestJoinReqDto reqUserJoin) {
+        List<GuestBasicAgreeReqDto> reqBasicAgreeList = reqUserJoin.getBasicAgreeDtoList();
         if (reqBasicAgreeList == null || reqBasicAgreeList.isEmpty()) {
             throw new InvalidRequestException(INVALID_BASIC_AGREE_BLANK);
         }
-        for (UserBasicAgreeReqDto reqBasicAgree : reqBasicAgreeList) {
+        for (GuestBasicAgreeReqDto reqBasicAgree : reqBasicAgreeList) {
             BasicAgreeEntity requireAgreeEntity = BasicAgreeEntity.builder()
                     .id(
                             BasicAgreeId.builder()
@@ -343,8 +343,8 @@ public class UserManageService {
     }
 
     // 마케팅 약관 동의 리스트 저장하기
-    public void insertMarketingAgree(UserJoinReqDto reqUserJoin) {
-        List<UserCreateMarketingAgreeDto> reqMarketingAgreeList = reqUserJoin.getMarketingAgreeDtoList();
+    public void insertMarketingAgree(GuestJoinReqDto reqUserJoin) {
+        List<GuestCreateMarketingAgreeDto> reqMarketingAgreeList = reqUserJoin.getMarketingAgreeDtoList();
         if (reqMarketingAgreeList == null || reqMarketingAgreeList.isEmpty()) {
             throw new InvalidRequestException(INVALID_MARKETING_AGREE_BLANK);
         }
@@ -353,7 +353,7 @@ public class UserManageService {
 
         int marketingmarketingPkSq = 1;
 
-        for (UserCreateMarketingAgreeDto reqMarketingAgree : reqMarketingAgreeList) {
+        for (GuestCreateMarketingAgreeDto reqMarketingAgree : reqMarketingAgreeList) {
             //마케팅 약관에 거절한 데이터는 저장 안함.
             if (reqMarketingAgree.getAgreeFlEnum() == AgreeFl.N) {
                 continue;//⭐
@@ -363,7 +363,7 @@ public class UserManageService {
                     .agreeSq(
                             getMarketingPk(reqUserJoin.getUserId(), marketingmarketingPkSq)
                     )
-                    .accountType(AccountType.U)         //TODO 'U'는 JWT에서 가져올 예정
+                    .accountType(AccountType.G)         //TODO 'U'는 JWT에서 가져올 예정
                     .accountId(reqUserJoin.getUserId())
                     .agreeFl(reqMarketingAgree.getAgreeFlEnum())
                     .agreeDtm(LocalDateTime.now())
@@ -377,7 +377,7 @@ public class UserManageService {
     }
 
     //권한저장
-    public void insertRoleHistory(UserJoinReqDto reqUserJoin) {
+    public void insertRoleHistory(GuestJoinReqDto reqUserJoin) {
         RoleHistoryEntity roleHistoryEntity=RoleHistoryEntity.builder()
                 .id(
                         RoleHistoryId.builder()
@@ -388,13 +388,13 @@ public class UserManageService {
                 )
                 .regUser(reqUserJoin.getUserId())//TODO 서버이름 넣기
                 .build();
-        roleThRepository.save(roleHistoryEntity);
+        guestRoleThRepository.save(roleHistoryEntity);
     }
 }
 
 
 /* 개인공부
-findById 메서드는 Optional<UserEntity> 객체를 반환
+findById 메서드는 Optional<GuestEntity> 객체를 반환
 해당 userId가 userTbRepository에 존재한다면, Optional 객체 안에 UserEntity가 담겨서 반환돼.
 만약 해당 userId가 데이터베이스에 없다면, 빈 Optional 객체가 반환돼. 즉, Optional.empty()가 반환
  */

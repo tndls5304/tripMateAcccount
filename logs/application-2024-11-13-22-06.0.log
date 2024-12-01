@@ -13,10 +13,10 @@
 [startup] [2024-11-13 22:06:03.403] [main] [INFO] [c.z.h.HikariDataSource] - HikariPool-1 - Starting... 
 [startup] [2024-11-13 22:06:03.709] [main] [INFO] [c.z.h.p.HikariPool] - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@43fe2008 
 [startup] [2024-11-13 22:06:03.714] [main] [INFO] [c.z.h.HikariDataSource] - HikariPool-1 - Start completed. 
-[startup] [2024-11-13 22:06:04.729] [main] [WARN] [o.h.m.RootClass] - HHH000038: Composite-id class does not override equals(): com.tripmate.account.common.entity.id.RoleHistoryId 
-[startup] [2024-11-13 22:06:04.730] [main] [WARN] [o.h.m.RootClass] - HHH000039: Composite-id class does not override hashCode(): com.tripmate.account.common.entity.id.RoleHistoryId 
+[startup] [2024-11-13 22:06:04.729] [main] [WARN] [o.h.m.RootClass] - HHH000038: Composite-id class does not override equals(): com.tripmate.account.common.entity.compositekey.RoleHistoryId
+[startup] [2024-11-13 22:06:04.730] [main] [WARN] [o.h.m.RootClass] - HHH000039: Composite-id class does not override hashCode(): com.tripmate.account.common.entity.compositekey.RoleHistoryId
 [startup] [2024-11-13 22:06:05.456] [main] [INFO] [o.h.m.i.EntityInstantiatorPojoStandard] - HHH000182: No default (no-argument) constructor for class: com.tripmate.account.common.entity.RoleEntity (class must be instantiated by Interceptor) 
-[startup] [2024-11-13 22:06:05.516] [main] [INFO] [o.h.m.i.PojoInstantiatorImpl] - HHH000182: No default (no-argument) constructor for class: com.tripmate.account.common.entity.id.RoleHistoryId (class must be instantiated by Interceptor) 
+[startup] [2024-11-13 22:06:05.516] [main] [INFO] [o.h.m.i.PojoInstantiatorImpl] - HHH000182: No default (no-argument) constructor for class: com.tripmate.account.common.entity.compositekey.RoleHistoryId (class must be instantiated by Interceptor)
 [startup] [2024-11-13 22:06:05.812] [main] [INFO] [o.h.e.t.j.p.i.JtaPlatformInitiator] - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration) 
 [startup] [2024-11-13 22:06:06.259] [main] [INFO] [o.s.o.j.LocalContainerEntityManagerFactoryBean] - Initialized JPA EntityManagerFactory for persistence unit 'default' 
 [startup] [2024-11-13 22:06:06.824] [main] [INFO] [o.s.d.j.r.q.QueryEnhancerFactory] - Hibernate is in classpath; If applicable, HQL parser will be used. 

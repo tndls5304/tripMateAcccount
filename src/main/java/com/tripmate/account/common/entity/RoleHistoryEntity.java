@@ -1,7 +1,7 @@
 package com.tripmate.account.common.entity;
 
 import com.tripmate.account.common.entity.base.BaseEntity;
-import com.tripmate.account.common.entity.id.RoleHistoryId;
+import com.tripmate.account.common.entity.compositekey.RoleHistoryId;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;

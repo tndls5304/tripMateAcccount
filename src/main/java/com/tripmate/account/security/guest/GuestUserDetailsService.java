@@ -1,10 +1,10 @@
 package com.tripmate.account.security.guest;
 
-import com.tripmate.account.common.entity.UserEntity;
+import com.tripmate.account.common.entity.GuestEntity;
 import com.tripmate.account.common.enums.AccountType;
 import com.tripmate.account.common.enums.RoleCode;
-import com.tripmate.account.guest.repository.RoleThRepository;
-import com.tripmate.account.guest.repository.UserTbRepository;
+import com.tripmate.account.guest.repository.GuestRoleThRepository;
+import com.tripmate.account.guest.repository.GuestTbRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,12 +23,12 @@ import java.util.*;
 @Service
 public class GuestUserDetailsService implements UserDetailsService {
 
-    private final UserTbRepository repository;
-    private final RoleThRepository roleThRepository;
+    private final GuestTbRepository repository;
+    private final GuestRoleThRepository guestRoleThRepository;
 
-    public GuestUserDetailsService(UserTbRepository repository, RoleThRepository roleThRepository) {
+    public GuestUserDetailsService(GuestTbRepository repository, GuestRoleThRepository guestRoleThRepository) {
         this.repository = repository;
-        this.roleThRepository = roleThRepository;
+        this.guestRoleThRepository = guestRoleThRepository;
     }
 
     /**
@@ -45,28 +45,28 @@ public class GuestUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
 
         // 1. RoleCode 리스트를 조회합니다.
-        UserEntity userEntity = repository.findById(userId)
+        GuestEntity guestEntity = repository.findById(userId)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         // 2. RoleCode 리스트를 이용해 GrantedAuthority 객체 생성
         Set<GrantedAuthority> authoritySet = new HashSet<>();
         //권한 코드는 리스트로 빼와서  SimpleGrantedAuthority의 생성자의 인자값으로 넘겨주면 String 멤버변수에 저장
         //Set에는
-        List<RoleCode> roleCodeList = roleThRepository.findRoleCodeByUserTypeAndId(AccountType.G, userEntity.getUserId());
+        List<RoleCode> roleCodeList = guestRoleThRepository.findRoleCodeByUserTypeAndId(AccountType.G, guestEntity.getUserId());
         for (RoleCode roleCode : roleCodeList) {
             authoritySet.add(new SimpleGrantedAuthority(roleCode.name())); //이늄타입이라 String을 얻기위해 name()을 사용함  RoleCode.RG00이면 RG00이라는 문자열이 반환됩니다.
         }
 
         return new GuestUserDetails(
-                userEntity.getUserId(),
-                userEntity.getUserPwd(),
+                guestEntity.getUserId(),
+                guestEntity.getUserPwd(),
                 authoritySet // 권한을 Set으로 추가
         );
     }
 }
 
 
-      /*  Optional<UserEntity> userEntityOptional = repository.findById(userId);
+      /*  Optional<GuestEntity> userEntityOptional = repository.findById(userId);
 
         if (userEntityOptional.isEmpty()) {
             throw new UsernameNotFoundException("User ID not found: " + userId);

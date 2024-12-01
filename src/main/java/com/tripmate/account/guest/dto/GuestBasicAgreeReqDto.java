@@ -12,7 +12,7 @@ import lombok.experimental.FieldDefaults;
 @Schema(description = "(필수) 약관동의서 기록지 등록 요청 DTO")
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserBasicAgreeReqDto {
+public class GuestBasicAgreeReqDto {
 
     @NotBlank(message = "1016")     //@NotNull은 ["templateSq": ""]자체가 없을때만 유효성검사에서 걸림
     String templateSq;

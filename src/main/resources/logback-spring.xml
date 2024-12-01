@@ -56,7 +56,7 @@
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="ROLLING_LOG_FILE"/>
     </logger>
-    <logger name="com.tripmate.account.guest.controller.UserManageController" level="DEBUG" additive="false">
+    <logger name="com.tripmate.account.guest.controller.GuestManageController" level="DEBUG" additive="false">
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="ROLLING_LOG_FILE"/>
     </logger>

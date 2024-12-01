@@ -9,10 +9,9 @@ import lombok.experimental.SuperBuilder;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
-import java.util.Set;
 
 @Entity
-@Table(name = "USER_TB")
+@Table(name = "GUEST_TB")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -20,7 +19,7 @@ import java.util.Set;
 @SuperBuilder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @EntityListeners(AuditingEntityListener.class)  // JPA Auditing  기능 활성화
-public class UserEntity extends BaseEntity {
+public class GuestEntity extends BaseEntity {
 
     @Id
     @Column(name = "USER_ID", length = 20)

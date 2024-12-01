@@ -1,4 +1,4 @@
-package com.tripmate.account.common.entity.id;
+package com.tripmate.account.common.entity.compositekey;
 
 import com.tripmate.account.common.enums.AccountType;
 import jakarta.persistence.Column;
@@ -7,9 +7,9 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.Builder;
 import java.util.Objects;
+
 @Builder
 @Embeddable
-
 public class BasicAgreeId {
     @Enumerated(EnumType.STRING)
     @Column(name ="ACCOUNT_TYPE")
