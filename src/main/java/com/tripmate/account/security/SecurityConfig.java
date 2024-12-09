@@ -90,7 +90,7 @@ public class SecurityConfig {
      */
     @Bean
     public GuestJsonUsernamePasswordAuthenticationFilter guestJsonUsernamePasswordLoginFilter() {
-        GuestJsonUsernamePasswordAuthenticationFilter jsonFilter = new GuestJsonUsernamePasswordAuthenticationFilter(validator,objectMapper);
+        GuestJsonUsernamePasswordAuthenticationFilter jsonFilter = new GuestJsonUsernamePasswordAuthenticationFilter(validator, objectMapper);
         jsonFilter.setAuthenticationManager(customProviderManager()); // AuthenticationManager 설정
         jsonFilter.setAuthenticationSuccessHandler(authSuccessHandler());
         jsonFilter.setAuthenticationFailureHandler(authFailureHandler());
@@ -120,6 +120,7 @@ public class SecurityConfig {
     public GuestJwtTokenFilter guestJwtTokenFilter(JwtAuthService jwtAuthService) {
         return new GuestJwtTokenFilter(jwtAuthService);
     }
+
     /**
      * HTTP 요청에 대한 보안 필터 체인을 설정하는 메서드입니다.
      * 이 설정은 Spring Security의 기본 보안 설정을 사용자 정의로 구성합니다.
@@ -137,16 +138,23 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)//CSRF 보호를 비활성화(API 서버나 세션이 사용되지 않는 경우)
                 .addFilterBefore(guestJsonUsernamePasswordLoginFilter(), UsernamePasswordAuthenticationFilter.class) // JSON 인증 필터 추가
                 .addFilterAfter(guestJwtTokenFilter(jwtAuthService), UsernamePasswordAuthenticationFilter.class)
-                .authorizeHttpRequests(auth -> auth                                             //URL 패턴별 접근 권한을 정의
-                        .requestMatchers("/api/guest/account/join", "/api/guest/account/login", "/home")
-                        .permitAll()  // 인증 없이 접근 가능
-                        .anyRequest().authenticated()                                        // 나머지 요청은 인증 필요
+                // 필터 설정
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/account/guest/join", "/api/account/guest/login", "/home")
+                        .permitAll()  // 회원가입, 로그인 및 /home은 인증 없이 접근 가능
+                        .requestMatchers("/api/guest/**")
+                        .hasRole("RG00")// "RG00" 권한을 가진 사용자만 /api/guest/** 경로 접근 가능
+                        .anyRequest()
+                        .authenticated()  // 나머지 요청은 인증 필요
                 )
-                .httpBasic(AbstractHttpConfigurer::disable) // HTTP Basic 인증 비활성화formLogin(AbstractHttpConfigurer::disable)
-                .formLogin(AbstractHttpConfigurer::disable)
+                .httpBasic(AbstractHttpConfigurer::disable) // HTTP Basic 인증 비활성화
+                .formLogin(AbstractHttpConfigurer::disable) // 폼 로그인 비활성화
+                // 로그아웃 설정
                 .logout((logout) -> logout
-                        .logoutSuccessUrl("/login")
-                        .invalidateHttpSession(true))
+                        .logoutSuccessUrl("/api/account/guest/login")// 로그아웃 후 리다이렉트 경로 설정
+                        .invalidateHttpSession(true)) // 세션 무효화
+
+                //ExceptionTranslationFilter가 예외를 처리하던중에 인증이 안되어있으면 AuthenticationEntryPoint, 권한이 없으면 AccessDeniedHandler가 호출
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .authenticationEntryPoint(authenticationEntryPoint()) // 인증 실패 시 처리
                         .accessDeniedHandler(accessDeniedHandler()) // 인가 실패 시 처리
@@ -159,3 +167,20 @@ public class SecurityConfig {
         return http.build();
     }
 }
+
+/*
+study 필터 순서
+1.인증 관련 필터
+    로그인 요청은 UsernamePasswordAuthenticationFilter(커스텀)통과한다 : id, pwd 일치하면 SecurityContextHolder에 Authentication 객체가 저장된다.
+    로그인 요청 이외의 api 요청은 JWT 토큰을 통해 인증을 처리하는 필터인 JwtTokenFilter(커스텀)를 통과한다. JWT 토큰을 검증하고, 유효한 토큰이 있다면  SecurityContextHolder에 Authentication 객체가 저장된다.
+2.권한 검사 필터
+    FilterSecurityInterceptor
+    :인증이 완료된 후에, FilterSecurityInterceptor가 요청을 가로채어 권한 검사를 수행한다.
+    이 필터는 SecurityContextHolder에 있는 Authentication 객체를 사용하여 사용자가 요청한 리소스를 접근할 권한이 있는지 검사한다.
+    예를 들어, hasRole("RG00")처럼 설정된 권한을 검사하고, 해당 권한이 없는 사용자가 요청하면 403 Forbidden을 반환한다.
+
+    ExceptionTranslationFilter
+    :권한이 없다면 FilterSecurityInterceptor에서 AccessDeniedException이 발생하고,
+    이를 ExceptionTranslationFilter가 처리하여 403 Forbidden을 반환합니다.
+    인증이 되지 않았다면, **AuthenticationEntryPoint**를 통해 **401 Unauthorized**를 반환합니다.
+ */

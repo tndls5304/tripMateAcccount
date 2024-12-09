@@ -28,7 +28,7 @@ import java.util.Set;
  */
 public class GuestJsonUsernamePasswordAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
     private final Validator validator; // Validator 선언
-    private static final String DEFAULT_LOGIN_REQUEST_URL = "/api/guest/account/login";
+    private static final String DEFAULT_LOGIN_REQUEST_URL = "/api/account/guest/login";
     private static final String HTTP_METHOD = "POST";
     private static final String CONTENT_TYPE = "application/json";
     private final ObjectMapper objectMapper;

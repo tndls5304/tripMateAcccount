@@ -87,9 +87,11 @@ public class GuestJwtTokenFilter extends OncePerRequestFilter {
 
         String accessToken = getAccessTokenFromHeader(request);
         if (accessToken == null) {
-            throw new UnauthorizedException(JWT_REQ_ACCESS_MISSING);
+          //  throw new UnauthorizedException(JWT_REQ_ACCESS_MISSING);  // 오류났던거 수정함 :jwt 필터이후에 FilterSecurityInterceptor 필터에서 Authentication 객체가 SecurityContextHolder에 없을 경우, AuthenticationEntryPoint가 호출되어 401 Unauthorized 오류를 반환한다. 굳이 여기서 예외를 던질필요 없다.
+            filterChain.doFilter(request, response);
+            return;
         }
-
+        filterChain.doFilter(request, response);
         //파싱해서 시간 확인 하던중에 유효기간이 만료되면 오류를 내뱉을거임
         Claims claims = jwtAuthService.parseAccessToken(accessToken);
         // JWT가 유효하면 JWT를 디코딩(파싱)하여 사용자 정보를 추출해 인증객체 만들기
