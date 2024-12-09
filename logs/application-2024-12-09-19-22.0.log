@@ -1,0 +1,113 @@
+[startup] [2024-12-09 19:22:14.228] [background-preinit] [INFO] [o.h.v.i.u.Version] - HV000001: Hibernate Validator 8.0.1.Final 
+[startup] [2024-12-09 19:22:14.284] [main] [INFO] [c.t.a.AccountApplication] - Starting AccountApplication using Java 17 with PID 29372 (D:\dev\tripApp\tripMateAcccount\build\classes\java\main started by leesuin in D:\dev\tripApp\tripMateAcccount) 
+[startup] [2024-12-09 19:22:14.285] [main] [INFO] [c.t.a.AccountApplication] - No active profile set, falling back to 1 default profile: "default" 
+[startup] [2024-12-09 19:22:15.464] [main] [INFO] [o.s.d.r.c.RepositoryConfigurationDelegate] - Bootstrapping Spring Data JPA repositories in DEFAULT mode. 
+[startup] [2024-12-09 19:22:15.578] [main] [INFO] [o.s.d.r.c.RepositoryConfigurationDelegate] - Finished Spring Data repository scanning in 105 ms. Found 5 JPA repository interfaces. 
+[startup] [2024-12-09 19:22:16.628] [main] [INFO] [o.s.b.w.e.t.TomcatWebServer] - Tomcat initialized with port 8080 (http) 
+[startup] [2024-12-09 19:22:16.645] [main] [INFO] [o.a.c.h.Http11NioProtocol] - Initializing ProtocolHandler ["http-nio-8080"] 
+[startup] [2024-12-09 19:22:16.652] [main] [INFO] [o.a.c.c.StandardService] - Starting service [Tomcat] 
+[startup] [2024-12-09 19:22:16.654] [main] [INFO] [o.a.c.c.StandardEngine] - Starting Servlet engine: [Apache Tomcat/10.1.30] 
+[startup] [2024-12-09 19:22:16.801] [main] [INFO] [o.a.c.c.C.[.[.[/]] - Initializing Spring embedded WebApplicationContext 
+[startup] [2024-12-09 19:22:16.802] [main] [INFO] [o.s.b.w.s.c.ServletWebServerApplicationContext] - Root WebApplicationContext: initialization completed in 2467 ms 
+[startup] [2024-12-09 19:22:17.119] [main] [INFO] [o.h.j.i.u.LogHelper] - HHH000204: Processing PersistenceUnitInfo [name: default] 
+[startup] [2024-12-09 19:22:17.260] [main] [INFO] [o.h.Version] - HHH000412: Hibernate ORM core version 6.5.3.Final 
+[startup] [2024-12-09 19:22:17.333] [main] [INFO] [o.h.c.i.RegionFactoryInitiator] - HHH000026: Second-level cache disabled 
+[startup] [2024-12-09 19:22:17.940] [main] [INFO] [o.s.o.j.p.SpringPersistenceUnitInfo] - No LoadTimeWeaver setup: ignoring JPA class transformer 
+[startup] [2024-12-09 19:22:17.975] [main] [INFO] [c.z.h.HikariDataSource] - HikariPool-1 - Starting... 
+[startup] [2024-12-09 19:22:18.124] [main] [INFO] [c.z.h.p.HikariPool] - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@7c206b14 
+[startup] [2024-12-09 19:22:18.126] [main] [INFO] [c.z.h.HikariDataSource] - HikariPool-1 - Start completed. 
+[startup] [2024-12-09 19:22:19.047] [main] [INFO] [o.h.m.i.EntityInstantiatorPojoStandard] - HHH000182: No default (no-argument) constructor for class: com.tripmate.account.common.entity.RoleEntity (class must be instantiated by Interceptor) 
+[startup] [2024-12-09 19:22:19.270] [main] [INFO] [o.h.e.t.j.p.i.JtaPlatformInitiator] - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration) 
+[startup] [2024-12-09 19:22:19.615] [main] [INFO] [o.s.o.j.LocalContainerEntityManagerFactoryBean] - Initialized JPA EntityManagerFactory for persistence unit 'default' 
+[startup] [2024-12-09 19:22:19.887] [main] [INFO] [o.s.d.j.r.q.QueryEnhancerFactory] - Hibernate is in classpath; If applicable, HQL parser will be used. 
+[startup] [2024-12-09 19:22:20.777] [main] [INFO] [o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer] - Global AuthenticationManager configured with UserDetailsService bean with name guestUserDetailsService 
+[startup] [2024-12-09 19:22:21.382] [main] [INFO] [o.a.c.h.Http11NioProtocol] - Starting ProtocolHandler ["http-nio-8080"] 
+[startup] [2024-12-09 19:22:21.406] [main] [INFO] [o.s.b.w.e.t.TomcatWebServer] - Tomcat started on port 8080 (http) with context path '/' 
+[startup] [2024-12-09 19:22:21.418] [main] [INFO] [c.t.a.AccountApplication] - Started AccountApplication in 7.84 seconds (process running for 8.323) 
+[startup] [2024-12-09 19:22:34.319] [http-nio-8080-exec-1] [INFO] [o.a.c.c.C.[.[.[/]] - Initializing Spring DispatcherServlet 'dispatcherServlet' 
+[startup] [2024-12-09 19:22:34.319] [http-nio-8080-exec-1] [INFO] [o.s.w.s.DispatcherServlet] - Initializing Servlet 'dispatcherServlet' 
+[startup] [2024-12-09 19:22:34.321] [http-nio-8080-exec-1] [INFO] [o.s.w.s.DispatcherServlet] - Completed initialization in 2 ms 
+[e5f82b3f-afa3-456a-988f-1f3308d23dd4] [2024-12-09 19:22:34.389] [http-nio-8080-exec-1] [ERROR] [c.t.a.s.g.h.GuestAuthenticationEntryPoint] - Not Authenticated Request 
+org.springframework.security.authentication.InsufficientAuthenticationException: Full authentication is required to access this resource
+	at org.springframework.security.web.access.ExceptionTranslationFilter.handleAccessDeniedException(ExceptionTranslationFilter.java:199)
+	at org.springframework.security.web.access.ExceptionTranslationFilter.handleSpringSecurityException(ExceptionTranslationFilter.java:178)
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:147)
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:131)
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:85)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.session.ConcurrentSessionFilter.doFilter(ConcurrentSessionFilter.java:151)
+	at org.springframework.security.web.session.ConcurrentSessionFilter.doFilter(ConcurrentSessionFilter.java:129)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at com.tripmate.account.jwt.GuestJwtTokenFilter.doFilterInternal(GuestJwtTokenFilter.java:94)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:227)
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:221)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90)
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82)
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233)
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$3(HandlerMappingIntrospector.java:195)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74)
+	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:230)
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:352)
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:268)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at com.tripmate.account.filter.MDCFilter.doFilter(MDCFilter.java:28)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:384)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:905)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1741)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1190)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+[e5f82b3f-afa3-456a-988f-1f3308d23dd4] [2024-12-09 19:22:34.392] [http-nio-8080-exec-1] [ERROR] [c.t.a.s.g.h.GuestAuthenticationEntryPoint] - Request Uri : /api/guest/account/join 

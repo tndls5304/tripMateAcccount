@@ -56,7 +56,7 @@ public class GuestManageController {
      * @param guestJoinReqDto 개인정보와 (필수)약관동의리스트,마케팅약관동의리스트(선택적)를 받음
      * @return 회원가입 성공시 성공 응답코드와 메세지 전달, 실패시 예외 발생--> 에러코드,메세지 전달
      */
-    @PostMapping("api/guest/account/join")
+    @PostMapping("api/account/guest/join")
     @Operation(summary = "투숙객 회원가입 등록 ", description = "투숙객 회원가입 요청 API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공", content = @Content(mediaType = "application/json")),
