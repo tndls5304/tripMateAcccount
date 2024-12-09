@@ -13,9 +13,9 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class GuestModifyPwdReqDto {
 
-    String userId;//TODO 화면에서 받을건 아님 추후 세션에서 받기
     @NotBlank(message = "1004")
     String oldPwd;
+
     @NotBlank(message = "1004")
     @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "1005")                //  "영문자 혹은 숫자만 입력 가능"
     String newPwd;

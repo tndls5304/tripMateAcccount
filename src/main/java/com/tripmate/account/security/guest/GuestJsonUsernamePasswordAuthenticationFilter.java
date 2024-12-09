@@ -1,10 +1,12 @@
 package com.tripmate.account.security.guest;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validator;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,7 +16,7 @@ import org.springframework.security.web.authentication.AbstractAuthenticationPro
 import org.springframework.security.web.authentication.session.SessionFixationProtectionStrategy;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import java.io.IOException;
-import java.util.Map;
+import java.util.Set;
 
 /**
  * 커스텀필터입니다
@@ -25,15 +27,16 @@ import java.util.Map;
  * 동작하는 방식은 jSON 형식의 요청 바디에서 username과 password를 추출해 UsernamePasswordAuthenticationToken을 생성하고, AuthenticationManager로 전달하여 인증을 진행하게 합니다.
  */
 public class GuestJsonUsernamePasswordAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
-
+    private final Validator validator; // Validator 선언
     private static final String DEFAULT_LOGIN_REQUEST_URL = "/api/guest/account/login";
     private static final String HTTP_METHOD = "POST";
     private static final String CONTENT_TYPE = "application/json";
     private final ObjectMapper objectMapper;
     private static final AntPathRequestMatcher DEFAULT_LOGIN_PATH_REQUEST_MATCHER = new AntPathRequestMatcher(DEFAULT_LOGIN_REQUEST_URL, HTTP_METHOD);
 
-    public GuestJsonUsernamePasswordAuthenticationFilter(ObjectMapper objectMapper) {
+    public GuestJsonUsernamePasswordAuthenticationFilter(Validator validator, ObjectMapper objectMapper) {
         super(DEFAULT_LOGIN_PATH_REQUEST_MATCHER);
+        this.validator = validator;
         setSessionAuthenticationStrategy(new SessionFixationProtectionStrategy());
         this.objectMapper = objectMapper;
     }
@@ -44,12 +47,17 @@ public class GuestJsonUsernamePasswordAuthenticationFilter extends AbstractAuthe
         if (!CONTENT_TYPE.equals(request.getContentType())) {
             throw new AuthenticationServiceException("Authentication Content-Type not supported: " + request.getContentType());
         }
-        //request.getInputStream()에서 바로 JSON 데이터를 읽고, Map<String, String> 타입으로 변환
-        Map<String, String> credentials = objectMapper.readValue(request.getInputStream(), new TypeReference<Map<String, String>>() {
-        });
+        // JSON 데이터를 DTO로 매핑
+        GuestLoginReqDto loginReqDto = objectMapper.readValue(request.getInputStream(), GuestLoginReqDto.class);
 
-        //사용자가 입력한 id,pwd를 꺼내  비인증 상태의 토큰을 생성
-        UsernamePasswordAuthenticationToken authRequestToken = new UsernamePasswordAuthenticationToken(credentials.get("userId"), credentials.get("userPwd"));
+        // DTO의 유효성 검사 (javax.validation 활용)//TODO 다시보기
+        Set<ConstraintViolation<GuestLoginReqDto>> violations = validator.validate(loginReqDto);
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException(violations);//TODO 예외만들기
+        }
+        // UsernamePasswordAuthenticationToken 생성
+        UsernamePasswordAuthenticationToken authRequestToken =
+                new UsernamePasswordAuthenticationToken(loginReqDto.getGuestId(), loginReqDto.getGuestPwd());
 
         // 세부 정보를 설정 (예: HTTP 요청 관련 세부 정보)필요하면 추가하기 authRequestToken.setDetails(new WebAuthenticationDetails(request));
 

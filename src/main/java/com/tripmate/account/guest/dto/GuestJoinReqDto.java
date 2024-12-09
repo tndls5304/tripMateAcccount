@@ -22,7 +22,7 @@ public class GuestJoinReqDto {
 
     @NotBlank(message = "1004")
     @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "1005")                //  "영문자 혹은 숫자만 입력 가능"
-    String userPwd;
+    String guestPwd;
 
     @NotBlank(message = "1006")
     @Pattern(regexp = "^[가-힣]*$", message = "1007")                     // "한글만 입력 가능"

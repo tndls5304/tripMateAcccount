@@ -1,6 +1,7 @@
 package com.tripmate.account.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tripmate.account.jwt.GuestJwtTokenFilter;
 import com.tripmate.account.jwt.JwtAuthService;
 import com.tripmate.account.security.guest.GuestJsonUsernamePasswordAuthenticationFilter;
 import com.tripmate.account.security.guest.GuestUserDetailsService;
@@ -8,6 +9,7 @@ import com.tripmate.account.security.guest.handler.GuestAccessDeniedHandler;
 import com.tripmate.account.security.guest.handler.GuestAuthFailureHandler;
 import com.tripmate.account.security.guest.handler.GuestAuthSuccessHandler;
 import com.tripmate.account.security.guest.handler.GuestAuthenticationEntryPoint;
+import jakarta.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,7 +36,8 @@ public class SecurityConfig {
     private GuestUserDetailsService guestUserDetailsService;
     @Autowired
     private JwtAuthService jwtAuthService;
-
+    @Autowired
+    private Validator validator;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -65,7 +68,7 @@ public class SecurityConfig {
      */
     @Bean
     public GuestAuthSuccessHandler authSuccessHandler() {
-        return new GuestAuthSuccessHandler(jwtAuthService,objectMapper);
+        return new GuestAuthSuccessHandler(jwtAuthService, objectMapper);
     }
 
     /**
@@ -87,7 +90,7 @@ public class SecurityConfig {
      */
     @Bean
     public GuestJsonUsernamePasswordAuthenticationFilter guestJsonUsernamePasswordLoginFilter() {
-        GuestJsonUsernamePasswordAuthenticationFilter jsonFilter = new GuestJsonUsernamePasswordAuthenticationFilter(objectMapper);
+        GuestJsonUsernamePasswordAuthenticationFilter jsonFilter = new GuestJsonUsernamePasswordAuthenticationFilter(validator,objectMapper);
         jsonFilter.setAuthenticationManager(customProviderManager()); // AuthenticationManager 설정
         jsonFilter.setAuthenticationSuccessHandler(authSuccessHandler());
         jsonFilter.setAuthenticationFailureHandler(authFailureHandler());
@@ -113,8 +116,10 @@ public class SecurityConfig {
         return new GuestAccessDeniedHandler(objectMapper);
     }
 
-
-
+    @Bean
+    public GuestJwtTokenFilter guestJwtTokenFilter(JwtAuthService jwtAuthService) {
+        return new GuestJwtTokenFilter(jwtAuthService);
+    }
     /**
      * HTTP 요청에 대한 보안 필터 체인을 설정하는 메서드입니다.
      * 이 설정은 Spring Security의 기본 보안 설정을 사용자 정의로 구성합니다.
@@ -131,22 +136,14 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)//CSRF 보호를 비활성화(API 서버나 세션이 사용되지 않는 경우)
                 .addFilterBefore(guestJsonUsernamePasswordLoginFilter(), UsernamePasswordAuthenticationFilter.class) // JSON 인증 필터 추가
-
+                .addFilterAfter(guestJwtTokenFilter(jwtAuthService), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth                                             //URL 패턴별 접근 권한을 정의
-                        .requestMatchers("/", "/api/guest/account/join", "/api/guest/account/login", "/home")
+                        .requestMatchers("/api/guest/account/join", "/api/guest/account/login", "/home")
                         .permitAll()  // 인증 없이 접근 가능
                         .anyRequest().authenticated()                                        // 나머지 요청은 인증 필요
                 )
                 .httpBasic(AbstractHttpConfigurer::disable) // HTTP Basic 인증 비활성화formLogin(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
-                // HTTP Basic 인증 설정 (Postman 용)
-                /*
-                 .formLogin(form -> form
-                           .loginPage("/user/login")
-                    .loginProcessingUrl("/user/login_proc")
-                    .defaultSuccessUrl("/home", true)
-                )
-                */
                 .logout((logout) -> logout
                         .logoutSuccessUrl("/login")
                         .invalidateHttpSession(true))
