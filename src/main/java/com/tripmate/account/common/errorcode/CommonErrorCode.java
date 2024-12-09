@@ -83,14 +83,14 @@ public enum CommonErrorCode {
     JWT_ACCESS_TOKEN_INVALID_SIGNATURE("2106","토큰이 위조 되었습니다",HttpStatus.UNAUTHORIZED),
     JWT_ACCESS_TOKEN_UNKNOWN_ERROR("2107","알수없는 토큰오류입니다",HttpStatus.INTERNAL_SERVER_ERROR),
 
-    JWT_REQ_VALIDATION_ACCESS_BLANK("2108","요청하신 토큰이 누락됐습니다",HttpStatus.BAD_REQUEST),
-    JWT_REQ_VALIDATION_REFRESH_BLANK("2109","요청하신 토큰이 누락됐습니다",HttpStatus.BAD_REQUEST),
+    JWT_DTO_REQ_VALIDATION_ACCESS_BLANK("2108","요청하신 토큰이 누락됐습니다",HttpStatus.BAD_REQUEST),
+    JWT_DTO_REQ_VALIDATION_REFRESH_BLANK("2109","요청하신 토큰이 누락됐습니다",HttpStatus.BAD_REQUEST),
 
     JWT_SAVED_REFRESH_TOKEN_NOT_FOUND("2110","토큰을 찾을 수없습니다 다시 로그인 해주세요", HttpStatus.NOT_FOUND),
     JWT_REFRESH_TOKEN_MISMATCH("2111","토큰이 일치하지 않습니다 다시 로그인해주세요 ",HttpStatus.BAD_REQUEST),
 
-    //3000번대:일반고객 상대
-
+    JWT_ERROR_ROLE_BLANK("2112","회원의 권한에 필수 권한을 포함하고 있지 않습니다",HttpStatus.INTERNAL_SERVER_ERROR),
+    JWT_REQ_ACCESS_MISSING("2113","토큰이 누락됐습니다",HttpStatus.BAD_REQUEST),
     //4000번대:db연결 문제
     DATABASE_CONNENCTION_ERROR("4000", "데이터베이스 연결 오류",HttpStatus.INTERNAL_SERVER_ERROR),
 

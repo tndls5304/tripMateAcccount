@@ -2,11 +2,6 @@ package com.tripmate.account.jwt;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import lombok.Builder;
-
-import java.time.LocalDateTime;
-import java.util.List;
-
 
 @Entity
 

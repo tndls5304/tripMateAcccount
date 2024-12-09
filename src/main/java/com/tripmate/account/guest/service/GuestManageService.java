@@ -19,6 +19,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +28,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import static com.tripmate.account.common.errorcode.CommonErrorCode.*;
@@ -35,7 +38,6 @@ import static java.lang.Integer.parseInt;
 @RequiredArgsConstructor
 @Slf4j
 public class GuestManageService {
-
     private final GuestTbRepository guestTbRepository;
     private final GuestBasicAgreeThRepository basicAgreeThRepository;
     private final GuestMarketingAgreeThRepository marketingAgreeThRepository;
@@ -48,7 +50,7 @@ public class GuestManageService {
      * @param guestId 입력한 아이디가 이미 존재하는지 여부를 확인
      * @return 중복된 아이디가 존재할 경우 예외발생-> 에러응답코드와 메세지를 담은 ResponseEntity 전달
      */
-    public ResponseEntity<CommonResponse<Void>> checkUserIdDuplicate(String guestId) {
+    public ResponseEntity<CommonResponse<Void>> checkGuestIdDuplicate(String guestId) {
         if (guestTbRepository.existsById(guestId)) {
             throw new DataConflictException(CONFLICT_ACCOUNT_ALREADY_EXISTS);
         }
@@ -64,21 +66,21 @@ public class GuestManageService {
      * <p>
      * 위 세 단계가 모두 통과되면 @Transactional을 통해 가입 완료
      *
-     * @param reqUserJoin 개인정보, 필수 약관 동의 리스트, 마케팅 약관 동의 리스트를 포함한 가입 요청 정보
+     * @param guestJoinReqDto 개인정보, 필수 약관 동의 리스트, 마케팅 약관 동의 리스트를 포함한 가입 요청 정보
      */
     @Transactional
-    public void guestJoin(GuestJoinReqDto reqUserJoin) {
-        if (guestTbRepository.existsById(reqUserJoin.getGuestId())) {
+    public void guestJoin(GuestJoinReqDto guestJoinReqDto) {
+        if (guestTbRepository.existsById(guestJoinReqDto.getGuestId())) {
             throw new DataConflictException(CONFLICT_ACCOUNT_ALREADY_EXISTS);
         }
-        insertAccountInfo(reqUserJoin);
+        insertAccountInfo(guestJoinReqDto);
         guestTbRepository.flush(); //⭐서버가 이 3가지 작업을 할동안 이계정의 또 다른서버를 띄우고 동시에 요청이 갈 수 있다
         // 중복으로 저장하려고 할떄 이 서버에서 계정정보를 저장하고 필수, 마케팅약관 까지 다등록할때까지 다른서버에서 쓰레드가 계속 기다릴것이다
         //근데 그런 기다리는시간을 줄이기 위해서 먼저 계정정보를 저장했네? 그럼 다른서버에서도 계정을 등록하기전에 이걸보고 굳이 오래 기다리지 않는다
         //
-        insertBasicAgree(reqUserJoin);
-        insertMarketingAgree(reqUserJoin);
-        insertRoleHistory(reqUserJoin);
+        insertBasicAgree(guestJoinReqDto);
+        insertMarketingAgree(guestJoinReqDto);
+        insertRoleHistory(guestJoinReqDto);
     }
 
     /**
@@ -89,15 +91,10 @@ public class GuestManageService {
      * @param modifyPwdDto 클라이언트의 현재 비밀번호(oldPwd)와 바꾸고 싶은 새 비밀번호(newPwd)
      */
     @Transactional//더티체킹: 엔티티가 영속성 컨텍스트에 속한 상태가 되고 트랜잭션이 끝나는 시점에 변경된 엔티티가 자동으로 감지되어 UPDATE 쿼리가 실행
-    public void modifyPwd(GuestModifyPwdReqDto modifyPwdDto) {
-        Optional<GuestEntity> userOptional = guestTbRepository.findById(modifyPwdDto.getUserId());//이부분 세션할때 바꾸기
-
-        // 접속 id에 해당하는 계정이 존재하는지 확인하기 TODO id는 세션이나 jwt에 들고오는걸로 바꾸기
-        if (userOptional.isEmpty()) {
-            throw new InvalidRequestException(INVALID_USER_ID_MISMATCH);
-        }
-
-        GuestEntity existingGuestEntity = userOptional.get();
+    public void modifyPwd(Authentication authentication, GuestModifyPwdReqDto modifyPwdDto) {
+        String guestId = authentication.getName();
+        GuestEntity existingGuestEntity  = guestTbRepository.findById(guestId)
+                .orElseThrow(() ->  new InvalidRequestException(INVALID_USER_ID_MISMATCH));
 
         if (passwordEncoder.matches(modifyPwdDto.getOldPwd(), existingGuestEntity.getUserPwd())) {
             existingGuestEntity.setUserPwd(passwordEncoder.encode(modifyPwdDto.getNewPwd()));
@@ -143,23 +140,22 @@ public class GuestManageService {
      * @throws ServerErrorException    데이터베이스에서 여러 개의 동의 상태가 발견되었을 때 발생합니다. 서버 오류가 발생한 경우다.
      */
 
-    public void modifyMarketingAgree(List<GuestModifyMarketingAgreeReqDto> reqModifyMarketingList) {
+    public void modifyMarketingAgree( Authentication authentication ,List<GuestModifyMarketingAgreeReqDto> reqModifyMarketingList) {
+        String guestId = authentication.getName();
         if (reqModifyMarketingList == null || reqModifyMarketingList.isEmpty()) {
             throw new InvalidRequestException(INVALID_MARKETING_AGREE_BLANK);
         }
         int marketingPkSq = 1;
 
         for (GuestModifyMarketingAgreeReqDto reqModifyOneMarketing : reqModifyMarketingList) {
-            String userId = "1test";//TODO
-
-            String partPkOfMarketing = getPartPkOfMarketing(userId);
+            String partPkOfMarketing = getPartPkOfMarketing(guestId);
             String reqTemplateSq = reqModifyOneMarketing.getTemplateSq();
             AgreeFl reqAgreeFlForOneMarketing = reqModifyOneMarketing.getAgreeFlEnum();
             List<MarketingAgreeEntity> agreedHistoryListForOneMarketing = marketingAgreeThRepository.findByAccountInfo(partPkOfMarketing, reqTemplateSq, AgreeFl.Y);
             //동의를 한경우
             if (AgreeFl.Y.equals(reqAgreeFlForOneMarketing)) {
                 if (agreedHistoryListForOneMarketing.isEmpty()) {
-                    insertNewMarketingAgree(userId, marketingPkSq, reqAgreeFlForOneMarketing, reqTemplateSq);                     //동의한적 없으니 새로운 동의테이블 만들어주기
+                    insertNewMarketingAgree(guestId, marketingPkSq, reqAgreeFlForOneMarketing, reqTemplateSq);                     //동의한적 없으니 새로운 동의테이블 만들어주기
                     marketingPkSq++;
                 }
                 if (agreedHistoryListForOneMarketing.size() > 1) {
@@ -167,7 +163,7 @@ public class GuestManageService {
                 }
             } else if (AgreeFl.N.equals(reqAgreeFlForOneMarketing)) {                                            //마케팅동의 거절을 한경우
                 if (agreedHistoryListForOneMarketing.size() == 1) {
-                    UpdateDisAgreeForMarketing(userId, agreedHistoryListForOneMarketing);
+                    UpdateDisAgreeForMarketing(guestId, agreedHistoryListForOneMarketing);
                 }
                 if (agreedHistoryListForOneMarketing.size() > 1) {
                     ModifyErrorMarketingHistory(agreedHistoryListForOneMarketing, reqModifyOneMarketing);
@@ -177,16 +173,16 @@ public class GuestManageService {
     }
 
     //새 마케팅 동의 이력 저장하기
-    public void insertNewMarketingAgree(String userId, int marketingPkSq, AgreeFl reqAgreeFlForOneMarketing, String reqTemplateSq) {
+    public void insertNewMarketingAgree(String guestId, int marketingPkSq, AgreeFl reqAgreeFlForOneMarketing, String reqTemplateSq) {
         MarketingAgreeEntity marketingAgreeEntity = MarketingAgreeEntity.builder()
-                .agreeSq(getMarketingPk(userId, marketingPkSq))
+                .agreeSq(getMarketingPk(guestId, marketingPkSq))
                 .accountType(AccountType.G)
-                .accountId(userId)
+                .accountId(guestId)
                 .agreeFl(reqAgreeFlForOneMarketing)
                 .agreeDtm(LocalDateTime.now())
                 .dAgreeDtm(null)
                 .templateSq(Integer.parseInt(reqTemplateSq))
-                .regUser(userId)
+                .regUser(guestId)
                 .build();
         marketingAgreeThRepository.save(marketingAgreeEntity);//이전에 동의한적 없으면 동의이력테이블에 데이터 저장
     }
@@ -209,7 +205,7 @@ public class GuestManageService {
     //이력에 있던 것들은 모두 '비동의'상태로 바꿔주고 수정자는 '서버이름'을 쓰고 에러는 어떤에러인지 로그로 알려주기.
     public void ModifyErrorMarketingHistory(List<MarketingAgreeEntity> agreedHistoryListForOneMarketing, GuestModifyMarketingAgreeReqDto reqModifyOneMarketing) {
         if (agreedHistoryListForOneMarketing.isEmpty()) {
-            //예외뱉기 TODO 어떤에러지???????????리스트마다 이 짓을 해야하나
+            //예외뱉기 TODO 어떤에러지???????????리스트마다 이걸 반복하는게 맞는지 학인하기
         }
         //현재 클라이언트 요청이 '동의'라면 이력에서 '동의'인 값들 중 하나는(firstErrorEntity) 상태값을 바꾸지 않고 그대로 두기 위함
         MarketingAgreeEntity firstErrorEntity = agreedHistoryListForOneMarketing.get(0);
@@ -232,7 +228,6 @@ public class GuestManageService {
                 // 로그 기록: 어떤 동의 이력을 비동의로 변경했는지에 대한 정보 추가
                 log.error("Changed marketing agreement status from 'Y' to 'N' for user: {} due to multiple agreements.", errorMarketingEntity.getUpdtUser());
             }
-
         }
     }
 
@@ -263,15 +258,15 @@ public class GuestManageService {
      * 그래서 PK를 구분하는 시퀀스를 만들었다.
      * 같은 날짜에 여러번 마케팅 동의를 하더라도 충돌을 피하고 각 기 다른 PK를 생성할 수 있기 떄문이다.
      *
-     * @param userId:       숙박회원 id
+     * @param guestId:       숙박회원 id
      * @param marketingPkSq : 한 서버에 여러 마케팅이력이 저장될때 marketingPkSq가 없으니까 같은 pk로 취급되길래 구분하기 위해서
      * @return 마케팅동의 pk       :(동의 날짜 +계정타입 + id + 서버이름 +마케팅리스트 순번)
      */
-    public String getMarketingPk(String userId, int marketingPkSq) {
-        char userType = 'U';//TODO 바꾸기
+    public String getMarketingPk(String guestId, int marketingPkSq) {
+        char userType = 'G';//TODO 바꾸기
 
         //사용자 id 최대 길이는 20자. 20자 미만일때는 '0'로 대체하기
-        String userIdPadded = StringUtils.rightPad(userId, 20, '0');
+        String userIdPadded = StringUtils.rightPad(guestId, 20, '0');
 
         // marketingPkSq 값을 두 자리로 표현하기
         String marketingPkSqFormatted = String.format("%02d", marketingPkSq);
@@ -290,29 +285,28 @@ public class GuestManageService {
      * 이 마케팅 동의 PK는 '계정 타입 + 계정 ID + marketingPkSq(중복 방지용 값) + 년월일시(중복 방지용 값)' 형식으로 구성됩니다.
      * PK의 일부를 LIKE 조건으로 검색해 해당 계정의 마케팅 동의 이력을 빠르게 찾는 방식입니다.
      *
-     * @param userId 숙박회원 id
+     * @param guestId 숙박회원 id
      * @return 마케팅 동의 이력을 조회하기 위한 '계정 타입 + 계정 ID' 문자열
      */
-    public String getPartPkOfMarketing(String userId) {
-        char userType = 'U';//TODO  추후에 세션에서받기
-        userId = "1test";// TODO  추후에 세션에서받기
+    public String getPartPkOfMarketing(String guestId) {
+        char userType = 'G';//TODO  추후에 세션에서받기??
         //사용자 id 최대 길이는 20자. 20자 미만일때는 '0'로 대체하기
-        String userIdPadded = StringUtils.rightPad(userId, 20, '0');
+        String userIdPadded = StringUtils.rightPad(guestId, 20, '0');
         return userType + userIdPadded;
     }
 
     //회원가입할때 계정정보 저장하기
-    public void insertAccountInfo(GuestJoinReqDto reqUserJoin) {
+    public void insertAccountInfo(GuestJoinReqDto reqGuestJoin) {
         GuestEntity userJoinEntity = GuestEntity.builder()
-                .userId(reqUserJoin.getUserId())
+                .userId(reqGuestJoin.getGuestId())
                 .userPwd(
-                        passwordEncoder.encode(reqUserJoin.getUserPwd()) //수동생성방법:BCrypt.hashpw(reqUserJoin.getUserPwd(), BCrypt.gensalt())   :BCrypt.hashpw 메서드는 주어진 비밀번호를 BCrypt 해시로 변환하고, BCrypt.gensalt()는 랜덤 솔트 값을 생성하여 비밀번호에 추가
+                        passwordEncoder.encode(reqGuestJoin.getGuestPwd()) //수동생성방법:BCrypt.hashpw(reqUserJoin.getUserPwd(), BCrypt.gensalt())   :BCrypt.hashpw 메서드는 주어진 비밀번호를 BCrypt 해시로 변환하고, BCrypt.gensalt()는 랜덤 솔트 값을 생성하여 비밀번호에 추가
                 )
-                .nickname(reqUserJoin.getNickname())
-                .phoneNo(reqUserJoin.getPhoneNo())
-                .emailId(reqUserJoin.getEmailId())
-                .emailDomain(reqUserJoin.getEmailDomain())
-                .regUser(reqUserJoin.getUserId())//서버이름으로 바꾸기⭐
+                .nickname(reqGuestJoin.getNickname())
+                .phoneNo(reqGuestJoin.getPhoneNo())
+                .emailId(reqGuestJoin.getEmailId())
+                .emailDomain(reqGuestJoin.getEmailDomain())
+                .regUser(reqGuestJoin.getGuestId())//TODO 서버이름으로 바꾸기⭐
                 .pwdUpdDt(LocalDate.now())//가입하면 비번업데이트 날짜도 기록함
                 .build();
         guestTbRepository.save(userJoinEntity);
@@ -320,8 +314,8 @@ public class GuestManageService {
 
 
     //회원가입할때  필수 약관 동의 리스트 저장하기
-    public void insertBasicAgree(GuestJoinReqDto reqUserJoin) {
-        List<GuestBasicAgreeReqDto> reqBasicAgreeList = reqUserJoin.getBasicAgreeDtoList();
+    public void insertBasicAgree(GuestJoinReqDto reqGuestJoin) {
+        List<GuestBasicAgreeReqDto> reqBasicAgreeList = reqGuestJoin.getBasicAgreeDtoList();
         if (reqBasicAgreeList == null || reqBasicAgreeList.isEmpty()) {
             throw new InvalidRequestException(INVALID_BASIC_AGREE_BLANK);
         }
@@ -329,14 +323,14 @@ public class GuestManageService {
             BasicAgreeEntity requireAgreeEntity = BasicAgreeEntity.builder()
                     .id(
                             BasicAgreeId.builder()
-                                    .accountType(AccountType.G)//TODO 'U'는 JWT에서 가져올 예정
-                                    .accountId(reqUserJoin.getUserId())
+                                    .accountType(AccountType.G)
+                                    .accountId(reqGuestJoin.getGuestId())
                                     .templateSq(parseInt(reqBasicAgree.getTemplateSq()))
                                     .build()
                     )
                     .agreeFl((reqBasicAgree.getAgreeFlEnum()))
                     .agreeDt(LocalDate.now())
-                    .regUser(reqUserJoin.getUserId())//TODO 서버이름 넣기
+                    .regUser(reqGuestJoin.getGuestId())//TODO 서버이름 넣기
                     .build();
             basicAgreeThRepository.save(requireAgreeEntity);
         }
@@ -361,13 +355,13 @@ public class GuestManageService {
             //마케팅 약관에 동의를 해야지만 마케팅동의 이력테이블에 저장됨.추후에 비동의로 수정할 경우 철회시간을 기록하기.
             MarketingAgreeEntity marketingAgreeEntity = MarketingAgreeEntity.builder()
                     .agreeSq(
-                            getMarketingPk(reqUserJoin.getUserId(), marketingmarketingPkSq)
+                            getMarketingPk(reqUserJoin.getGuestId(), marketingmarketingPkSq)
                     )
-                    .accountType(AccountType.G)         //TODO 'U'는 JWT에서 가져올 예정
-                    .accountId(reqUserJoin.getUserId())
+                    .accountType(AccountType.G)
+                    .accountId(reqUserJoin.getGuestId())
                     .agreeFl(reqMarketingAgree.getAgreeFlEnum())
                     .agreeDtm(LocalDateTime.now())
-                    .regUser(reqUserJoin.getUserId())//TODO 서버이름넣기
+                    .regUser(reqUserJoin.getGuestId())//TODO 서버이름넣기
                     .templateSq(parseInt((reqMarketingAgree.getTemplateSq())))
                     .build();
             marketingOkEntityList.add(marketingAgreeEntity);
@@ -382,11 +376,11 @@ public class GuestManageService {
                 .id(
                         RoleHistoryId.builder()
                                 .roleTargetType(AccountType.G)
-                                .roleTarget(reqUserJoin.getUserId())
+                                .roleTarget(reqUserJoin.getGuestId())
                                 .roleCode(RoleCode.RG00)
                                 .build()
                 )
-                .regUser(reqUserJoin.getUserId())//TODO 서버이름 넣기
+                .regUser(reqUserJoin.getGuestId())//TODO 서버이름 넣기
                 .build();
         guestRoleThRepository.save(roleHistoryEntity);
     }

@@ -7,16 +7,15 @@ import java.util.Collection;
 import java.util.Set;
 
 public class GuestUserDetails implements UserDetails {
-    private String userId;
-    private String userPwd;
-
+    private String guestId;
+    private String guestPwd;
     private Set<GrantedAuthority> roleEntitySet;
 
 
     public GuestUserDetails(String username, String password
             , Set<GrantedAuthority> authoritySet) {
-        this.userId = username;
-        this.userPwd = password;
+        this.guestId = username;
+        this.guestPwd = password;
         this.roleEntitySet = authoritySet;
 
     }
@@ -29,12 +28,12 @@ public class GuestUserDetails implements UserDetails {
 
     @Override
     public String getPassword() {
-        return userPwd;
+        return guestPwd;
     }
 
     @Override
     public String getUsername() {
-        return userId;
+        return guestId;
     }
 
 

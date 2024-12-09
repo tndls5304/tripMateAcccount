@@ -3,6 +3,7 @@ package com.tripmate.account.filter.handler;
 import com.tripmate.account.common.errorcode.CommonErrorCode;
 import com.tripmate.account.common.reponse.CommonResponse;
 import com.tripmate.account.filter.exception.JwtValidateException;
+import com.tripmate.account.filter.exception.MissingRoleException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +38,13 @@ public class FilterGlobalExceptionHandler {
 
     @ExceptionHandler(JwtValidateException.class)
     public ResponseEntity<CommonResponse<Void>> handle(JwtValidateException ex) {
+        CommonErrorCode commonErrorCode = ex.getCommonErrorCode();
+        CommonResponse<Void> response = new CommonResponse<>(commonErrorCode);
+        return new ResponseEntity<>(response, commonErrorCode.getHttpStatus());
+    }
+
+    @ExceptionHandler(MissingRoleException.class)
+    public ResponseEntity<CommonResponse<Void>>handle(MissingRoleException ex){
         CommonErrorCode commonErrorCode = ex.getCommonErrorCode();
         CommonResponse<Void> response = new CommonResponse<>(commonErrorCode);
         return new ResponseEntity<>(response, commonErrorCode.getHttpStatus());

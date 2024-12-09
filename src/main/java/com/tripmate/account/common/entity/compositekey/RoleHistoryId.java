@@ -37,7 +37,7 @@ public RoleHistoryId(){
     }
 
 
-    // 오류생김...equals()와 hashCode() 메서드를 구현해야 합니다.⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐공부하기
+    // 오류생김...equals()와 hashCode() 메서드를 구현해야 합니다.⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐
 
     @Override
     public boolean equals(Object o) {

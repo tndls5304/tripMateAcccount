@@ -12,14 +12,19 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import static com.tripmate.account.common.errorcode.CommonErrorCode.SUCCESS;
 
 /**
- * user(숙박회원) 계정 관련 처리
+ * 숙박회원 계정 관련 처리
  *
  * @author 이수인
  * @since 2024.10.02
@@ -36,13 +41,13 @@ public class GuestManageController {
     /**
      * (숙박회원) 아이디 중복 검사
      *
-     * @param guestId 중복 검사 요청 id
+     * @param guestId 중복 검사 요청하는 id
      * @return 중복된 아이디가 존재시 에러 코드와 메시지를 포함한 ResponseEntity 를 반환,중복되지 않을 경우 성공 응답을 반환
      */
     @GetMapping("api/guest/account/join/duplicate")
     @Operation(summary = "투숙객 회원가입시 id 중복 검사", description = "userId를 이용해 투숙객의 id 중복 검사")
-    public ResponseEntity<CommonResponse<Void>> checkUserIdDuplicate(@Valid @RequestParam String guestId) {
-        return service.checkUserIdDuplicate(guestId);
+    public ResponseEntity<CommonResponse<Void>> checkGuestIdDuplicate(@Valid @RequestParam String guestId) {
+        return service.checkGuestIdDuplicate(guestId);
     }
 
     /**
@@ -82,7 +87,8 @@ public class GuestManageController {
             @ApiResponse(responseCode = "409", description = "이미 존재하는 id로 id 중복검사 실패", content = @Content(mediaType = "application/json"))
     })
     public ResponseEntity<CommonResponse<Void>> updatePwd(@Valid @RequestBody GuestModifyPwdReqDto modifyUserPwdDto) {
-        service.modifyPwd(modifyUserPwdDto);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        service.modifyPwd(authentication,modifyUserPwdDto);
         return new CommonResponse<>().toRespEntity(SUCCESS);
     }
 
@@ -96,7 +102,9 @@ public class GuestManageController {
      */
     @PostMapping("api/guest/account/marketing")
     public ResponseEntity<CommonResponse<Void>> modifyMarketingAgree(@Valid @RequestBody List<GuestModifyMarketingAgreeReqDto> ModifyMarketingAgreeDtoList) {
-        service.modifyMarketingAgree(ModifyMarketingAgreeDtoList);
+        // 로그인된 사용자 ID ,권한 가져오기
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        service.modifyMarketingAgree(authentication,ModifyMarketingAgreeDtoList);
         return new CommonResponse<>().toRespEntity(SUCCESS);
     }
 }
